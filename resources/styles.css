@@ -1,0 +1,70 @@
+/* main background */
+#background {
+  width: 100%;
+  height: 100%;
+  fill: black;
+}
+/* tile list */
+#text-title {
+  y: 30%;
+  font-size: 22;
+  font-family: System-Bold;
+}
+#text-trainer{
+  y: 50%;
+  font-size: 18;
+}
+#text-L{
+  x: 6%;
+  y: 85%;
+  font-size: 18;
+  text-anchor: start;
+}
+#text-R{
+  x: 94%;
+  y: 85%;
+  font-size: 18;
+  text-anchor: end;
+}
+/* ------------------------------------------------ */
+.defaultText {
+  font-size: 32;
+  font-family: System-Regular;
+  font-weight: regular;
+  text-length: 32;
+}
+.tile-list-header {
+  height: 24;
+}
+.tile-list-header text {
+  x: 50%;
+  y: 50%+8;
+  text-anchor: middle;
+  font-size: 20;
+  font-family: System-Regular;
+  font-weight: regular;
+  fill:#b0b0b0;
+}
+.tile-list-header rect {
+  fill:#131313
+}
+.tile-list-item {
+  height: 95;
+}
+.tile-list-item text {
+  x: 50%;
+  text-anchor: middle;
+  font-family: System-Regular;
+  font-weight: regular;
+  fill: white;
+}
+.tile-item-bg {
+  x: 1%;
+  y: 3%;
+  width: 98%;
+  height: 96%;
+  fill:#1f1f1f;
+}
+.tile-item-bg-cnr {
+  fill:#1f1f1f;
+}

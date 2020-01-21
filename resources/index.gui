@@ -1,0 +1,78 @@
+<svg>
+  <defs>
+    <symbol id="my-tile-item" href="#tile-list-item" 
+            focusable="false" pointer-events="none" system-events="all">
+      <rect class="tile-item-bg"/>
+      <!-- rounded rect mask hack -->
+      <!-- tl -->
+      <rect x="1%" y="3%" width="10" height="10" fill="black" /> 
+      <circle r="10" cx="1%+10" cy="3%+10" class="tile-item-bg-cnr" />
+      <!-- tr -->
+      <rect x="98%-7" y="3%" width="10" height="10" fill="black" /> 
+      <circle r="10" cx="98%-7" cy="3%+10" class="tile-item-bg-cnr" />
+      <!-- bl -->
+      <rect x="1%" y="96%-8" width="10" height="10" fill="black" /> 
+      <circle r="10" cx="1%+10" cy="96%-8" class="tile-item-bg-cnr" />
+      <!-- br -->
+      <rect x="98%-7" y="96%-8" width="10" height="10" fill="black" /> 
+      <circle r="10" cx="98%-7" cy="96%-8" class="tile-item-bg-cnr" />
+      <!-- class color -->
+      <rect id="color" x="1%" y="58%" width="98%" height="2" fill="#545454"/>
+      <g transform="translate(-5, 42%+2)">
+        <g transform="rotate(45)">
+          <rect id="colorL" width="21" height="21" fill="#545454"/>
+        </g>
+      </g>
+      <g transform="translate(-8, 42%+2)">
+        <g transform="rotate(45)">
+          <rect width="21" height="21" fill="black"/>
+        </g>
+      </g>
+      <rect width="1%" height="100%" fill="black" /> 
+      <!-- info text -->
+      <text id="text-L" class="tile-list-item" />
+      <text id="text-R" class="tile-list-item" />
+      <text id="text-title" class="tile-list-item" />
+      <text id="text-trainer" class="tile-list-item" />
+
+      <rect id="touch-me" pointer-events="all" x="0" y="3%" 
+            width="100%" height="96%" opacity="0"/>
+    </symbol>
+  </defs>
+  <!-- fill bg -->
+  <rect id="background" />
+  <!--  list view  -->
+  <use id="my-list" href="#tile-list">
+    <var id="virtual" value="1" />
+    <var id="reorder-enabled" value="0" />
+    <var id="peek-enabled" value="0" />
+    <var id="separator-height-bottom" value="2" />
+
+    <!-- items start -->
+    <use href="#my-tile-item" class="tile-list-item">
+      <set href="text-L" attributeName="text-buffer" to="12:30pm" />
+      <set href="text-R" attributeName="text-buffer" to="Studio 1 (45mins)" />
+      <set href="text-title" attributeName="text-buffer" to="BODYPUMP" />
+      <set href="text-trainer" attributeName="text-buffer" to="John Doe" />
+      <set href="color" attributeName="fill" to="red" />
+      <set href="colorL" attributeName="fill" to="red" />
+    </use>
+    <use href="#my-tile-item" class="tile-list-item">
+      <set href="text-L" attributeName="text-buffer" to="12:30pm" />
+      <set href="text-R" attributeName="text-buffer" to="Studio 1 (45mins)" />
+      <set href="text-title" attributeName="text-buffer" to="BODYATTACK" />
+      <set href="text-trainer" attributeName="text-buffer" to="John Doe" />
+      <set href="color" attributeName="fill" to="#ffb81c" />
+      <set href="colorL" attributeName="fill" to="#ffb81c" />
+    </use>
+    <use href="#my-tile-item" class="tile-list-item">
+      <set href="text-L" attributeName="text-buffer" to="12:30pm" />
+      <set href="text-R" attributeName="text-buffer" to="Studio 2 (45mins)" />
+      <set href="text-title" attributeName="text-buffer" to="TONE" />
+      <set href="text-trainer" attributeName="text-buffer" to="John Doe" />
+      <set href="color" attributeName="fill" to="#8246af" />
+      <set href="colorL" attributeName="fill" to="#8246af" />
+    </use>
+
+  </use>
+</svg>

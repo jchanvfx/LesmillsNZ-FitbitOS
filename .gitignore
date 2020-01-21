@@ -1,0 +1,6 @@
+# osx
+.DS_Store
+
+# node.js
+build
+node_modules
