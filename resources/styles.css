@@ -4,7 +4,8 @@
   height: 100%;
   fill: black;
 }
-/* tile list */
+
+/* tile ids */
 #text-title {
   y: 30%;
   font-size: 22;
@@ -26,37 +27,10 @@
   font-size: 18;
   text-anchor: end;
 }
-/* ------------------------------------------------ */
-.defaultText {
-  font-size: 32;
-  font-family: System-Regular;
-  font-weight: regular;
-  text-length: 32;
-}
-.tile-list-header {
-  height: 24;
-}
-.tile-list-header text {
-  x: 50%;
-  y: 50%+8;
-  text-anchor: middle;
-  font-size: 20;
-  font-family: System-Regular;
-  font-weight: regular;
-  fill:#b0b0b0;
-}
-.tile-list-header rect {
-  fill:#131313
-}
+
+/* tile classes */
 .tile-list-item {
   height: 95;
-}
-.tile-list-item text {
-  x: 50%;
-  text-anchor: middle;
-  font-family: System-Regular;
-  font-weight: regular;
-  fill: white;
 }
 .tile-item-bg {
   x: 1%;
@@ -67,4 +41,11 @@
 }
 .tile-item-bg-cnr {
   fill:#1f1f1f;
+}
+.tile-list-text {
+  x: 50%;
+  text-anchor: middle;
+  font-family: System-Regular;
+  font-weight: regular;
+  fill: white;
 }

@@ -12,14 +12,13 @@ let items = list.getElementsByClassName("tile-list-item");
 
 // // Get the selected index
 // let currentIndex = list.value;
-
 // // Set the selected index
-// list.value = 3; // Scroll to the 4th item
+// list.value = 2; // Scroll to the 4th item
 
 // List items logic 
-// items.forEach((element, index) => {
-//   let touch = element.getElementById("touch-me");
-//   touch.onclick = (evt) => {
-//     console.log(`touched: ${index}`);
-//   }
-// });
+items.forEach((element, index) => {
+  let touch = element.getElementById("touch-me");
+  touch.onclick = (evt) => {
+    console.log(`touched: ${index}`);
+  }
+});
