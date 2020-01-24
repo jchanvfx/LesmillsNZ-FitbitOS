@@ -4,7 +4,7 @@ function settingsComponent(props) {
       <Section
         title={
           <Text bold align="center">
-            LesMills NZ App Settings
+            Test App Settings
           </Text>
         }
       />

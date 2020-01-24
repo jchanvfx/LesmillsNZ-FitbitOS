@@ -1,24 +1,36 @@
 import document from "document";
+import { workoutTypes } from "./group_fitness";
 
 let background = document.getElementById("background");
-let list = document.getElementById("my-list");
-let items = list.getElementsByClassName("tile-list-item");
+let myList = document.getElementById("my-list");
 
-// console.log('------------------------------');
-// console.log(items);
+console.log("====================");
 
+myList.delegate = {
+  getTileInfo: function(index) {
+    return {
+      ...workoutTypes[index], 
+      ...{type: "my-pool", index: index}
+    };
+  },
+  configureTile: function(tile, info) {
+    if (info.type == "my-pool") {
+      tile.getElementById("text-title").text = `${info.workout}`;
+      tile.getElementById("text-subtitle").text = `intensity: ${info.intensity}`;
+      tile.getElementById("text-L").text = ">>>";
+      tile.getElementById("text-R").text = "Start Workout";
+      tile.getElementById("color").style.fill = `${info.color}`;
+      tile.getElementById("colorL").style.fill = `${info.color}`;
 
-// -------------------------------------------------------------------------------
-
-// // Get the selected index
-// let currentIndex = list.value;
-// // Set the selected index
-// list.value = 2; // Scroll to the 4th item
-
-// List items logic 
-items.forEach((element, index) => {
-  let touch = element.getElementById("touch-me");
-  touch.onclick = (evt) => {
-    console.log(`touched: ${index}`);
+      let touch = tile.getElementById("touch-me");
+      touch.onclick = evt => {
+        console.log(`touched: ${info.index}`);
+      };
+    }
   }
-});
+};
+
+// list length must be set AFTER the delegate
+myList.length = workoutTypes.length;
+
+

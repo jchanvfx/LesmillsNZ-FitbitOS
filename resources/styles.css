@@ -10,22 +10,26 @@
   y: 30%;
   font-size: 22;
   font-family: System-Bold;
+  text-length: 32;
 }
-#text-trainer{
+#text-subtitle{
   y: 50%;
   font-size: 18;
+  text-length: 32;
 }
 #text-L{
   x: 6%;
   y: 85%;
   font-size: 18;
   text-anchor: start;
+  text-length: 6;
 }
 #text-R{
   x: 94%;
   y: 85%;
   font-size: 18;
   text-anchor: end;
+  text-length: 32;
 }
 
 /* tile classes */

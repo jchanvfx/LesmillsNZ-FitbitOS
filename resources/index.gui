@@ -1,7 +1,7 @@
 <svg>
   <defs>
-    <symbol id="my-tile-item" href="#tile-list-item" 
-            focusable="false" pointer-events="none" system-events="all">
+    <symbol id="my-tile-item" href="#tile-list-item" focusable="false" 
+            pointer-events="none" system-events="all" display="none">
       <rect class="tile-item-bg"/>
       <!-- rounded rect mask hack -->
       <!-- tl -->
@@ -17,10 +17,10 @@
       <rect x="98%-7" y="96%-8" width="10" height="10" fill="black" /> 
       <circle r="10" cx="98%-7" cy="96%-8" class="tile-item-bg-cnr" />
       <!-- class color -->
-      <rect id="color" x="1%" y="58%" width="98%" height="2" fill="#545454"/>
+      <rect id="color" x="1%" y="58%" width="98%" height="2" fill="#545454" />
       <g transform="translate(-5, 42%+2)">
         <g transform="rotate(45)">
-          <rect id="colorL" width="21" height="21" fill="#545454"/>
+          <rect id="colorL" width="21" height="21" fill="#545454" />
         </g>
       </g>
       <g transform="translate(-8, 42%+2)">
@@ -33,8 +33,8 @@
       <text id="text-L" class="tile-list-text" />
       <text id="text-R" class="tile-list-text" />
       <text id="text-title" class="tile-list-text" />
-      <text id="text-trainer" class="tile-list-text" />
-
+      <text id="text-subtitle" class="tile-list-text" />
+      <!-- touch pointer -->
       <rect id="touch-me" pointer-events="all" x="0" y="3%" 
             width="100%" height="96%" opacity="0"/>
     </symbol>
@@ -47,47 +47,18 @@
     <var id="reorder-enabled" value="0" />
     <var id="peek-enabled" value="0" />
     <var id="separator-height-bottom" value="2" />
-
-    <!-- items start -->
-    <use href="#my-tile-item" class="tile-list-item">
-      <set href="text-L" attributeName="text-buffer" to="12:30pm" />
-      <set href="text-R" attributeName="text-buffer" to="Studio 1 (45mins)" />
-      <set href="text-title" attributeName="text-buffer" to="BODYPUMP" />
-      <set href="text-trainer" attributeName="text-buffer" to="John Doe" />
-      <set href="color" attributeName="fill" to="red" />
-      <set href="colorL" attributeName="fill" to="red" />
+    <!-- list pool -->
+    <use id="my-pool" href="#tile-list-pool">
+      <use id="my-pool[0]" href="#my-tile-item" class="tile-list-item" />
+      <use id="my-pool[1]" href="#my-tile-item" class="tile-list-item" />
+      <use id="my-pool[2]" href="#my-tile-item" class="tile-list-item" />
+      <use id="my-pool[3]" href="#my-tile-item" class="tile-list-item" />
+      <use id="my-pool[4]" href="#my-tile-item" class="tile-list-item" />
+      <use id="my-pool[5]" href="#my-tile-item" class="tile-list-item" />
+      <use id="my-pool[6]" href="#my-tile-item" class="tile-list-item" />
+      <use id="my-pool[7]" href="#my-tile-item" class="tile-list-item" />
+      <use id="my-pool[8]" href="#my-tile-item" class="tile-list-item" />
+      <use id="my-pool[9]" href="#my-tile-item" class="tile-list-item" />
     </use>
-    <use href="#my-tile-item" class="tile-list-item">
-      <set href="text-L" attributeName="text-buffer" to="12:30pm" />
-      <set href="text-R" attributeName="text-buffer" to="Studio 1 (45mins)" />
-      <set href="text-title" attributeName="text-buffer" to="BODYATTACK" />
-      <set href="text-trainer" attributeName="text-buffer" to="John Doe" />
-      <set href="color" attributeName="fill" to="#ffb81c" />
-      <set href="colorL" attributeName="fill" to="#ffb81c" />
-    </use>
-    <use href="#my-tile-item" class="tile-list-item">
-      <set href="text-L" attributeName="text-buffer" to="12:30pm" />
-      <set href="text-R" attributeName="text-buffer" to="Studio 2 (45mins)" />
-      <set href="text-title" attributeName="text-buffer" to="TONE" />
-      <set href="text-trainer" attributeName="text-buffer" to="John Doe" />
-      <set href="color" attributeName="fill" to="#8246af" />
-      <set href="colorL" attributeName="fill" to="#8246af" />
-    </use>
-    <use href="#my-tile-item" class="tile-list-item">
-      <set href="text-L" attributeName="text-buffer" to="12:30pm" />
-      <set href="text-R" attributeName="text-buffer" to="Studio 1 (45mins)" />
-      <set href="text-title" attributeName="text-buffer" to="TEST" />
-      <set href="text-trainer" attributeName="text-buffer" to="John Doe" />
-      <set href="color" attributeName="fill" to="red" />
-      <set href="colorL" attributeName="fill" to="red" />
-    </use>
-    <use href="#my-tile-item" class="tile-list-item">
-      <set href="text-L" attributeName="text-buffer" to="12:30pm" />
-      <set href="text-R" attributeName="text-buffer" to="Studio 1 (45mins)" />
-      <set href="text-title" attributeName="text-buffer" to="TEST" />
-      <set href="text-trainer" attributeName="text-buffer" to="John Doe" />
-    </use>
-
-
   </use>
 </svg>
