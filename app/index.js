@@ -1,26 +1,43 @@
 import document from "document";
-import { workoutTypes } from "./group_fitness";
-
-let background = document.getElementById("background");
-let myList = document.getElementById("my-list");
 
 console.log("====================");
 
-myList.delegate = {
+function formatDateToAmPm(date) {
+  var hours = date.getHours();
+  var minutes = date.getMinutes();
+  var ampm = hours >= 12 ? 'pm' : 'am';
+  hours = hours % 12;
+  hours = hours ? hours : 12; // the hour '0' should be '12'
+  minutes = minutes < 10 ? '0'+minutes : minutes;
+  var strTime = hours + ':' + minutes + ampm;
+  return strTime;
+}
+
+let VTList = document.getElementById("my-list");
+let NUM_ELEMS = 100;
+
+VTList.delegate = {
   getTileInfo: function(index) {
     return {
-      ...workoutTypes[index], 
-      ...{type: "my-pool", index: index}
+      index: index,
+      type: "my-pool",
+      Name: "BodyPump",
+      MainInstructor: "Alistair Alcock",
+      Colour: "#E4002B",
+      Duration: "60",
+      Site: "Studio 2",
+      StartDateTime: "2020-02-02T17:00:00+13:00"
     };
   },
   configureTile: function(tile, info) {
     if (info.type == "my-pool") {
-      tile.getElementById("text-title").text = `${info.workout}`;
-      tile.getElementById("text-subtitle").text = `intensity: ${info.intensity}`;
-      tile.getElementById("text-L").text = ">>>";
-      tile.getElementById("text-R").text = "Start Workout";
-      tile.getElementById("color").style.fill = `${info.color}`;
-      tile.getElementById("colorL").style.fill = `${info.color}`;
+      let time = new Date(info.StartDateTime);
+      tile.getElementById("text-title").text = `${info.Name.toUpperCase()}`;
+      tile.getElementById("text-subtitle").text = `${info.MainInstructor}`;
+      tile.getElementById("text-L").text = formatDateToAmPm(time);
+      tile.getElementById("text-R").text = `${info.Site} (${info.Duration}mins)`;
+      tile.getElementById("color").style.fill = `${info.Colour}`;
+      tile.getElementById("colorIdx").style.fill = `${info.Colour}`;
 
       let touch = tile.getElementById("touch-me");
       touch.onclick = evt => {
@@ -30,7 +47,5 @@ myList.delegate = {
   }
 };
 
-// list length must be set AFTER the delegate
-myList.length = workoutTypes.length;
-
-
+// VTList.length must be set AFTER VTList.delegate
+VTList.length = NUM_ELEMS;

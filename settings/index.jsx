@@ -4,7 +4,7 @@ function settingsComponent(props) {
       <Section
         title={
           <Text bold align="center">
-            Test App Settings
+            App Settings
           </Text>
         }
       />

@@ -4,11 +4,11 @@
   "private": true,
   "license": "MIT",
   "devDependencies": {
-    "@fitbit/sdk": "~4.1.0",
+    "@fitbit/sdk": "^4.1.0",
     "@fitbit/sdk-cli": "^1.7.1"
   },
   "fitbit": {
-    "appUUID": "8794316d-8ddb-428b-9ce2-fe83cc765c3d",
+    "appUUID": "8f60152d-38d3-4fea-9a76-f0db013ec51b",
     "appType": "app",
     "appDisplayName": "LesMills NZ",
     "iconFile": "resources/icon.png",
