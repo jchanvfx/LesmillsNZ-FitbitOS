@@ -1,6 +1,8 @@
 import document from "document";
 
-console.log("====================");
+let VTList = document.getElementById("my-list");
+let NUM_ELEMS = 100;
+
 
 function formatDateToAmPm(date) {
   var hours = date.getHours();
@@ -13,8 +15,6 @@ function formatDateToAmPm(date) {
   return strTime;
 }
 
-let VTList = document.getElementById("my-list");
-let NUM_ELEMS = 100;
 
 VTList.delegate = {
   getTileInfo: function(index) {
