@@ -25,17 +25,21 @@ messaging.peerSocket.onmessage = function(evt) {
     if (evt.data.key === "lm-refresh") {
         let clubSettings = settingsStorage.getItem("clubID")
         if (clubSettings != null) {
-            let selectedClub = JSON.parse(clubSettings).values;
+            let selectedClub = JSON.parse(clubSettings).values[0];
             let clubID = selectedClub.value;
             let clubName = selectedClub.name;
 
-            // send fetch data here.............
-            console.log('--- LesMills fetch request ---');
-            // let data = lesMills.fetchLesMillsData(clubID);
+
+            // send fetch data.............
+            // console.log("\n\n--- LesMills fetch request ---");
+            // console.log(lmData);
+            // console.log("-".repeat(8));
+            // let lmData = JSON.stringify({name: selectedClub.name});
 
             let data = {
                 key: "lm-timetable",
-                value: {cid: clubID, name: clubName, data: null}
+                value: clubName,
+                timetable: null
             };
             sendValue(data);
         } else {
@@ -83,12 +87,35 @@ function restoreSettings() {
     }
 }
 
-// Fetch Timetable Data from LesMills Web API
-// let url = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi"
-// fetch(url, {
-//     method: 'POST',
-//     headers: new Headers({'Content-type': 'application/json'}),
-//     body: JSON.stringify({Club: "04"})
-// })
-// .then(response => response.json())
-// .then(data => console.log(data));
+// Test Fetch Timetable Data from LesMills Web API
+lesMills.fetchLesMillsData("04")
+    .then(function(data) {
+
+        // sort timetable data.
+        let lmTimeTable = [];
+        for (var i = 0; i < data.Classes.length; i++) {
+            let clsInfo = data.Classes[i];
+            let groupClass = {
+                "time": clsInfo.StartDateTime,
+                "instructor": clsInfo.MainInstructor.Name,
+                "name": clsInfo.ClassName,
+                "color": clsInfo.Color,
+                "duration": clsInfo.Duration,
+                "site": clsInfo.Site.SiteName
+            };
+            lmTimeTable.push(groupClass);
+        }
+
+        // timeout delay (seconds).
+        let delay = 2;
+
+        setTimeout(function () {
+            console.log(lmTimeTable);
+        }, 1000 * delay);
+
+    })
+    .catch((err) => {
+        console.log(err);
+    });
+
+console.log("\n\n*****\n\n")

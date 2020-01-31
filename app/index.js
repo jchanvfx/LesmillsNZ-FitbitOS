@@ -14,8 +14,9 @@ messaging.peerSocket.onmessage = function(evt) {
         let value = evt.data.value
         console.log(value);
     } else if (evt.data.key === "lm-timetable" && evt.data.value) {
-        let value = evt.data.value
-        console.log(value);
+        let clubName = evt.data.value;
+        console.log('-=-=-=-');
+        console.log(clubName);
     }
 };
 
