@@ -2,6 +2,7 @@ import * as messaging from "messaging";
 import * as lesMills from "./utils/les_mills";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
+import { outbox } from "file-transfer";
 
 
 // Check internet permissions
@@ -29,19 +30,48 @@ messaging.peerSocket.onmessage = function(evt) {
             let clubID = selectedClub.value;
             let clubName = selectedClub.name;
 
+            // fetch timetable data.
+            console.log("\n\n--- LesMills fetch request ---");
+            lesMills.fetchLesMillsData(clubID)
+            .then(function(data) {
 
-            // send fetch data.............
-            // console.log("\n\n--- LesMills fetch request ---");
-            // console.log(lmData);
-            // console.log("-".repeat(8));
-            // let lmData = JSON.stringify({name: selectedClub.name});
+                // sort timetable data.
+                    let date = new Date();
+                    let today = date.getDay();
+                    let lmTimeTable = [];
+                    for (var i = 0; i < data.Classes.length; i++) {
+                        let clsInfo = data.Classes[i];
+                        let clsDate = new Date(clsInfo.StartDateTime);
+                        let clsDay = clsDate.getDay();
+                        if (clsDay == today) {
+                            let groupClass = {
+                                start: clsInfo.StartDateTime,
+                                instructor: clsInfo.MainInstructor.Name,
+                                name: clsInfo.ClassName,
+                                color: clsInfo.Color,
+                                details: `${clsInfo.Site.SiteName} (${clsInfo.Duration})`,
+                            };
+                            lmTimeTable.push(groupClass);
+                        }
+                    }
 
-            let data = {
-                key: "lm-timetable",
-                value: clubName,
-                timetable: null
-            };
-            sendValue(data);
+                    // set delay for the fitbit simulator (seconds).
+                    let delay = 1;
+
+                    setTimeout(function () {
+                        // console.log(lmTimeTable);
+                        let data = {
+                            key: "lm-timetable",
+                            value: clubName,
+                            timetable: lmTimeTable.length
+                        };
+                        sendValue(data);
+                    }, 1000 * delay);
+
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
         } else {
             console.log('Club location not set.')
             let data = {
@@ -86,36 +116,3 @@ function restoreSettings() {
         }
     }
 }
-
-// Test Fetch Timetable Data from LesMills Web API
-lesMills.fetchLesMillsData("04")
-    .then(function(data) {
-
-        // sort timetable data.
-        let lmTimeTable = [];
-        for (var i = 0; i < data.Classes.length; i++) {
-            let clsInfo = data.Classes[i];
-            let groupClass = {
-                "time": clsInfo.StartDateTime,
-                "instructor": clsInfo.MainInstructor.Name,
-                "name": clsInfo.ClassName,
-                "color": clsInfo.Color,
-                "duration": clsInfo.Duration,
-                "site": clsInfo.Site.SiteName
-            };
-            lmTimeTable.push(groupClass);
-        }
-
-        // timeout delay (seconds).
-        let delay = 2;
-
-        setTimeout(function () {
-            console.log(lmTimeTable);
-        }, 1000 * delay);
-
-    })
-    .catch((err) => {
-        console.log(err);
-    });
-
-console.log("\n\n*****\n\n")

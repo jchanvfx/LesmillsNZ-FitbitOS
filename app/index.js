@@ -2,6 +2,17 @@ import document from "document";
 import { me as appbit } from "appbit";
 import * as messaging from "messaging";
 
+const dayMapping = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday'
+];
+
+
 // Check internet permissions
 if (!appbit.permissions.granted("access_internet")) {
     console.log("We're not allowed to access the internet!");
@@ -9,7 +20,7 @@ if (!appbit.permissions.granted("access_internet")) {
 
 // Message is received
 messaging.peerSocket.onmessage = function(evt) {
-    // console.log(`App received: ${JSON.stringify(evt)}`);
+    console.log(`App received: ${JSON.stringify(evt)}`);
     if (evt.data.key === "lm-noClub" && evt.data.value) {
         let value = evt.data.value
         console.log(value);
