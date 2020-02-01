@@ -1,8 +1,8 @@
 import * as messaging from "messaging";
-import * as lesMills from "./utils/les_mills";
+import * as lesMills from "./lm_utils";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
-import { outbox } from "file-transfer";
+// import { outbox } from "file-transfer";
 
 
 // Check internet permissions
@@ -29,49 +29,7 @@ messaging.peerSocket.onmessage = function(evt) {
             let selectedClub = JSON.parse(clubSettings).values[0];
             let clubID = selectedClub.value;
             let clubName = selectedClub.name;
-
-            // fetch timetable data.
-            console.log("\n\n--- LesMills fetch request ---");
-            lesMills.fetchLesMillsData(clubID)
-            .then(function(data) {
-
-                // sort timetable data.
-                    let date = new Date();
-                    let today = date.getDay();
-                    let lmTimeTable = [];
-                    for (var i = 0; i < data.Classes.length; i++) {
-                        let clsInfo = data.Classes[i];
-                        let clsDate = new Date(clsInfo.StartDateTime);
-                        let clsDay = clsDate.getDay();
-                        if (clsDay == today) {
-                            let groupClass = {
-                                start: clsInfo.StartDateTime,
-                                instructor: clsInfo.MainInstructor.Name,
-                                name: clsInfo.ClassName,
-                                color: clsInfo.Color,
-                                details: `${clsInfo.Site.SiteName} (${clsInfo.Duration})`,
-                            };
-                            lmTimeTable.push(groupClass);
-                        }
-                    }
-
-                    // set delay for the fitbit simulator (seconds).
-                    let delay = 1;
-
-                    setTimeout(function () {
-                        // console.log(lmTimeTable);
-                        let data = {
-                            key: "lm-timetable",
-                            value: clubName,
-                            timetable: lmTimeTable.length
-                        };
-                        sendValue(data);
-                    }, 1000 * delay);
-
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
+            fetchTimtableData(clubID, clubName);
         } else {
             console.log('Club location not set.')
             let data = {
@@ -115,4 +73,47 @@ function restoreSettings() {
             sendValue(data);
         }
     }
+}
+
+// fetch the timetable data and send to device.
+function fetchTimtableData(clubID, clubName) {
+    lesMills.fetchLesMillsData(clubID)
+        .then(function(data) {
+            // sort timetable data.
+            let date = new Date();
+            let today = date.getDay();
+            let lmTimeTable = [];
+
+            for (var i = 0; i < data.Classes.length; i++) {
+                let clsInfo = data.Classes[i];
+                let clsDate = new Date(clsInfo.StartDateTime);
+                let clsDay = clsDate.getDay();
+                if (clsDay == today) {
+                    let groupClass = {
+                        code: Number(clsInfo.ClassCode),
+                        date: clsInfo.StartDateTime,
+                        instructor: clsInfo.MainInstructor.Name,
+                        color: clsInfo.Colour,
+                        desc: `${clsInfo.Site.SiteName} (${clsInfo.Duration}mins)`,
+                    };
+                    lmTimeTable.push(groupClass);
+                }
+            }
+
+            // TODO: sort the list by time.
+
+            // set simulator delay.
+            let delay = 0.1;
+            setTimeout(function () {
+                let data = {
+                    key: "lm-timetable",
+                    value: clubName,
+                    timetable: lmTimeTable.slice(8, 16)
+                };
+                sendValue(data);
+            }, 1000 * delay);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
 }
