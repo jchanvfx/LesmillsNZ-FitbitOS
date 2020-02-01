@@ -19,13 +19,17 @@ messaging.peerSocket.onmessage = function(evt) {
         let clubName = evt.data.value;
         let timetable = evt.data.timetable;
         updateTimetableView(timetable);
+        displayLoadingScreen(false);
+        displayTimetable(true);
     }
 };
 
 // Message socket opens (send)
 messaging.peerSocket.onopen = function() {
     console.log("App Socket Open");
-    let data = {key: "lm-refresh"};
+    displayTimetable(false);
+    displayLoadingScreen(true);
+    let data = {key: "lm-fetch"};
     sendValue(data);
 };
 
@@ -43,10 +47,11 @@ function sendValue(data) {
 
 // ----------------------------------------------------------------------------
 
-let VTList = document.getElementById("lm-class-list");
 var TIMETABLE = [];
+let TIMETABLE_LIST = document.getElementById("lm-class-list");
+let LOADER_OVERLAY = document.getElementById("loading-screen");
 
-VTList.delegate = {
+TIMETABLE_LIST.delegate = {
     getTileInfo: function(index) {
         return {index: index, type: "lm-pool"};
     },
@@ -76,7 +81,10 @@ VTList.delegate = {
 };
 
 // VTList.length must be set AFTER VTList.delegate
-VTList.length = 10;
+TIMETABLE_LIST.length = 10;
+
+// METHODS
+// ----------------------------------------------------------------------------
 
 function formatDateToAmPm(date) {
     let hours = date.getHours();
@@ -88,16 +96,35 @@ function formatDateToAmPm(date) {
     let strTime = hours + ':' + minutes + ampm;
     return strTime;
 }
-
+// update timetable tile list with new data.
 function updateTimetableView(timetableData) {
     TIMETABLE.length = 0;
     for (var i = 0; i < timetableData.length; i++) {
         TIMETABLE.push(timetableData[i]);
     }
-
     // work around to refresh the virtual tile list.
-    VTList.length = 0;
-    VTList.redraw();
-    VTList.length = TIMETABLE.length;
-    VTList.redraw();
+    TIMETABLE_LIST.length = 0;
+    TIMETABLE_LIST.redraw();
+    TIMETABLE_LIST.length = TIMETABLE.length;
+    TIMETABLE_LIST.redraw();
+}
+
+// toggle timetable list.
+function displayTimetable(display=true) {
+    if (display === true) {
+        TIMETABLE_LIST.style.display = "inline";
+    } else {
+        TIMETABLE_LIST.style.display = "none";
+    }
+}
+
+// toggle loading screen display.
+function displayLoadingScreen(display=true) {
+    if (display === true) {
+        LOADER_OVERLAY.animate("enable");
+        LOADER_OVERLAY.style.display = "inline";
+    } else {
+        LOADER_OVERLAY.animate("disable");
+        LOADER_OVERLAY.style.display = "none";
+    }
 }

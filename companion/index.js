@@ -23,7 +23,7 @@ messaging.peerSocket.onclose = () => {
 
 // Message is received
 messaging.peerSocket.onmessage = function(evt) {
-    if (evt.data.key === "lm-refresh") {
+    if (evt.data.key === "lm-fetch") {
         let clubSettings = settingsStorage.getItem("clubID")
         if (clubSettings != null) {
             let selectedClub = JSON.parse(clubSettings).values[0];

@@ -42,24 +42,29 @@
   </defs>
 
   <!-- VIRTUAL TILE LIST (LM CLASSES) -->
-  <use id="lm-class-list" href="#tile-list" class="lm-tile-list">
-    <var id="virtual" value="1" />
-    <var id="reorder-enabled" value="0" />
-    <var id="peek-enabled" value="0" />
-    <var id="separator-height-bottom" value="2" />
-    <use id="lm-pool" href="#tile-list-pool">
-      <use id="lm-pool[0]" href="#lm-class-item" class="tile-list-item" />
-      <use id="lm-pool[1]" href="#lm-class-item" class="tile-list-item" />
-      <use id="lm-pool[2]" href="#lm-class-item" class="tile-list-item" />
-      <use id="lm-pool[3]" href="#lm-class-item" class="tile-list-item" />
-      <use id="lm-pool[4]" href="#lm-class-item" class="tile-list-item" />
-      <use id="lm-pool[5]" href="#lm-class-item" class="tile-list-item" />
-      <use id="lm-pool[6]" href="#lm-class-item" class="tile-list-item" />
-      <use id="lm-pool[7]" href="#lm-class-item" class="tile-list-item" />
-      <use id="lm-pool[8]" href="#lm-class-item" class="tile-list-item" />
-      <use id="lm-pool[9]" href="#lm-class-item" class="tile-list-item" />
+  <section y="26" height="100%-26">
+    <use id="lm-class-list" href="#tile-list" class="lm-tile-list" display="none">
+      <var id="virtual" value="1" />
+      <var id="reorder-enabled" value="0" />
+      <var id="peek-enabled" value="0" />
+      <var id="separator-height-bottom" value="2" />
+      <use id="lm-pool" href="#tile-list-pool">
+        <use id="lm-pool[0]" href="#lm-class-item" class="tile-list-item" />
+        <use id="lm-pool[1]" href="#lm-class-item" class="tile-list-item" />
+        <use id="lm-pool[2]" href="#lm-class-item" class="tile-list-item" />
+        <use id="lm-pool[3]" href="#lm-class-item" class="tile-list-item" />
+        <use id="lm-pool[4]" href="#lm-class-item" class="tile-list-item" />
+        <use id="lm-pool[5]" href="#lm-class-item" class="tile-list-item" />
+        <use id="lm-pool[6]" href="#lm-class-item" class="tile-list-item" />
+        <use id="lm-pool[7]" href="#lm-class-item" class="tile-list-item" />
+        <use id="lm-pool[8]" href="#lm-class-item" class="tile-list-item" />
+        <use id="lm-pool[9]" href="#lm-class-item" class="tile-list-item" />
+      </use>
     </use>
-  </use>
+  </section>
+
+  <!-- LOADER OVERLAY -->
+  <use id="loading-screen" href="#loader-overlay"/>
 
   <!-- STATUS BAR -->
   <rect id="lm-status-bg" />

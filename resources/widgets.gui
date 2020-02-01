@@ -5,5 +5,18 @@
     <!-- Additional Imports -->
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui" />
+
+    <!-- Loader Overlay Widget -->
+    <symbol id="loader-overlay" focusable="false">
+      <arc x="50%-50" y="50%-50" fill="#11435d" arc-width="12"
+           start-angle="0" sweep-angle="360" />
+      <g id="animation" transform="translate(50%, 50%)">
+        <animateTransform attributeType="rotate" begin="load" dur="3" begin="load;enable"
+                          from="0" to="360" repeatCount="indefinite"/>
+        <arc x="-50" y="-50" fill="#4ebeff" arc-width="5" start-angle="0" sweep-angle="60" />
+      </g>
+      <text id="text" >loading...</text>
+    </symbol>
+
   </defs>
 </svg>
