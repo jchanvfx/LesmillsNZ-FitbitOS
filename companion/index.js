@@ -87,6 +87,7 @@ function fetchTimtableData(clubID, clubName) {
             for (var i = 0; i < data.Classes.length; i++) {
                 let clsInfo = data.Classes[i];
                 let clsDate = new Date(clsInfo.StartDateTime);
+                // filter current day for now.
                 let clsDay = clsDate.getDay();
                 if (clsDay == today) {
                     let groupClass = {
@@ -100,7 +101,8 @@ function fetchTimtableData(clubID, clubName) {
                 }
             }
 
-            // TODO: sort the list by time.
+            // sort the list by class start time.
+            lmTimeTable.sort((a, b) => (a.date > b.date) ? 1 : -1);
 
             // set simulator delay.
             let delay = 0.1;
@@ -108,7 +110,7 @@ function fetchTimtableData(clubID, clubName) {
                 let data = {
                     key: "lm-timetable",
                     value: clubName,
-                    timetable: lmTimeTable.slice(8, 16)
+                    timetable: lmTimeTable.slice(0, 8)
                 };
                 sendValue(data);
             }, 1000 * delay);
