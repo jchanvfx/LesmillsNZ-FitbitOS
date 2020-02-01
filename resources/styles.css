@@ -26,6 +26,10 @@
 }
 
 /* tile classes */
+.lm-tile-list {
+  y: 26;
+  height: 100%-26;
+}
 .tile-list-item {
   height: 95;
 }
@@ -45,4 +49,46 @@
   font-family: System-Regular;
   font-weight: regular;
   fill: white;
+}
+
+/* status bar */
+#lm-status-bg {
+  width: 100%;
+  height: 26;
+  fill: black;
+}
+#lm-status-time {
+  x: 100%-4;
+  y: 20;
+  font-size: 18;
+  font-family: System-Bold;
+  font-weight: regular;
+  fill: #1fdda1;
+  text-anchor: end;
+  text-length: 8;
+}
+#lm-status-date {
+  x: 28;
+  y: 20;
+  font-size: 18;
+  font-family: System-Bold;
+  font-weight: regular;
+  fill: #eb1f4e;
+  text-anchor: start;
+  text-length: 16;
+}
+#lm-back-btn {
+  x: 14;
+  y: 14;
+}
+#lm-back-btn circle {
+  r: 10;
+  fill:#eb1f4e;
+}
+#lm-back-btn text{
+  x: -4;
+  y: +4;
+  font-size: 18;
+  font-family: System-Bold;
+  fill: black;
 }

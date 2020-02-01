@@ -1,21 +1,21 @@
 <svg>
   <defs>
-    <!-- Workout Tile Item -->
-    <symbol id="my-tile-item" href="#tile-list-item" focusable="false" 
+    <!-- LM CLASS TILE ITEM -->
+    <symbol id="lm-class-item" href="#tile-list-item" focusable="false"
             pointer-events="none" system-events="all" display="none" >
       <rect class="tile-item-bg"/>
       <!-- rounded rect mask hack -->
       <!-- tl -->
-      <rect x="1%" y="3%" width="10" height="10" fill="black" /> 
+      <rect x="1%" y="3%" width="10" height="10" fill="black" />
       <circle r="10" cx="1%+10" cy="3%+10" class="tile-item-bg-cnr" />
       <!-- tr -->
-      <rect x="98%-7" y="3%" width="10" height="10" fill="black" /> 
+      <rect x="98%-7" y="3%" width="10" height="10" fill="black" />
       <circle r="10" cx="98%-7" cy="3%+10" class="tile-item-bg-cnr" />
       <!-- bl -->
-      <rect x="1%" y="96%-8" width="10" height="10" fill="black" /> 
+      <rect x="1%" y="96%-8" width="10" height="10" fill="black" />
       <circle r="10" cx="1%+10" cy="96%-8" class="tile-item-bg-cnr" />
       <!-- br -->
-      <rect x="98%-7" y="96%-8" width="10" height="10" fill="black" /> 
+      <rect x="98%-7" y="96%-8" width="10" height="10" fill="black" />
       <circle r="10" cx="98%-7" cy="96%-8" class="tile-item-bg-cnr" />
       <!-- class color -->
       <rect id="color" x="1%" y="58%" width="98%" height="2" fill="#545454" />
@@ -29,36 +29,45 @@
           <rect width="21" height="21" fill="black"/>
         </g>
       </g>
-      <rect width="1%" height="100%" fill="black" /> 
+      <rect width="1%" height="100%" fill="black" />
       <!-- info text -->
       <text id="text-L" class="tile-list-text" />
       <text id="text-R" class="tile-list-text" />
       <text id="text-title" class="tile-list-text" />
       <text id="text-subtitle" class="tile-list-text" />
       <!-- touch pointer -->
-      <rect id="touch-me" pointer-events="all" x="0" y="3%" 
+      <rect id="touch-me" pointer-events="all" x="0" y="3%"
             width="100%" height="96%" opacity="0" />
     </symbol>
   </defs>
 
-  <use id="my-list" href="#tile-list">
+  <!-- VIRTUAL TILE LIST (LM CLASSES) -->
+  <use id="lm-class-list" href="#tile-list" class="lm-tile-list">
     <var id="virtual" value="1" />
     <var id="reorder-enabled" value="0" />
     <var id="peek-enabled" value="0" />
     <var id="separator-height-bottom" value="2" />
-
-    <use id="my-pool" href="#tile-list-pool">
-      <use id="my-pool[0]" href="#my-tile-item" class="tile-list-item" />
-      <use id="my-pool[1]" href="#my-tile-item" class="tile-list-item" />
-      <use id="my-pool[2]" href="#my-tile-item" class="tile-list-item" />
-      <use id="my-pool[3]" href="#my-tile-item" class="tile-list-item" />
-      <use id="my-pool[4]" href="#my-tile-item" class="tile-list-item" />
-      <use id="my-pool[5]" href="#my-tile-item" class="tile-list-item" />
-      <use id="my-pool[6]" href="#my-tile-item" class="tile-list-item" />
-      <use id="my-pool[7]" href="#my-tile-item" class="tile-list-item" />
-      <use id="my-pool[8]" href="#my-tile-item" class="tile-list-item" />
-      <use id="my-pool[9]" href="#my-tile-item" class="tile-list-item" />
+    <use id="lm-pool" href="#tile-list-pool">
+      <use id="lm-pool[0]" href="#lm-class-item" class="tile-list-item" />
+      <use id="lm-pool[1]" href="#lm-class-item" class="tile-list-item" />
+      <use id="lm-pool[2]" href="#lm-class-item" class="tile-list-item" />
+      <use id="lm-pool[3]" href="#lm-class-item" class="tile-list-item" />
+      <use id="lm-pool[4]" href="#lm-class-item" class="tile-list-item" />
+      <use id="lm-pool[5]" href="#lm-class-item" class="tile-list-item" />
+      <use id="lm-pool[6]" href="#lm-class-item" class="tile-list-item" />
+      <use id="lm-pool[7]" href="#lm-class-item" class="tile-list-item" />
+      <use id="lm-pool[8]" href="#lm-class-item" class="tile-list-item" />
+      <use id="lm-pool[9]" href="#lm-class-item" class="tile-list-item" />
     </use>
-    
   </use>
+
+  <!-- STATUS BAR -->
+  <rect id="lm-status-bg" />
+  <text id="lm-status-date">Today (12 FEB)</text>
+  <text id="lm-status-time">12:30 PM</text>
+  <section id="lm-back-btn">
+    <circle/>
+    <text>&lt;</text>
+  </section>
+
 </svg>

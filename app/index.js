@@ -43,19 +43,15 @@ function sendValue(data) {
 
 // ----------------------------------------------------------------------------
 
-let VTList = document.getElementById("my-list");
-let NUM_ELEMS = 100;
+let VTList = document.getElementById("lm-class-list");
 var TIMETABLE = [];
 
 VTList.delegate = {
     getTileInfo: function(index) {
-        return {
-            index: index,
-            type: "my-pool",
-        };
+        return {index: index, type: "lm-pool"};
     },
     configureTile: function(tile, info) {
-        if (info.type == "my-pool") {
+        if (info.type == "lm-pool") {
             if (TIMETABLE.length > 1) {
                 let item = TIMETABLE[info.index];
                 let clsName = CLASS_CODES[item.code].toUpperCase();
@@ -80,7 +76,7 @@ VTList.delegate = {
 };
 
 // VTList.length must be set AFTER VTList.delegate
-VTList.length = NUM_ELEMS;
+VTList.length = 10;
 
 function formatDateToAmPm(date) {
     let hours = date.getHours();

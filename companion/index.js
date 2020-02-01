@@ -110,7 +110,11 @@ function fetchTimtableData(clubID, clubName) {
                 let data = {
                     key: "lm-timetable",
                     value: clubName,
-                    timetable: lmTimeTable.slice(0, 8)
+
+                    // LIMITATION ISSUE: RangeError: Encoded data too large: 3256 bytes
+                    // timetable: lmTimeTable
+
+                    timetable: lmTimeTable.splice(2, 9)
                 };
                 sendValue(data);
             }, 1000 * delay);
