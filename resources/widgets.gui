@@ -2,18 +2,14 @@
   <defs>
     <link rel="stylesheet" href="styles.css" />
     <link rel="import" href="/mnt/sysassets/widgets_common.gui" />
+
     <!-- Additional Imports -->
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui" />
 
     <!-- Loader Overlay Widget -->
     <symbol id="loader-overlay" focusable="false">
-      <gradientRect x="0" y="0" width="100%" height="100%"
-                    gradient-type="radial"
-                    gradient-x1="50%" gradient-y1="50%"
-                    gradient-x2="50%+120" gradient-y2="50%+120"
-                    gradient-color1="#0c1c38"
-                    gradient-color2="black" />
+      <gradientRect/>
       <arc x="50%-50" y="50%-50" fill="#11435d" arc-width="12"
            start-angle="0" sweep-angle="360" />
       <g id="animation" transform="translate(50%, 50%)">
@@ -22,6 +18,12 @@
         <arc x="-50" y="-50" fill="#4ebeff" arc-width="5" start-angle="0" sweep-angle="60" />
       </g>
       <text id="text" >loading...</text>
+    </symbol>
+
+    <!-- Message Overlay -->
+    <symbol id="message-overlay">
+      <rect/>
+      <textarea id="text"/>
     </symbol>
 
   </defs>

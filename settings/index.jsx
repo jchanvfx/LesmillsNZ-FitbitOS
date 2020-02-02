@@ -3,7 +3,7 @@ function settingsComponent(props) {
         <Page>
             <Section title={<Text bold align="center">App Settings</Text>}/>
             <Select
-                title="Club"
+                title="Club Location"
                 label={`Selection`}
                 settingsKey="clubID"
                 options={[

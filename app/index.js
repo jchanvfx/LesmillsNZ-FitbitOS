@@ -12,12 +12,14 @@ if (!appbit.permissions.granted("access_internet")) {
 // Message is received
 messaging.peerSocket.onmessage = function(evt) {
     // console.log(`App received: ${JSON.stringify(evt)}`);
-    if (evt.data.key === "lm-noClub" && evt.data.value) {
-        let value = evt.data.value
-        console.log(value);
+    if (evt.data.key === "lm-noClub") {
+        displayLoadingScreen(false);
+        displayMessageOverlay(true, MSG_NO_CLUB);
+
     } else if (evt.data.key === "lm-timetable" && evt.data.value) {
         let clubName = evt.data.value;
         let timetable = evt.data.timetable;
+        displayMessageOverlay(false);
         displayTimetable(false);
         displayLoadingScreen(true, "Processing Data...");
         updateTimetableView(timetable);
@@ -51,7 +53,7 @@ function sendValue(data) {
 
 // Clock callback for updating date and time.
 function clockCallback(data) {
-    STATUS_BAR_DATE.text = data.date;
+    STATUS_BAR_DATE.text = `Today (${data.date})`;
     STATUS_BAR_TIME.text = data.time;
 }
 
@@ -66,6 +68,16 @@ function updateTimetableView(timetableData) {
     TIMETABLE_LIST.redraw();
     TIMETABLE_LIST.length = TIMETABLE.length;
     TIMETABLE_LIST.redraw();
+}
+
+// Toggle message text display.
+function displayMessageOverlay(display=true, text="") {
+    MESSAGE_OVERLAY.getElementById("text").text = text;
+    if (display === true) {
+        MESSAGE_OVERLAY.style.display = "inline";
+    } else {
+        MESSAGE_OVERLAY.style.display = "none";
+    }
 }
 
 // Toggle timetable list display.
@@ -90,12 +102,14 @@ function displayLoadingScreen(display=true, text="loading...") {
 }
 
 // ----------------------------------------------------------------------------
-
-var TIMETABLE = [];
+let TIMETABLE = [];
 let TIMETABLE_LIST = document.getElementById("lm-class-list");
 let LOADER_OVERLAY = document.getElementById("loading-screen");
+let MESSAGE_OVERLAY = document.getElementById("message-screen");
 let STATUS_BAR_TIME = document.getElementById("lm-status-time");
 let STATUS_BAR_DATE = document.getElementById("lm-status-date");
+let MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
+
 
 // Initialize the clock.
 simpleClock.initialize("seconds", "shortDate", clockCallback);
@@ -130,8 +144,3 @@ TIMETABLE_LIST.delegate = {
 
 // TIMETABLE_LIST.length must be set AFTER TIMETABLE_LIST.delegate
 TIMETABLE_LIST.length = 10;
-
-
-
-
-

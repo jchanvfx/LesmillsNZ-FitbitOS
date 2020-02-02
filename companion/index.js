@@ -31,14 +31,8 @@ messaging.peerSocket.onmessage = function(evt) {
             let clubName = selectedClub.name;
             fetchTimtableData(clubID, clubName);
         } else {
-            console.log('Club location not set.')
-            let data = {
-                key: "lm-noClub",
-                value: "Club location not set in app settings."
-            };
-            sendValue(data);
+            sendValue({key: "lm-noClub"});
         }
-
     }
 }
 
@@ -53,7 +47,7 @@ settingsStorage.onchange = function(evt) {
     let selectedClub = JSON.parse(evt.newValue).values[0];
     let clubID = selectedClub.value;
     let clubName = selectedClub.name;
-    console.log(`Changed club location: ${clubID}|${clubName}`);
+    // console.log(`Changed club location: ${clubID}|${clubName}`);
     fetchTimtableData(clubID, clubName);
 }
 
@@ -65,7 +59,6 @@ function sendValue(data) {
 }
 
 // ----------------------------------------------------------------------------
-
 
 // Restore any previously saved settings and send to the device
 function restoreSettings() {

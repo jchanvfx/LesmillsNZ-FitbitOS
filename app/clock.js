@@ -50,8 +50,8 @@ function zeroPad(i) {
 function tickHandler(evt) {
   let today = evt.date;
   let dayName = days[today.getDay()];
-//   let dayNameShort = days[today.getDay()];
-//   let month = zeroPad(today.getMonth() + 1);
+  // let dayNameShort = daysShort[today.getDay()];
+  // let month = zeroPad(today.getMonth() + 1);
   let monthName = months[today.getMonth()];
   let monthNameShort = monthsShort[today.getMonth()];
   let dayNumber = zeroPad(today.getDate());
@@ -66,9 +66,7 @@ function tickHandler(evt) {
 //     // 24h format
 //     hours = zeroPad(hours);
 //   }
-
 //   let mins = zeroPad(today.getMinutes());
-
 //   let timeString = `${hours}:${mins}${ampm}`;
   let timeString = formatDateToAmPm(today);
   let dateString = today;

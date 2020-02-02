@@ -63,8 +63,8 @@
     </use>
   </section>
 
-  <!-- NO CLUB SELECTED -->
-  <!-- <text>No club location selected in Fitbit app settings.</text> -->
+  <!-- MESSAGE OVERLAY -->
+  <use id="message-screen" href="#message-overlay" display="none"/>
 
   <!-- LOADER OVERLAY -->
   <use id="loading-screen" href="#loader-overlay" display="none"/>

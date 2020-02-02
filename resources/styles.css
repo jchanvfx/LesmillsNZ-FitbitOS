@@ -102,3 +102,32 @@
   fill:#4ebeff;
   text-length: 32;
 }
+#loader-overlay gradientRect {
+  width:100%;
+  height:100%;
+  gradient-type:radial;
+  gradient-x1:50%;
+  gradient-y1:50%;
+  gradient-x2:50%+120;
+  gradient-y2:50%+120;
+  gradient-color1:#0c1c38;
+  gradient-color2:black;
+}
+
+/* message overlay */
+#message-overlay rect {
+  fill:black;
+  width:100%;
+  height:100%;
+}
+#message-overlay textarea {
+  fill:white;
+  x:10;
+  y:20%;
+  width:100%-20;
+  height:80%;
+  text-anchor:start;
+  font-family:System-Regular;
+  font-size:24;
+  text-length: 128;
+}
