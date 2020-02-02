@@ -46,3 +46,88 @@
   font-weight: regular;
   fill: white;
 }
+
+/* status bar */
+#lm-status-bg {
+  width: 100%;
+  height: 26;
+  fill: black;
+}
+#lm-status-time {
+  x: 100%-4;
+  y: 20;
+  font-size: 18;
+  font-family: System-Bold;
+  font-weight: regular;
+  fill: #1effce;
+  text-anchor: end;
+  text-length: 8;
+}
+#lm-status-date {
+  x: 28;
+  y: 20;
+  font-size: 18;
+  font-family: System-Bold;
+  font-weight: regular;
+  fill: #eb1f4e;
+  text-anchor: start;
+  text-length: 16;
+}
+#lm-back-btn {
+  x: 14;
+  y: 14;
+}
+#lm-back-btn circle {
+  r: 10;
+  fill:#eb1f4e;
+}
+#lm-back-btn text{
+  x: -4;
+  y: +4;
+  font-size: 18;
+  font-family: System-Bold;
+  fill: black;
+}
+
+/* loder overlay */
+#loader-overlay arc {
+  width:100;
+  height:100;
+}
+#loader-overlay text {
+  x:50%;
+  y:80%;
+  font-size:20;
+  text-anchor:middle;
+  fill:#4ebeff;
+  text-length: 32;
+}
+#loader-overlay gradientRect {
+  width:100%;
+  height:100%;
+  gradient-type:radial;
+  gradient-x1:50%;
+  gradient-y1:50%;
+  gradient-x2:50%+120;
+  gradient-y2:50%+120;
+  gradient-color1:#0c1c38;
+  gradient-color2:black;
+}
+
+/* message overlay */
+#message-overlay rect {
+  fill:black;
+  width:100%;
+  height:100%;
+}
+#message-overlay textarea {
+  fill:white;
+  x:10;
+  y:20%;
+  width:100%-20;
+  height:80%;
+  text-anchor:start;
+  font-family:System-Regular;
+  font-size:24;
+  text-length: 128;
+}

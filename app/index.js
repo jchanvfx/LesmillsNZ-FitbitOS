@@ -1,7 +1,7 @@
 import document from "document";
 import { me as appbit } from "appbit";
 import * as messaging from "messaging";
-import { CLASS_CODES } from "./lm_classCodes"
+import * as simpleClock from "./clock";
 
 
 // Check internet permissions
@@ -12,20 +12,28 @@ if (!appbit.permissions.granted("access_internet")) {
 // Message is received
 messaging.peerSocket.onmessage = function(evt) {
     // console.log(`App received: ${JSON.stringify(evt)}`);
-    if (evt.data.key === "lm-noClub" && evt.data.value) {
-        let value = evt.data.value
-        console.log(value);
+    if (evt.data.key === "lm-noClub") {
+        displayLoadingScreen(false);
+        displayMessageOverlay(true, MSG_NO_CLUB);
+
     } else if (evt.data.key === "lm-timetable" && evt.data.value) {
         let clubName = evt.data.value;
         let timetable = evt.data.timetable;
+        displayMessageOverlay(false);
+        displayTimetable(false);
+        displayLoadingScreen(true, "Processing Data...");
         updateTimetableView(timetable);
+        displayLoadingScreen(false);
+        displayTimetable(true);
     }
 };
 
 // Message socket opens (send)
 messaging.peerSocket.onopen = function() {
     console.log("App Socket Open");
-    let data = {key: "lm-refresh"};
+    displayTimetable(false);
+    displayLoadingScreen(true, "Retrieving Timetable...");
+    let data = {key: "lm-fetch"};
     sendValue(data);
 };
 
@@ -34,6 +42,8 @@ messaging.peerSocket.onclose = function() {
     console.log("App Socket Closed");
 };
 
+// ----------------------------------------------------------------------------
+
 // Send data to Companion device using Messaging API
 function sendValue(data) {
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
@@ -41,29 +51,82 @@ function sendValue(data) {
     }
 }
 
+// Clock callback for updating date and time.
+function clockCallback(data) {
+    STATUS_BAR_DATE.text = `Today (${data.date})`;
+    STATUS_BAR_TIME.text = data.time;
+}
+
+// Update timetable tile list with new data.
+function updateTimetableView(timetableData) {
+    TIMETABLE.length = 0;
+    for (var i = 0; i < timetableData.length; i++) {
+        TIMETABLE.push(timetableData[i]);
+    }
+    // work around to refresh the virtual tile list.
+    TIMETABLE_LIST.length = 0;
+    TIMETABLE_LIST.redraw();
+    TIMETABLE_LIST.length = TIMETABLE.length;
+    TIMETABLE_LIST.redraw();
+}
+
+// Toggle message text display.
+function displayMessageOverlay(display=true, text="") {
+    MESSAGE_OVERLAY.getElementById("text").text = text;
+    if (display === true) {
+        MESSAGE_OVERLAY.style.display = "inline";
+    } else {
+        MESSAGE_OVERLAY.style.display = "none";
+    }
+}
+
+// Toggle timetable list display.
+function displayTimetable(display=true) {
+    if (display === true) {
+        TIMETABLE_LIST.style.display = "inline";
+    } else {
+        TIMETABLE_LIST.style.display = "none";
+    }
+}
+
+// Toggle loading screen display.
+function displayLoadingScreen(display=true, text="loading...") {
+    LOADER_OVERLAY.getElementById("text").text = text;
+    if (display === true) {
+        LOADER_OVERLAY.animate("enable");
+        LOADER_OVERLAY.style.display = "inline";
+    } else {
+        LOADER_OVERLAY.animate("disable");
+        LOADER_OVERLAY.style.display = "none";
+    }
+}
+
 // ----------------------------------------------------------------------------
+let TIMETABLE = [];
+let TIMETABLE_LIST = document.getElementById("lm-class-list");
+let LOADER_OVERLAY = document.getElementById("loading-screen");
+let MESSAGE_OVERLAY = document.getElementById("message-screen");
+let STATUS_BAR_TIME = document.getElementById("lm-status-time");
+let STATUS_BAR_DATE = document.getElementById("lm-status-date");
+let MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
 
-let VTList = document.getElementById("my-list");
-let NUM_ELEMS = 100;
-var TIMETABLE = [];
 
-VTList.delegate = {
+// Initialize the clock.
+simpleClock.initialize("seconds", "shortDate", clockCallback);
+
+// Initialize timetable list.
+TIMETABLE_LIST.delegate = {
     getTileInfo: function(index) {
-        return {
-            index: index,
-            type: "my-pool",
-        };
+        return {index: index, type: "lm-pool"};
     },
     configureTile: function(tile, info) {
-        if (info.type == "my-pool") {
+        if (info.type == "lm-pool") {
             if (TIMETABLE.length > 1) {
                 let item = TIMETABLE[info.index];
-                let clsName = CLASS_CODES[item.code].toUpperCase();
                 let time = new Date(item.date);
-
-                tile.getElementById("text-title").text = clsName;
+                tile.getElementById("text-title").text = item.name;
                 tile.getElementById("text-subtitle").text = item.instructor;
-                tile.getElementById("text-L").text = formatDateToAmPm(time);
+                tile.getElementById("text-L").text = simpleClock.formatDateToAmPm(time);
                 tile.getElementById("text-R").text = item.desc;
                 if (item.color !== null) {
                     tile.getElementById("color").style.fill = item.color;
@@ -79,29 +142,5 @@ VTList.delegate = {
     }
 };
 
-// VTList.length must be set AFTER VTList.delegate
-VTList.length = NUM_ELEMS;
-
-function formatDateToAmPm(date) {
-    var hours = date.getHours();
-    var minutes = date.getMinutes();
-    var ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0'+minutes : minutes;
-    var strTime = hours + ':' + minutes + ampm;
-    return strTime;
-}
-
-function updateTimetableView(timetableData) {
-    TIMETABLE.length = 0;
-    for (var i = 0; i < timetableData.length; i++) {
-        TIMETABLE.push(timetableData[i]);
-    }
-
-    // work around to refresh the virtual tile list.
-    VTList.length = 0;
-    VTList.redraw();
-    VTList.length = TIMETABLE.length;
-    VTList.redraw();
-}
+// TIMETABLE_LIST.length must be set AFTER TIMETABLE_LIST.delegate
+TIMETABLE_LIST.length = 10;

@@ -2,8 +2,29 @@
   <defs>
     <link rel="stylesheet" href="styles.css" />
     <link rel="import" href="/mnt/sysassets/widgets_common.gui" />
+
     <!-- Additional Imports -->
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui" />
+
+    <!-- Loader Overlay Widget -->
+    <symbol id="loader-overlay" focusable="false">
+      <gradientRect/>
+      <arc x="50%-50" y="50%-50" fill="#11435d" arc-width="12"
+           start-angle="0" sweep-angle="360" />
+      <g id="animation" transform="translate(50%, 50%)">
+        <animateTransform attributeType="rotate" begin="load" dur="3" begin="enable"
+                          from="0" to="360" repeatCount="indefinite"/>
+        <arc x="-50" y="-50" fill="#4ebeff" arc-width="5" start-angle="0" sweep-angle="60" />
+      </g>
+      <text id="text" >loading...</text>
+    </symbol>
+
+    <!-- Message Overlay -->
+    <symbol id="message-overlay">
+      <rect/>
+      <textarea id="text"/>
+    </symbol>
+
   </defs>
 </svg>
