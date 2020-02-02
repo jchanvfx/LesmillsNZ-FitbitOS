@@ -1,4 +1,6 @@
 import document from "document";
+import { inbox } from "file-transfer"
+import { readFileSync } from "fs";
 import { me as appbit } from "appbit";
 import * as messaging from "messaging";
 import * as simpleClock from "./clock";
@@ -15,16 +17,11 @@ messaging.peerSocket.onmessage = function(evt) {
     if (evt.data.key === "lm-noClub") {
         displayLoadingScreen(false);
         displayMessageOverlay(true, MSG_NO_CLUB);
-
-    } else if (evt.data.key === "lm-timetable" && evt.data.value) {
+    } else if (evt.data.key === "lm-dataQueued" && evt.data.value) {
         let clubName = evt.data.value;
-        let timetable = evt.data.timetable;
         displayMessageOverlay(false);
         displayTimetable(false);
-        displayLoadingScreen(true, "Processing Data...");
-        updateTimetableView(timetable);
-        displayLoadingScreen(false);
-        displayTimetable(true);
+        displayLoadingScreen(true, "Retrieving Timetable...");
     }
 };
 
@@ -32,7 +29,7 @@ messaging.peerSocket.onmessage = function(evt) {
 messaging.peerSocket.onopen = function() {
     console.log("App Socket Open");
     displayTimetable(false);
-    displayLoadingScreen(true, "Retrieving Timetable...");
+    displayLoadingScreen(true, "Requesting Data...");
     let data = {key: "lm-fetch"};
     sendValue(data);
 };
@@ -43,6 +40,20 @@ messaging.peerSocket.onclose = function() {
 };
 
 // ----------------------------------------------------------------------------
+
+// Process files from the file transfer inbox.
+function processAllFiles() {
+    let fileName;
+    while (fileName = inbox.nextFile()) {
+        console.log(`/private/data/${fileName} is now available.`);
+        if (fileName == TIMETABLE_FILE) {
+            let timetable = readFileSync(TIMETABLE_FILE, "cbor");
+            updateTimetableView(timetable);
+            displayLoadingScreen(false);
+            displayTimetable(true);
+        }
+    }
+}
 
 // Send data to Companion device using Messaging API
 function sendValue(data) {
@@ -103,6 +114,7 @@ function displayLoadingScreen(display=true, text="loading...") {
 
 // ----------------------------------------------------------------------------
 let TIMETABLE = [];
+let TIMETABLE_FILE = "LM_TIMETABLE.cbor";
 let TIMETABLE_LIST = document.getElementById("lm-class-list");
 let LOADER_OVERLAY = document.getElementById("loading-screen");
 let MESSAGE_OVERLAY = document.getElementById("message-screen");
@@ -110,6 +122,9 @@ let STATUS_BAR_TIME = document.getElementById("lm-status-time");
 let STATUS_BAR_DATE = document.getElementById("lm-status-date");
 let MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
 
+// process file transfers.
+processAllFiles();
+inbox.addEventListener("newfile", processAllFiles);
 
 // Initialize the clock.
 simpleClock.initialize("seconds", "shortDate", clockCallback);

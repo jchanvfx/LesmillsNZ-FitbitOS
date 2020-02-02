@@ -1,9 +1,11 @@
 import * as messaging from "messaging";
 import * as lesMills from "./lm_utils";
+import { encode } from "cbor";
+import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
-// import { outbox } from "file-transfer";
 
+let TIMETABLE_FILE = "LM_TIMETABLE.cbor";
 
 // Check internet permissions
 if (!companion.permissions.granted("access_internet")) {
@@ -29,7 +31,8 @@ messaging.peerSocket.onmessage = function(evt) {
             let selectedClub = JSON.parse(clubSettings).values[0];
             let clubID = selectedClub.value;
             let clubName = selectedClub.name;
-            fetchTimtableData(clubID, clubName);
+            fetchTimetableData(clubID);
+            sendValue({key: "lm-dataQueued", value: clubName});
         } else {
             sendValue({key: "lm-noClub"});
         }
@@ -46,10 +49,22 @@ messaging.peerSocket.onerror = function(err) {
 settingsStorage.onchange = function(evt) {
     let selectedClub = JSON.parse(evt.newValue).values[0];
     let clubID = selectedClub.value;
-    let clubName = selectedClub.name;
-    // console.log(`Changed club location: ${clubID}|${clubName}`);
-    fetchTimtableData(clubID, clubName);
+    // let clubName = selectedClub.name;
+    fetchTimetableData(clubID);
 }
+
+// ----------------------------------------------------------------------------
+
+// Restore any previously saved settings and send to the device
+// function restoreSettings() {
+//     for (let index = 0; index < settingsStorage.length; index++) {
+//         let key = settingsStorage.key(index);
+//         if (key) {
+//             let data = {key: key, newValue: settingsStorage.getItem(key)};
+//             sendValue(data);
+//         }
+//     }
+// }
 
 // Send data to Fitbit device using Messaging API
 function sendValue(data) {
@@ -58,64 +73,48 @@ function sendValue(data) {
     }
 }
 
-// ----------------------------------------------------------------------------
-
-// Restore any previously saved settings and send to the device
-function restoreSettings() {
-    for (let index = 0; index < settingsStorage.length; index++) {
-        let key = settingsStorage.key(index);
-        if (key) {
-            let data = {key: key, newValue: settingsStorage.getItem(key)};
-            sendValue(data);
-        }
-    }
-}
-
-// fetch the timetable data and send to device.
-function fetchTimtableData(clubID, clubName) {
+// Fetch timetable data and add to outbox queue.
+function fetchTimetableData(clubID) {
     lesMills.fetchLesMillsData(clubID)
-        .then(function(data) {
-            // sort timetable data.
-            let date = new Date();
-            let today = date.getDay();
-            let lmTimeTable = [];
+    .then(function(data) {
+        // sort timetable data.
+        let date = new Date();
+        let today = date.getDay();
+        let timetableData = [];
+        for (var i = 0; i < data.Classes.length; i++) {
+            let clsInfo = data.Classes[i];
+            let clsDate = new Date(clsInfo.StartDateTime);
 
-            for (var i = 0; i < data.Classes.length; i++) {
-                let clsInfo = data.Classes[i];
-                let clsDate = new Date(clsInfo.StartDateTime);
-                // filter current day for now.
-                let clsDay = clsDate.getDay();
-                if (clsDay == today) {
-                    let groupClass = {
-                        name: clsInfo.ClassName,
-                        date: clsInfo.StartDateTime,
-                        instructor: clsInfo.MainInstructor.Name,
-                        color: clsInfo.Colour,
-                        desc: `${clsInfo.Site.SiteName} (${clsInfo.Duration}mins)`,
-                    };
-                    lmTimeTable.push(groupClass);
-                }
-            }
-
-            // sort the list by class start time.
-            lmTimeTable.sort((a, b) => (a.date > b.date) ? 1 : -1);
-
-            // set simulator delay.
-            let delay = 0.1;
-            setTimeout(function () {
-                let data = {
-                    key: "lm-timetable",
-                    value: clubName,
-
-                    // LIMITATION ISSUE: RangeError: Encoded data too large: 3256 bytes
-                    // timetable: lmTimeTable
-
-                    timetable: lmTimeTable.splice(0, 6)
+            // filter current day for now.
+            let clsDay = clsDate.getDay();
+            if (clsDay == today) {
+                let groupClass = {
+                    name: clsInfo.ClassName,
+                    date: clsInfo.StartDateTime,
+                    instructor: clsInfo.MainInstructor.Name,
+                    color: clsInfo.Colour,
+                    desc: `${clsInfo.Site.SiteName} (${clsInfo.Duration}mins)`,
                 };
-                sendValue(data);
-            }, 1000 * delay);
+                timetableData.push(groupClass);
+            }
+        }
+        // sort the list by class start time.
+        timetableData.sort((a, b) => (a.date > b.date) ? 1 : -1);
+
+        // Queue timetable data.
+        outbox.enqueue(TIMETABLE_FILE, encode(timetableData))
+        .then(function(ft) {
+            // Queued successfully
+            console.log(`Transfer of "${TIMETABLE_FILE}" successfully queued.`);
         })
-        .catch((err) => {
-            console.log(err);
+        .catch(function(err) {
+            // Failed to queue
+            throw new Error(`Failed to queue ${TIMETABLE_FILE}  Error: ${err}`);
         });
+
+    })
+    .catch(function (err) {
+        // Log the error
+        console.log(`Failure: ${err}`);
+    });
 }
