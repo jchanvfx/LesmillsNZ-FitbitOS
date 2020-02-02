@@ -49,7 +49,8 @@ messaging.peerSocket.onerror = function(err) {
 settingsStorage.onchange = function(evt) {
     let selectedClub = JSON.parse(evt.newValue).values[0];
     let clubID = selectedClub.value;
-    // let clubName = selectedClub.name;
+    let clubName = selectedClub.name;
+    sendValue({key: "lm-clubChanged", value:clubName})
     fetchTimetableData(clubID);
 }
 

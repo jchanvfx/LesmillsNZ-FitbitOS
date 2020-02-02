@@ -21,7 +21,12 @@ messaging.peerSocket.onmessage = function(evt) {
         let clubName = evt.data.value;
         displayMessageOverlay(false);
         displayTimetable(false);
-        displayLoadingScreen(true, "Retrieving Timetable...");
+        displayLoadingScreen(true, `Retrieving Timetable...`, clubName);
+    } else if (evt.data.key === "lm-clubChanged" && evt.data.value) {
+        let clubName = evt.data.value;
+        displayMessageOverlay(false);
+        displayTimetable(false);
+        displayLoadingScreen(true, "Requesting Data...", clubName);
     }
 };
 
@@ -29,7 +34,7 @@ messaging.peerSocket.onmessage = function(evt) {
 messaging.peerSocket.onopen = function() {
     console.log("App Socket Open");
     displayTimetable(false);
-    displayLoadingScreen(true, "Requesting Data...");
+    displayLoadingScreen(true, "Initializing...");
     let data = {key: "lm-fetch"};
     sendValue(data);
 };
@@ -49,6 +54,7 @@ function processAllFiles() {
         if (fileName == TIMETABLE_FILE) {
             let timetable = readFileSync(TIMETABLE_FILE, "cbor");
             updateTimetableView(timetable);
+            displayMessageOverlay(false);
             displayLoadingScreen(false);
             displayTimetable(true);
         }
@@ -101,8 +107,9 @@ function displayTimetable(display=true) {
 }
 
 // Toggle loading screen display.
-function displayLoadingScreen(display=true, text="loading...") {
+function displayLoadingScreen(display=true, text="loading...", subText="") {
     LOADER_OVERLAY.getElementById("text").text = text;
+    LOADER_OVERLAY.getElementById("sub-text").text = subText;
     if (display === true) {
         LOADER_OVERLAY.animate("enable");
         LOADER_OVERLAY.style.display = "inline";
@@ -139,7 +146,7 @@ TIMETABLE_LIST.delegate = {
             if (TIMETABLE.length > 1) {
                 let item = TIMETABLE[info.index];
                 let time = new Date(item.date);
-                tile.getElementById("text-title").text = item.name;
+                tile.getElementById("text-title").text = item.name.toUpperCase();
                 tile.getElementById("text-subtitle").text = item.instructor;
                 tile.getElementById("text-L").text = simpleClock.formatDateToAmPm(time);
                 tile.getElementById("text-R").text = item.desc;
