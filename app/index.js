@@ -156,10 +156,11 @@ TIMETABLE_LIST.delegate = {
                 }
             }
 
-            let touch = tile.getElementById("touch-me");
-                touch.onclick = evt => {
-                console.log(`touched: ${info.index}`);
-            };
+            // let touch = tile.getElementById("touch-me");
+            //     touch.onclick = evt => {
+            //     console.log(`touched: ${info.index}`);
+            // };
+
         }
     }
 };
