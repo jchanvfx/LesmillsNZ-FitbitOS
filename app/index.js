@@ -13,7 +13,6 @@ if (!appbit.permissions.granted("access_internet")) {
 
 // Message is received
 messaging.peerSocket.onmessage = function(evt) {
-    // console.log(`App received: ${JSON.stringify(evt)}`);
     if (evt.data.key === "lm-noClub") {
         displayLoadingScreen(false);
         displayMessageOverlay(true, MSG_NO_CLUB);
@@ -32,11 +31,10 @@ messaging.peerSocket.onmessage = function(evt) {
 
 // Message socket opens (send)
 messaging.peerSocket.onopen = function() {
-    console.log("App Socket Open");
+    // console.log("App Socket Open");
     displayTimetable(false);
-    displayLoadingScreen(true, "Initializing...");
-    let data = {key: "lm-fetch"};
-    sendValue(data);
+    displayLoadingScreen(true);
+    sendValue({key: "lm-fetch"});
 };
 
 // Message socket closes
@@ -50,7 +48,7 @@ messaging.peerSocket.onclose = function() {
 function processAllFiles() {
     let fileName;
     while (fileName = inbox.nextFile()) {
-        console.log(`/private/data/${fileName} is now available.`);
+        // console.log(`/private/data/${fileName} is now available.`);
         if (fileName == TIMETABLE_FILE) {
             let timetable = readFileSync(TIMETABLE_FILE, "cbor");
             updateTimetableView(timetable);
@@ -127,7 +125,9 @@ let LOADER_OVERLAY = document.getElementById("loading-screen");
 let MESSAGE_OVERLAY = document.getElementById("message-screen");
 let STATUS_BAR_TIME = document.getElementById("lm-status-time");
 let STATUS_BAR_DATE = document.getElementById("lm-status-date");
+let STATUS_BAR_REFRESH = document.getElementById("lm-status_refesh");
 let MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
+
 
 // process file transfers.
 processAllFiles();
@@ -166,3 +166,10 @@ TIMETABLE_LIST.delegate = {
 
 // TIMETABLE_LIST.length must be set AFTER TIMETABLE_LIST.delegate
 TIMETABLE_LIST.length = 10;
+
+// Refresh list when user clicks on top left area.
+STATUS_BAR_REFRESH.onclick = evt => {
+    displayTimetable(false);
+    displayLoadingScreen(true);
+    sendValue({key: "lm-fetch"});
+};

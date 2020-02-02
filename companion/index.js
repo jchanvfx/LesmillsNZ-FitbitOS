@@ -56,17 +56,6 @@ settingsStorage.onchange = function(evt) {
 
 // ----------------------------------------------------------------------------
 
-// Restore any previously saved settings and send to the device
-// function restoreSettings() {
-//     for (let index = 0; index < settingsStorage.length; index++) {
-//         let key = settingsStorage.key(index);
-//         if (key) {
-//             let data = {key: key, newValue: settingsStorage.getItem(key)};
-//             sendValue(data);
-//         }
-//     }
-// }
-
 // Send data to Fitbit device using Messaging API
 function sendValue(data) {
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {

@@ -75,7 +75,9 @@
   <text id="lm-status-time">00:00 AM</text>
   <section id="lm-back-btn">
     <circle/>
-    <text>&lt;</text>
+    <text>&gt;</text>
   </section>
+  <rect id="lm-status_refesh" width="50%" height="26"
+        pointer-events="all" opacity="0" />
 
 </svg>

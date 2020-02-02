@@ -82,7 +82,7 @@
   fill:#eb1f4e;
 }
 #lm-back-btn text{
-  x: -4;
+  x: -3;
   y: +4;
   font-size: 18;
   font-family: System-Bold;
@@ -101,6 +101,11 @@
   text-anchor:middle;
   fill:#4ebeff;
   text-length: 32;
+}
+#loader-overlay text#sub-text{
+  y:90%-8;
+  font-size:16;
+  font-family: System-Bold;
 }
 #loader-overlay gradientRect {
   width:100%;

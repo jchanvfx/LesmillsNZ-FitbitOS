@@ -18,7 +18,7 @@
         <arc x="-50" y="-50" fill="#4ebeff" arc-width="5" start-angle="0" sweep-angle="60" />
       </g>
       <text id="text" >loading...</text>
-      <text id="sub-text" y="90%"></text>
+      <text id="sub-text"></text>
     </symbol>
 
     <!-- Message Overlay -->
