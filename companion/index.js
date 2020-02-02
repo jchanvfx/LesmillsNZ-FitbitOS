@@ -50,8 +50,11 @@ messaging.peerSocket.onerror = function(err) {
 
 // Settings changed callback
 settingsStorage.onchange = function(evt) {
-    let data = {key: evt.key, newValue: evt.newValue};
-    sendValue(data);
+    let selectedClub = JSON.parse(evt.newValue).values[0];
+    let clubID = selectedClub.value;
+    let clubName = selectedClub.name;
+    console.log(`Changed club location: ${clubID}|${clubName}`);
+    fetchTimtableData(clubID, clubName);
 }
 
 // Send data to Fitbit device using Messaging API
@@ -91,7 +94,7 @@ function fetchTimtableData(clubID, clubName) {
                 let clsDay = clsDate.getDay();
                 if (clsDay == today) {
                     let groupClass = {
-                        code: Number(clsInfo.ClassCode),
+                        name: clsInfo.ClassName,
                         date: clsInfo.StartDateTime,
                         instructor: clsInfo.MainInstructor.Name,
                         color: clsInfo.Colour,
@@ -114,7 +117,7 @@ function fetchTimtableData(clubID, clubName) {
                     // LIMITATION ISSUE: RangeError: Encoded data too large: 3256 bytes
                     // timetable: lmTimeTable
 
-                    timetable: lmTimeTable.splice(2, 9)
+                    timetable: lmTimeTable.splice(0, 6)
                 };
                 sendValue(data);
             }, 1000 * delay);

@@ -63,13 +63,16 @@
     </use>
   </section>
 
+  <!-- NO CLUB SELECTED -->
+  <!-- <text>No club location selected in Fitbit app settings.</text> -->
+
   <!-- LOADER OVERLAY -->
-  <use id="loading-screen" href="#loader-overlay"/>
+  <use id="loading-screen" href="#loader-overlay" display="none"/>
 
   <!-- STATUS BAR -->
   <rect id="lm-status-bg" />
-  <text id="lm-status-date">Today (12 FEB)</text>
-  <text id="lm-status-time">12:30 PM</text>
+  <text id="lm-status-date">(No Data)</text>
+  <text id="lm-status-time">00:00 AM</text>
   <section id="lm-back-btn">
     <circle/>
     <text>&lt;</text>

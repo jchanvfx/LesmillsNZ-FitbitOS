@@ -1,7 +1,7 @@
 import document from "document";
 import { me as appbit } from "appbit";
 import * as messaging from "messaging";
-import { CLASS_CODES } from "./lm_classCodes"
+import * as simpleClock from "./clock";
 
 
 // Check internet permissions
@@ -18,6 +18,8 @@ messaging.peerSocket.onmessage = function(evt) {
     } else if (evt.data.key === "lm-timetable" && evt.data.value) {
         let clubName = evt.data.value;
         let timetable = evt.data.timetable;
+        displayTimetable(false);
+        displayLoadingScreen(true, "Processing Data...");
         updateTimetableView(timetable);
         displayLoadingScreen(false);
         displayTimetable(true);
@@ -28,7 +30,7 @@ messaging.peerSocket.onmessage = function(evt) {
 messaging.peerSocket.onopen = function() {
     console.log("App Socket Open");
     displayTimetable(false);
-    displayLoadingScreen(true);
+    displayLoadingScreen(true, "Retrieving Timetable...");
     let data = {key: "lm-fetch"};
     sendValue(data);
 };
@@ -38,10 +40,52 @@ messaging.peerSocket.onclose = function() {
     console.log("App Socket Closed");
 };
 
+// ----------------------------------------------------------------------------
+
 // Send data to Companion device using Messaging API
 function sendValue(data) {
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
         messaging.peerSocket.send(data);
+    }
+}
+
+// Clock callback for updating date and time.
+function clockCallback(data) {
+    STATUS_BAR_DATE.text = data.date;
+    STATUS_BAR_TIME.text = data.time;
+}
+
+// Update timetable tile list with new data.
+function updateTimetableView(timetableData) {
+    TIMETABLE.length = 0;
+    for (var i = 0; i < timetableData.length; i++) {
+        TIMETABLE.push(timetableData[i]);
+    }
+    // work around to refresh the virtual tile list.
+    TIMETABLE_LIST.length = 0;
+    TIMETABLE_LIST.redraw();
+    TIMETABLE_LIST.length = TIMETABLE.length;
+    TIMETABLE_LIST.redraw();
+}
+
+// Toggle timetable list display.
+function displayTimetable(display=true) {
+    if (display === true) {
+        TIMETABLE_LIST.style.display = "inline";
+    } else {
+        TIMETABLE_LIST.style.display = "none";
+    }
+}
+
+// Toggle loading screen display.
+function displayLoadingScreen(display=true, text="loading...") {
+    LOADER_OVERLAY.getElementById("text").text = text;
+    if (display === true) {
+        LOADER_OVERLAY.animate("enable");
+        LOADER_OVERLAY.style.display = "inline";
+    } else {
+        LOADER_OVERLAY.animate("disable");
+        LOADER_OVERLAY.style.display = "none";
     }
 }
 
@@ -50,7 +94,13 @@ function sendValue(data) {
 var TIMETABLE = [];
 let TIMETABLE_LIST = document.getElementById("lm-class-list");
 let LOADER_OVERLAY = document.getElementById("loading-screen");
+let STATUS_BAR_TIME = document.getElementById("lm-status-time");
+let STATUS_BAR_DATE = document.getElementById("lm-status-date");
 
+// Initialize the clock.
+simpleClock.initialize("seconds", "shortDate", clockCallback);
+
+// Initialize timetable list.
 TIMETABLE_LIST.delegate = {
     getTileInfo: function(index) {
         return {index: index, type: "lm-pool"};
@@ -59,12 +109,10 @@ TIMETABLE_LIST.delegate = {
         if (info.type == "lm-pool") {
             if (TIMETABLE.length > 1) {
                 let item = TIMETABLE[info.index];
-                let clsName = CLASS_CODES[item.code].toUpperCase();
                 let time = new Date(item.date);
-
-                tile.getElementById("text-title").text = clsName;
+                tile.getElementById("text-title").text = item.name;
                 tile.getElementById("text-subtitle").text = item.instructor;
-                tile.getElementById("text-L").text = formatDateToAmPm(time);
+                tile.getElementById("text-L").text = simpleClock.formatDateToAmPm(time);
                 tile.getElementById("text-R").text = item.desc;
                 if (item.color !== null) {
                     tile.getElementById("color").style.fill = item.color;
@@ -80,51 +128,10 @@ TIMETABLE_LIST.delegate = {
     }
 };
 
-// VTList.length must be set AFTER VTList.delegate
+// TIMETABLE_LIST.length must be set AFTER TIMETABLE_LIST.delegate
 TIMETABLE_LIST.length = 10;
 
-// METHODS
-// ----------------------------------------------------------------------------
 
-function formatDateToAmPm(date) {
-    let hours = date.getHours();
-    let minutes = date.getMinutes();
-    let ampm = hours >= 12 ? 'pm' : 'am';
-    hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
-    minutes = minutes < 10 ? '0'+minutes : minutes;
-    let strTime = hours + ':' + minutes + ampm;
-    return strTime;
-}
-// update timetable tile list with new data.
-function updateTimetableView(timetableData) {
-    TIMETABLE.length = 0;
-    for (var i = 0; i < timetableData.length; i++) {
-        TIMETABLE.push(timetableData[i]);
-    }
-    // work around to refresh the virtual tile list.
-    TIMETABLE_LIST.length = 0;
-    TIMETABLE_LIST.redraw();
-    TIMETABLE_LIST.length = TIMETABLE.length;
-    TIMETABLE_LIST.redraw();
-}
 
-// toggle timetable list.
-function displayTimetable(display=true) {
-    if (display === true) {
-        TIMETABLE_LIST.style.display = "inline";
-    } else {
-        TIMETABLE_LIST.style.display = "none";
-    }
-}
 
-// toggle loading screen display.
-function displayLoadingScreen(display=true) {
-    if (display === true) {
-        LOADER_OVERLAY.animate("enable");
-        LOADER_OVERLAY.style.display = "inline";
-    } else {
-        LOADER_OVERLAY.animate("disable");
-        LOADER_OVERLAY.style.display = "none";
-    }
-}
+
