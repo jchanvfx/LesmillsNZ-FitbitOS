@@ -12,6 +12,11 @@ if (!companion.permissions.granted("access_internet")) {
     console.log("We're not allowed to access the internet!");
 }
 
+// Check background permissions
+if (!companion.permissions.granted("run_background")) {
+  console.warn("We're not allowed to access to run in the background!");
+}
+
 // Message socket opens (send)
 messaging.peerSocket.onopen = function() {
     console.log("Companion Socket Open");
