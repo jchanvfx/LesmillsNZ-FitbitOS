@@ -1,6 +1,6 @@
 import document from "document";
 import { inbox } from "file-transfer"
-import { readFileSync } from "fs";
+import { readFileSync, listDirSync } from "fs";
 import { me as appbit } from "appbit";
 import * as messaging from "messaging";
 import * as simpleClock from "./clock";
@@ -31,7 +31,6 @@ messaging.peerSocket.onmessage = function(evt) {
 
 // Message socket opens (send)
 messaging.peerSocket.onopen = function() {
-    // console.log("App Socket Open");
     displayTimetable(false);
     displayLoadingScreen(true);
     sendValue({key: "lm-fetch"});
@@ -44,11 +43,24 @@ messaging.peerSocket.onclose = function() {
 
 // ----------------------------------------------------------------------------
 
+// read file data and return JSON object.
+function readFileData(fileName) {
+    let parseData = {};
+    let dirIter;
+    let listDir = listDirSync("/private/data");
+    while((dirIter = listDir.next()) && !dirIter.done) {
+        if (dirIter.value == fileName) {
+            parseData = readFileSync(fileName, "cbor");
+            break;
+        }
+    }
+    return parseData;
+}
+
 // Process files from the file transfer inbox.
 function processAllFiles() {
     let fileName;
     while (fileName = inbox.nextFile()) {
-        // console.log(`/private/data/${fileName} is now available.`);
         if (fileName == TIMETABLE_FILE) {
             let timetable = readFileSync(TIMETABLE_FILE, "cbor");
             updateTimetableView(timetable);
@@ -74,9 +86,12 @@ function clockCallback(data) {
 
 // Update timetable tile list with new data.
 function updateTimetableView(timetableData) {
+    let dateToday = new Date();
+    let today = dateToday.getDay();
+
     TIMETABLE.length = 0;
-    for (var i = 0; i < timetableData.length; i++) {
-        TIMETABLE.push(timetableData[i]);
+    for (var i = 0; i < timetableData[today.toString()].length; i++) {
+        TIMETABLE.push(timetableData[today.toString()][i]);
     }
     // work around to refresh the virtual tile list.
     TIMETABLE_LIST.length = 0;
@@ -169,7 +184,7 @@ TIMETABLE_LIST.delegate = {
 TIMETABLE_LIST.length = 10;
 
 // Refresh list when user clicks on top left area.
-STATUS_BAR_REFRESH.onclick = evt => {
+STATUS_BAR_REFRESH.onclick = function(evt) {
     displayTimetable(false);
     displayLoadingScreen(true);
     sendValue({key: "lm-fetch"});
