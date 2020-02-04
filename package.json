@@ -15,7 +15,7 @@
     "wipeColor": "#f83c40",
     "requestedPermissions": [
       "access_internet",
-      "run_background",
+      "run_background"
     ],
     "buildTargets": [
       "meson",
