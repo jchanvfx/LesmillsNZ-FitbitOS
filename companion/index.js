@@ -5,7 +5,7 @@ import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
 
-let TIMETABLE_FILE = "LM_TIMETABLE.cbor";
+const TIMETABLE_FILE = "LM_TIMETABLE.cbor";
 
 
 // Fetch timetable data and add to outbox queue.

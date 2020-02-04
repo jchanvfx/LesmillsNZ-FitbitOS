@@ -5,60 +5,29 @@ import { me as appbit } from "appbit";
 import * as messaging from "messaging";
 import * as simpleClock from "./clock";
 
+const MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
+const TIMETABLE_FILE = "LM_TIMETABLE.cbor";
 
-// Check internet permissions
-if (!appbit.permissions.granted("access_internet")) {
-    console.log("We're not allowed to access the internet!");
-}
-
-// Message is received
-messaging.peerSocket.onmessage = function(evt) {
-    if (evt.data.key === "lm-noClub") {
-        displayLoadingScreen(false);
-        displayMessageOverlay(true, MSG_NO_CLUB);
-    } else if (evt.data.key === "lm-dataQueued" && evt.data.value) {
-        let clubName = evt.data.value;
-        displayMessageOverlay(false);
-        displayTimetable(false);
-        displayLoadingScreen(true, `Retrieving Timetable...`, clubName);
-    } else if (evt.data.key === "lm-clubChanged" && evt.data.value) {
-        let clubName = evt.data.value;
-        displayMessageOverlay(false);
-        displayTimetable(false);
-        displayLoadingScreen(true, "Requesting Data...", clubName);
-    }
-};
-
-// Message socket opens (send)
-messaging.peerSocket.onopen = function() {
-    displayTimetable(false);
-    displayLoadingScreen(true);
-    sendValue({key: "lm-fetch"});
-};
-
-// Message socket closes
-messaging.peerSocket.onclose = function() {
-    console.log("App Socket Closed");
-};
+let TIMETABLE = [];
+let TIMETABLE_LIST = document.getElementById("lm-class-list");
+let LOADER_OVERLAY = document.getElementById("loading-screen");
+let MESSAGE_OVERLAY = document.getElementById("message-screen");
+let STATUS_BAR_TIME = document.getElementById("lm-status-time");
+let STATUS_BAR_DATE = document.getElementById("lm-status-date");
+let STATUS_BAR_REFRESH = document.getElementById("lm-status_refesh");
+let STATUS_BAR_NEXT = document.getElementById("lm-status_next");
+let STATUS_BAR_FIND = document.getElementById("lm-status_find");
 
 // ----------------------------------------------------------------------------
 
-// read file data and return JSON object.
-function readFileData(fileName) {
-    let parseData = {};
-    let dirIter;
-    let listDir = listDirSync("/private/data");
-    while((dirIter = listDir.next()) && !dirIter.done) {
-        if (dirIter.value == fileName) {
-            parseData = readFileSync(fileName, "cbor");
-            break;
-        }
-    }
-    return parseData;
+// Clock callback for updating date and time.
+function clockCallback(data) {
+    STATUS_BAR_DATE.text = `Today ${data.date}`;
+    STATUS_BAR_TIME.text = data.time;
 }
 
-// Process files from the file transfer inbox.
-function processAllFiles() {
+// File recieved transfer callbacll.
+function inboxFileTransferCallback() {
     let fileName;
     while (fileName = inbox.nextFile()) {
         if (fileName == TIMETABLE_FILE) {
@@ -78,27 +47,21 @@ function sendValue(data) {
     }
 }
 
-// Clock callback for updating date and time.
-function clockCallback(data) {
-    STATUS_BAR_DATE.text = `Today (${data.date})`;
-    STATUS_BAR_TIME.text = data.time;
-}
-
-// Update timetable tile list with new data.
-function updateTimetableView(timetableData) {
-    let dateToday = new Date();
-    let today = dateToday.getDay();
-
-    TIMETABLE.length = 0;
-    for (var i = 0; i < timetableData[today.toString()].length; i++) {
-        TIMETABLE.push(timetableData[today.toString()][i]);
+// Local file data reader.
+function readFileData(fileName) {
+    let parseData = {};
+    let dirIter;
+    let listDir = listDirSync("/private/data");
+    while((dirIter = listDir.next()) && !dirIter.done) {
+        if (dirIter.value == fileName) {
+            parseData = readFileSync(fileName, "cbor");
+            break;
+        }
     }
-    // work around to refresh the virtual tile list.
-    TIMETABLE_LIST.length = 0;
-    TIMETABLE_LIST.redraw();
-    TIMETABLE_LIST.length = TIMETABLE.length;
-    TIMETABLE_LIST.redraw();
+    return parseData;
 }
+
+// ----------------------------------------------------------------------------
 
 // Toggle message text display.
 function displayMessageOverlay(display=true, text="") {
@@ -132,24 +95,60 @@ function displayLoadingScreen(display=true, text="loading...", subText="") {
     }
 }
 
+// Update timetable tile list with new data.
+function updateTimetableView(timetableData) {
+    let dateToday = new Date();
+    let today = dateToday.getDay();
+
+    TIMETABLE.length = 0;
+    for (var i = 0; i < timetableData[today.toString()].length; i++) {
+        TIMETABLE.push(timetableData[today.toString()][i]);
+    }
+    // work around to refresh the virtual tile list.
+    TIMETABLE_LIST.length = 0;
+    TIMETABLE_LIST.redraw();
+    TIMETABLE_LIST.length = TIMETABLE.length;
+    TIMETABLE_LIST.redraw();
+}
+
 // ----------------------------------------------------------------------------
-let TIMETABLE = [];
-let TIMETABLE_FILE = "LM_TIMETABLE.cbor";
-let TIMETABLE_LIST = document.getElementById("lm-class-list");
-let LOADER_OVERLAY = document.getElementById("loading-screen");
-let MESSAGE_OVERLAY = document.getElementById("message-screen");
-let STATUS_BAR_TIME = document.getElementById("lm-status-time");
-let STATUS_BAR_DATE = document.getElementById("lm-status-date");
-let STATUS_BAR_REFRESH = document.getElementById("lm-status_refesh");
-let MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
 
+// Check internet permissions
+if (!appbit.permissions.granted("access_internet")) {
+    console.log("We're not allowed to access the internet!");
+}
 
-// process file transfers.
-processAllFiles();
-inbox.addEventListener("newfile", processAllFiles);
+// Message is received
+messaging.peerSocket.onmessage = function(evt) {
+    if (evt.data.key === "lm-noClub") {
+        displayLoadingScreen(false);
+        displayMessageOverlay(true, MSG_NO_CLUB);
+    } else if (evt.data.key === "lm-dataQueued" && evt.data.value) {
+        let clubName = evt.data.value;
+        displayMessageOverlay(false);
+        displayTimetable(false);
+        displayLoadingScreen(true, `Retrieving Timetable...`, clubName);
+    } else if (evt.data.key === "lm-clubChanged" && evt.data.value) {
+        let clubName = evt.data.value;
+        displayMessageOverlay(false);
+        displayTimetable(false);
+        displayLoadingScreen(true, "Requesting Data...", clubName);
+    }
+};
 
-// Initialize the clock.
-simpleClock.initialize("seconds", "shortDate", clockCallback);
+// Message socket opens.
+messaging.peerSocket.onopen = function() {
+    displayTimetable(false);
+    displayLoadingScreen(true);
+    sendValue({key: "lm-fetch"});
+};
+
+// Message socket closes
+messaging.peerSocket.onclose = function() {
+    console.log("App Socket Closed");
+};
+
+// ----------------------------------------------------------------------------
 
 // Initialize timetable list.
 TIMETABLE_LIST.delegate = {
@@ -189,3 +188,10 @@ STATUS_BAR_REFRESH.onclick = function(evt) {
     displayLoadingScreen(true);
     sendValue({key: "lm-fetch"});
 };
+
+// Process incomming file transfers.
+inboxFileTransferCallback();
+inbox.addEventListener("newfile", inboxFileTransferCallback);
+
+// Initialize the clock.
+simpleClock.initialize("seconds", "shortDate", clockCallback);
