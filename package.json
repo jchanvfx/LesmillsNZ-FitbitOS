@@ -16,7 +16,6 @@
     "requestedPermissions": [
       "access_internet",
       "run_background",
-      "access_exercise"
     ],
     "buildTargets": [
       "meson",
