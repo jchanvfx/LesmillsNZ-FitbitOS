@@ -35,12 +35,12 @@ function inboxFileTransferCallback() {
         if (fileName == TIMETABLE_FILE) {
             displayMessageOverlay(false);
             displayLoadingScreen(false);
-            displayTimetable(true);
             displayStatusBarIcon(false);
 
             let timetable = readFileSync(TIMETABLE_FILE, "cbor");
             updateTimetableView(timetable);
             updateTimetableIndex(timetable);
+            displayTimetable(true);
         }
     }
 }
@@ -194,10 +194,10 @@ messaging.peerSocket.onopen = function() {
     setTimeout(function () {
         if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
             if (day.toString() in timetable) {
-                displayLoadingScreen(false);
-                displayTimetable(true);
                 updateTimetableView(timetable);
                 updateTimetableIndex(timetable);
+                displayLoadingScreen(false);
+                displayTimetable(true);
             }
         }
     }, 5000);
@@ -263,10 +263,10 @@ STATUS_BAR_MENU.onclick = function(evt) {
     let timetable = readFileData(TIMETABLE_FILE);
     setTimeout(function () {
         if (day.toString() in timetable) {
-            displayLoadingScreen(false);
-            displayTimetable(true);
             updateTimetableView(timetable);
             updateTimetableIndex(timetable);
+            displayLoadingScreen(false);
+            displayTimetable(true);
         }
     }, 3000);
 
@@ -293,10 +293,10 @@ function initUI () {
     let day = DATE_TODAY.getDay();
     let timetable = readFileData(TIMETABLE_FILE);
     if (day.toString() in timetable) {
-        displayLoadingScreen(false);
-        displayTimetable(true);
         updateTimetableView(timetable);
         updateTimetableIndex(timetable);
+        displayLoadingScreen(false);
+        displayTimetable(true);
     }
     if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
         displayStatusBarIcon(true, "no-phone");
