@@ -35,8 +35,7 @@
   <text id="lm-status-time">00:00am</text>
 
   <!-- TEMPORARY JUMP TO BUTTON -->
-  <arc arc-width="3" start-angle="0" sweep-angle="300" x="100%-105" y="5"
-       width="20" height="20" fill="#eb1f4e"/>
+  <image href="images/jump_to.png" x="100%-24" y="5" width="20"  height="20" fill="#eb1f4e" />
 
   <section id="lm-menu">
 
@@ -50,7 +49,7 @@
   </section>
   <section id="lm-refresh">
     <arc arc-width="2" start-angle="0" sweep-angle="360" />
-    <image id="no-phone" href="images/no_phone.png" display="none" />
+    <image id="no-phone" href="images/no_phone.png" />
     <g id="bg-loading" display="none">
       <animateTransform attributeType="rotate" begin="load" dur="3" begin="enable"
                         from="0" to="360" repeatCount="indefinite"/>
@@ -58,8 +57,7 @@
     </g>
   </section>
 
-  <rect id="lm-status-menu" width="33%" height="32" pointer-events="all" opacity="0" />
-  <rect id="lm-status-refesh" x= "33%" width="33%" height="32" pointer-events="all" opacity="0" />
-  <rect id="lm-status-info" x="66%" width="33%" height="32" pointer-events="all" opacity="0" />
+  <rect id="lm-status-menu" width="50%" height="45" pointer-events="all" opacity="0" />
+  <rect id="lm-status-info" x="50%" width="50%" height="45" pointer-events="all" opacity="0" />
 
 </svg>

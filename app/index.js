@@ -15,7 +15,6 @@ const STATUS_BAR_DATE = document.getElementById("lm-status-date");
 const STATUS_BAR_TIME = document.getElementById("lm-status-time");
 const STATUS_BAR_MENU = document.getElementById("lm-status-menu");
 const STATUS_BAR_INFO = document.getElementById("lm-status-info");
-const STATUS_BAR_REFRESH = document.getElementById("lm-status-refesh");
 const STATUS_BAR_NO_PHONE = document.getElementById("no-phone");
 const STATUS_BAR_LOADING = document.getElementById("bg-loading");
 
@@ -37,6 +36,7 @@ function inboxFileTransferCallback() {
             displayMessageOverlay(false);
             displayLoadingScreen(false);
             displayTimetable(true);
+            displayStatusBarIcon(false);
 
             let timetable = readFileSync(TIMETABLE_FILE, "cbor");
             updateTimetableView(timetable);
@@ -67,6 +67,7 @@ function readFileData(fileName) {
     }
     return parseData;
 }
+
 
 // ----------------------------------------------------------------------------
 
@@ -122,14 +123,16 @@ function updateTimetableView(timetableData) {
 // Update selected timetable tile.
 function updateTimetableIndex(timetableData) {
     let day = DATE_TODAY.getDay();
-    let timetable = timetableData[day.toString()];
-    let i;
-    let time;
-    for (i = 0; i < timetable.length; i++) {
-        time = new Date(timetable[i].date);
-        if (time - DATE_TODAY > 0) {
-            TIMETABLE_LIST.value = i;
-            break;
+    if (day.toString() in timetableData) {
+        let timetable = timetableData[day.toString()];
+        let i;
+        let time;
+        for (i = 0; i < timetable.length; i++) {
+            time = new Date(timetable[i].date);
+            if (time - DATE_TODAY > 0) {
+                TIMETABLE_LIST.value = i;
+                break;
+            }
         }
     }
 }
@@ -153,7 +156,22 @@ messaging.peerSocket.onmessage = function(evt) {
         displayTimetable(false);
         displayLoadingScreen(true, `Retrieving Timetable...`, clubName);
 
-        // TODO: update loader display time out once ovrlay message is implemented.
+        // wait 5 sec check if then load previous data if it exists.
+        let day = DATE_TODAY.getDay();
+        let timetable = readFileData(TIMETABLE_FILE);
+        if (day.toString() in timetable) {
+            updateTimetableView(timetable);
+            updateTimetableIndex(timetable);
+        }
+        setTimeout(function () {
+            if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+                displayStatusBarIcon(true, "no-phone");
+            }
+            if (day.toString() in timetable) {
+                displayTimetable(true);
+                displayLoadingScreen(false);
+            }
+        }, 5000);
 
     } else if (evt.data.key === "lm-clubChanged" && evt.data.value) {
         let clubName = evt.data.value;
@@ -165,9 +183,24 @@ messaging.peerSocket.onmessage = function(evt) {
 
 // Message socket opens.
 messaging.peerSocket.onopen = function() {
+    console.log("App Socket Open");
     displayTimetable(false);
     displayLoadingScreen(true);
     sendValue({key: "lm-fetch"});
+
+    // wait 5 sec check if connection is lost then load previous data if it exists.
+    let day = DATE_TODAY.getDay();
+    let timetable = readFileData(TIMETABLE_FILE);
+    setTimeout(function () {
+        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+            if (day.toString() in timetable) {
+                displayLoadingScreen(false);
+                displayTimetable(true);
+                updateTimetableView(timetable);
+                updateTimetableIndex(timetable);
+            }
+        }
+    }, 5000);
 };
 
 // Message socket closes
@@ -196,20 +229,18 @@ TIMETABLE_LIST.delegate = {
                 if (item.color !== null) {
                     tile.getElementById("color").style.fill = item.color;
                 }
-                if (time - DATE_TODAY < 0) {
-                    tile.getElementById("text-title").style.fill = "#4f4f4f";
-                    tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
-                    tile.getElementById("text-L").style.fill = "gold";
-                    tile.getElementById("text-R").style.fill = "#4f4f4f";
-                    tile.getElementById("color").style.fill = "#4f4f4f";
-                    tile.getElementById("disable1").style.display = "inline";
-                    tile.getElementById("disable2").style.display = "inline";
-                }
+
+                // SOME THING IS NOT RIGHT HERE DATA IS NOT IN SORTED.
+                // if (time - DATE_TODAY > 0) {
+                //     tile.getElementById("text-title").style.fill = "#4f4f4f";
+                //     tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
+                //     tile.getElementById("text-L").style.fill = "#4f4f4f";
+                //     tile.getElementById("text-R").style.fill = "#4f4f4f";
+                //     tile.getElementById("color").style.fill = "#4f4f4f";
+                //     tile.getElementById("disable1").style.display = "inline";
+                //     tile.getElementById("disable2").style.display = "inline";
+                // }
             }
-            // let touch = tile.getElementById("touch-me");
-            //     touch.onclick = evt => {
-            //     console.log(`touched: ${info.index}`);
-            // };
         }
     }
 };
@@ -228,18 +259,6 @@ STATUS_BAR_MENU.onclick = function(evt) {
     }
 }
 
-// Refresh list when user clicks on top middle area.
-// STATUS_BAR_REFRESH.onclick = function(evt) {
-//     if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
-//         displayStatusBarIcon(true, 'no-phone');
-//     } else {
-//         displayStatusBarIcon(true, "loading");
-//         // displayTimetable(false);
-//         // displayLoadingScreen(true);
-//         sendValue({key: "lm-fetch"});
-//     }
-// };
-
 // Jump to the next avaliable class.
 STATUS_BAR_INFO.onclick = function(evt) {
     let timetable = readFileData(TIMETABLE_FILE);
@@ -249,8 +268,25 @@ STATUS_BAR_INFO.onclick = function(evt) {
 }
 
 // Process incomming file transfers.
-inboxFileTransferCallback();
 inbox.addEventListener("newfile", inboxFileTransferCallback);
 
 // Initialize the clock.
 simpleClock.initialize("seconds", "shortDate", clockCallback);
+
+
+// Initial UI setup.
+// ============================================================================
+function initUI () {
+    let day = DATE_TODAY.getDay();
+    let timetable = readFileData(TIMETABLE_FILE);
+    if (day.toString() in timetable) {
+        displayLoadingScreen(false);
+        displayTimetable(true);
+        updateTimetableView(timetable);
+        updateTimetableIndex(timetable);
+    }
+    if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+        displayStatusBarIcon(true, "no-phone");
+    }
+}
+initUI();
