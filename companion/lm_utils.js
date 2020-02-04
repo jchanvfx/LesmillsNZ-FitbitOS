@@ -1,7 +1,7 @@
-// timetable web API
+// Timetable web API
 const lesmillsAPI = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi";
 
-// get timetable data from the LesMills database.
+// Fetch timetable data from the LesMills database.
 export function fetchLesMillsData(clubID) {
     let fetchData = {
         method: "POST",

@@ -1,59 +1,45 @@
 import document from "document";
 import { inbox } from "file-transfer"
-import { readFileSync } from "fs";
+import { readFileSync, listDirSync } from "fs";
 import { me as appbit } from "appbit";
 import * as messaging from "messaging";
 import * as simpleClock from "./clock";
 
+const DATE_TODAY = new Date();
+const TIMETABLE = [];
+const TIMETABLE_FILE = "LM_TIMETABLE.cbor";
+const TIMETABLE_LIST = document.getElementById("lm-class-list");
+const LOADER_OVERLAY = document.getElementById("loading-screen");
+const MESSAGE_OVERLAY = document.getElementById("message-screen");
+const STATUS_BAR_DATE = document.getElementById("lm-status-date");
+const STATUS_BAR_TIME = document.getElementById("lm-status-time");
+const STATUS_BAR_MENU = document.getElementById("lm-status-menu");
+const STATUS_BAR_INFO = document.getElementById("lm-status-info");
+const STATUS_BAR_NO_PHONE = document.getElementById("no-phone");
+const STATUS_BAR_LOADING = document.getElementById("bg-loading");
 
-// Check internet permissions
-if (!appbit.permissions.granted("access_internet")) {
-    console.log("We're not allowed to access the internet!");
-}
-
-// Message is received
-messaging.peerSocket.onmessage = function(evt) {
-    if (evt.data.key === "lm-noClub") {
-        displayLoadingScreen(false);
-        displayMessageOverlay(true, MSG_NO_CLUB);
-    } else if (evt.data.key === "lm-dataQueued" && evt.data.value) {
-        let clubName = evt.data.value;
-        displayMessageOverlay(false);
-        displayTimetable(false);
-        displayLoadingScreen(true, `Retrieving Timetable...`, clubName);
-    } else if (evt.data.key === "lm-clubChanged" && evt.data.value) {
-        let clubName = evt.data.value;
-        displayMessageOverlay(false);
-        displayTimetable(false);
-        displayLoadingScreen(true, "Requesting Data...", clubName);
-    }
-};
-
-// Message socket opens (send)
-messaging.peerSocket.onopen = function() {
-    // console.log("App Socket Open");
-    displayTimetable(false);
-    displayLoadingScreen(true);
-    sendValue({key: "lm-fetch"});
-};
-
-// Message socket closes
-messaging.peerSocket.onclose = function() {
-    console.log("App Socket Closed");
-};
+const MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
 
 // ----------------------------------------------------------------------------
 
-// Process files from the file transfer inbox.
-function processAllFiles() {
+// Clock callback for updating date and time.
+function clockCallback(data) {
+    STATUS_BAR_DATE.text = `Today ${data.date}`;
+    STATUS_BAR_TIME.text = data.time;
+}
+
+// File recieved transfer callback.
+function inboxFileTransferCallback() {
     let fileName;
     while (fileName = inbox.nextFile()) {
-        // console.log(`/private/data/${fileName} is now available.`);
         if (fileName == TIMETABLE_FILE) {
-            let timetable = readFileSync(TIMETABLE_FILE, "cbor");
-            updateTimetableView(timetable);
             displayMessageOverlay(false);
             displayLoadingScreen(false);
+            displayStatusBarIcon(false);
+
+            let timetable = readFileSync(TIMETABLE_FILE, "cbor");
+            updateTimetableView(timetable);
+            updateTimetableIndex(timetable);
             displayTimetable(true);
         }
     }
@@ -63,20 +49,69 @@ function processAllFiles() {
 function sendValue(data) {
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
         messaging.peerSocket.send(data);
+    } else if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+        displayStatusBarIcon(true, "no-phone");
     }
 }
 
-// Clock callback for updating date and time.
-function clockCallback(data) {
-    STATUS_BAR_DATE.text = `Today (${data.date})`;
-    STATUS_BAR_TIME.text = data.time;
+// Local file data reader.
+function readFileData(fileName) {
+    let parseData = {};
+    let dirIter;
+    let listDir = listDirSync("/private/data");
+    while((dirIter = listDir.next()) && !dirIter.done) {
+        if (dirIter.value == fileName) {
+            parseData = readFileSync(fileName, "cbor");
+            break;
+        }
+    }
+    return parseData;
+}
+
+
+// ----------------------------------------------------------------------------
+
+// Toggle status bar icons.
+function displayStatusBarIcon(display=false, icon="") {
+    STATUS_BAR_NO_PHONE.style.display = "none";
+    STATUS_BAR_LOADING.style.display = "none";
+    STATUS_BAR_LOADING.animate("disable");
+    if (display) {
+        if (icon == "no-phone") {
+            STATUS_BAR_NO_PHONE.style.display = "inline";
+        } else if (icon == "loading") {
+            STATUS_BAR_LOADING.style.display = "inline";
+            STATUS_BAR_LOADING.animate("enable");
+        }
+    }
+}
+
+// Toggle message text display.
+function displayMessageOverlay(display=true, text="") {
+    MESSAGE_OVERLAY.getElementById("text").text = text;
+    MESSAGE_OVERLAY.style.display = display ? "inline" : "none";
+}
+
+// Toggle timetable list display.
+function displayTimetable(display=true) {
+    TIMETABLE_LIST.style.display = display ? "inline" : "none";
+}
+
+// Toggle loading screen display.
+function displayLoadingScreen(display=true, text="loading...", subText="") {
+    LOADER_OVERLAY.getElementById("text").text = text;
+    LOADER_OVERLAY.getElementById("sub-text").text = subText;
+    LOADER_OVERLAY.animate(display ? "enable" : "disable");
+    LOADER_OVERLAY.style.display = display ? "inline" : "none";;
 }
 
 // Update timetable tile list with new data.
 function updateTimetableView(timetableData) {
+    let today = DATE_TODAY.getDay();
+
     TIMETABLE.length = 0;
-    for (var i = 0; i < timetableData.length; i++) {
-        TIMETABLE.push(timetableData[i]);
+    for (var i = 0; i < timetableData[today.toString()].length; i++) {
+        TIMETABLE.push(timetableData[today.toString()][i]);
     }
     // work around to refresh the virtual tile list.
     TIMETABLE_LIST.length = 0;
@@ -85,56 +120,97 @@ function updateTimetableView(timetableData) {
     TIMETABLE_LIST.redraw();
 }
 
-// Toggle message text display.
-function displayMessageOverlay(display=true, text="") {
-    MESSAGE_OVERLAY.getElementById("text").text = text;
-    if (display === true) {
-        MESSAGE_OVERLAY.style.display = "inline";
-    } else {
-        MESSAGE_OVERLAY.style.display = "none";
-    }
-}
-
-// Toggle timetable list display.
-function displayTimetable(display=true) {
-    if (display === true) {
-        TIMETABLE_LIST.style.display = "inline";
-    } else {
-        TIMETABLE_LIST.style.display = "none";
-    }
-}
-
-// Toggle loading screen display.
-function displayLoadingScreen(display=true, text="loading...", subText="") {
-    LOADER_OVERLAY.getElementById("text").text = text;
-    LOADER_OVERLAY.getElementById("sub-text").text = subText;
-    if (display === true) {
-        LOADER_OVERLAY.animate("enable");
-        LOADER_OVERLAY.style.display = "inline";
-    } else {
-        LOADER_OVERLAY.animate("disable");
-        LOADER_OVERLAY.style.display = "none";
+// Update selected timetable tile.
+function updateTimetableIndex(timetableData) {
+    let day = DATE_TODAY.getDay();
+    if (day.toString() in timetableData) {
+        let timetable = timetableData[day.toString()];
+        let i;
+        let time;
+        for (i = 0; i < timetable.length; i++) {
+            time = new Date(timetable[i].date);
+            if (time - DATE_TODAY > 0) {
+                TIMETABLE_LIST.value = i;
+                break;
+            }
+        }
     }
 }
 
 // ----------------------------------------------------------------------------
-let TIMETABLE = [];
-let TIMETABLE_FILE = "LM_TIMETABLE.cbor";
-let TIMETABLE_LIST = document.getElementById("lm-class-list");
-let LOADER_OVERLAY = document.getElementById("loading-screen");
-let MESSAGE_OVERLAY = document.getElementById("message-screen");
-let STATUS_BAR_TIME = document.getElementById("lm-status-time");
-let STATUS_BAR_DATE = document.getElementById("lm-status-date");
-let STATUS_BAR_REFRESH = document.getElementById("lm-status_refesh");
-let MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
 
+// Check internet permissions
+if (!appbit.permissions.granted("access_internet")) {
+    console.log("We're not allowed to access the internet!");
+}
 
-// process file transfers.
-processAllFiles();
-inbox.addEventListener("newfile", processAllFiles);
+// Message is received
+messaging.peerSocket.onmessage = function(evt) {
+    displayStatusBarIcon(false);
+    if (evt.data.key === "lm-noClub") {
+        displayLoadingScreen(false);
+        displayMessageOverlay(true, MSG_NO_CLUB);
+    } else if (evt.data.key === "lm-dataQueued" && evt.data.value) {
+        let clubName = evt.data.value;
+        displayMessageOverlay(false);
+        displayTimetable(false);
+        displayLoadingScreen(true, `Retrieving Timetable...`, clubName);
 
-// Initialize the clock.
-simpleClock.initialize("seconds", "shortDate", clockCallback);
+        // wait 5 sec check if then load previous data if it exists.
+        let day = DATE_TODAY.getDay();
+        let timetable = readFileData(TIMETABLE_FILE);
+        if (day.toString() in timetable) {
+            updateTimetableView(timetable);
+            updateTimetableIndex(timetable);
+        }
+        setTimeout(function () {
+            if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+                displayStatusBarIcon(true, "no-phone");
+            }
+            if (day.toString() in timetable) {
+                displayTimetable(true);
+                displayLoadingScreen(false);
+            }
+        }, 5000);
+
+    } else if (evt.data.key === "lm-clubChanged" && evt.data.value) {
+        let clubName = evt.data.value;
+        displayMessageOverlay(false);
+        displayTimetable(false);
+        displayLoadingScreen(true, "Requesting Data...", clubName);
+    }
+};
+
+// Message socket opens.
+messaging.peerSocket.onopen = function() {
+    console.log("App Socket Open");
+    displayTimetable(false);
+    displayLoadingScreen(true);
+    sendValue({key: "lm-fetch"});
+
+    // wait 5 sec check if connection is lost then load previous data if it exists.
+    let day = DATE_TODAY.getDay();
+    let timetable = readFileData(TIMETABLE_FILE);
+    setTimeout(function () {
+        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+            if (day.toString() in timetable) {
+                updateTimetableView(timetable);
+                updateTimetableIndex(timetable);
+                displayLoadingScreen(false);
+                displayTimetable(true);
+            }
+        }
+    }, 5000);
+};
+
+// Message socket closes
+messaging.peerSocket.onclose = function() {
+    displayStatusBarIcon(true, "no-phone");
+    console.log("App Socket Closed");
+
+};
+
+// ----------------------------------------------------------------------------
 
 // Initialize timetable list.
 TIMETABLE_LIST.delegate = {
@@ -152,15 +228,19 @@ TIMETABLE_LIST.delegate = {
                 tile.getElementById("text-R").text = item.desc;
                 if (item.color !== null) {
                     tile.getElementById("color").style.fill = item.color;
-                    tile.getElementById("colorIdx").style.fill = item.color;
                 }
+
+                // SOME THING IS NOT RIGHT HERE DATA IS NOT IN SORTED.
+                // if (time - DATE_TODAY > 0) {
+                //     tile.getElementById("text-title").style.fill = "#4f4f4f";
+                //     tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
+                //     tile.getElementById("text-L").style.fill = "#4f4f4f";
+                //     tile.getElementById("text-R").style.fill = "#4f4f4f";
+                //     tile.getElementById("color").style.fill = "#4f4f4f";
+                //     tile.getElementById("disable1").style.display = "inline";
+                //     tile.getElementById("disable2").style.display = "inline";
+                // }
             }
-
-            // let touch = tile.getElementById("touch-me");
-            //     touch.onclick = evt => {
-            //     console.log(`touched: ${info.index}`);
-            // };
-
         }
     }
 };
@@ -168,9 +248,58 @@ TIMETABLE_LIST.delegate = {
 // TIMETABLE_LIST.length must be set AFTER TIMETABLE_LIST.delegate
 TIMETABLE_LIST.length = 10;
 
-// Refresh list when user clicks on top left area.
-STATUS_BAR_REFRESH.onclick = evt => {
-    displayTimetable(false);
-    displayLoadingScreen(true);
-    sendValue({key: "lm-fetch"});
-};
+// Slide to the date selection menu screen. (not yet implemented)
+STATUS_BAR_MENU.onclick = function(evt) {
+    // TEMPORARY logic code to refresh timetable update this once date menu is implemented.
+    if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+        displayStatusBarIcon(true, 'no-phone');
+    } else {
+        displayStatusBarIcon(true, "loading");
+        sendValue({key: "lm-fetch"});
+    }
+
+    // wait 3 sec check if connection is lost then load previous data if it exists.
+    let day = DATE_TODAY.getDay();
+    let timetable = readFileData(TIMETABLE_FILE);
+    setTimeout(function () {
+        if (day.toString() in timetable) {
+            updateTimetableView(timetable);
+            updateTimetableIndex(timetable);
+            displayLoadingScreen(false);
+            displayTimetable(true);
+        }
+    }, 3000);
+
+}
+
+// Jump to the next avaliable class.
+STATUS_BAR_INFO.onclick = function(evt) {
+    let timetable = readFileData(TIMETABLE_FILE);
+    if (timetable) {
+        updateTimetableIndex(timetable);
+    }
+}
+
+// Process incomming file transfers.
+inbox.addEventListener("newfile", inboxFileTransferCallback);
+
+// Initialize the clock.
+simpleClock.initialize("seconds", "shortDate", clockCallback);
+
+
+// Initial UI setup.
+// ============================================================================
+function initUI () {
+    let day = DATE_TODAY.getDay();
+    let timetable = readFileData(TIMETABLE_FILE);
+    if (day.toString() in timetable) {
+        updateTimetableView(timetable);
+        updateTimetableIndex(timetable);
+        displayLoadingScreen(false);
+        displayTimetable(true);
+    }
+    if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+        displayStatusBarIcon(true, "no-phone");
+    }
+}
+initUI();
