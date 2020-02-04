@@ -20,6 +20,8 @@ const STATUS_BAR_LOADING = document.getElementById("bg-loading");
 
 const MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
 
+let TIMETABLE_RECIEVED = false;
+
 // ----------------------------------------------------------------------------
 
 // Clock callback for updating date and time.
@@ -33,13 +35,14 @@ function inboxFileTransferCallback() {
     let fileName;
     while (fileName = inbox.nextFile()) {
         if (fileName == TIMETABLE_FILE) {
+            console.log(`File ${TIMETABLE_FILE} recieved!`);
             displayMessageOverlay(false);
             displayLoadingScreen(false);
             displayStatusBarIcon(false);
 
+            TIMETABLE_RECIEVED = true;
             let timetable = readFileSync(TIMETABLE_FILE, "cbor");
             updateTimetableView(timetable);
-            updateTimetableIndex(timetable);
             displayTimetable(true);
         }
     }
@@ -106,8 +109,22 @@ function displayLoadingScreen(display=true, text="loading...", subText="") {
 }
 
 // Update timetable tile list with new data.
-function updateTimetableView(timetableData) {
+function updateTimetableView(timetableData, jumpToIndex=true) {
+    let current_idx = 0;
     let today = DATE_TODAY.getDay();
+
+    if (today.toString() in timetableData) {
+        let timetable = timetableData[today.toString()];
+        let i;
+        let time;
+        for (i = 0; i < timetable.length; i++) {
+            time = new Date(timetable[i].date);
+            if (time - DATE_TODAY > 0) {
+                current_idx = i;
+                break;
+            }
+        }
+    }
 
     TIMETABLE.length = 0;
     for (var i = 0; i < timetableData[today.toString()].length; i++) {
@@ -118,22 +135,9 @@ function updateTimetableView(timetableData) {
     TIMETABLE_LIST.redraw();
     TIMETABLE_LIST.length = TIMETABLE.length;
     TIMETABLE_LIST.redraw();
-}
 
-// Update selected timetable tile.
-function updateTimetableIndex(timetableData) {
-    let day = DATE_TODAY.getDay();
-    if (day.toString() in timetableData) {
-        let timetable = timetableData[day.toString()];
-        let i;
-        let time;
-        for (i = 0; i < timetable.length; i++) {
-            time = new Date(timetable[i].date);
-            if (time - DATE_TODAY > 0) {
-                TIMETABLE_LIST.value = i;
-                break;
-            }
-        }
+    if (jumpToIndex) {
+        TIMETABLE_LIST.value = current_idx;
     }
 }
 
@@ -150,28 +154,33 @@ messaging.peerSocket.onmessage = function(evt) {
     if (evt.data.key === "lm-noClub") {
         displayLoadingScreen(false);
         displayMessageOverlay(true, MSG_NO_CLUB);
-    } else if (evt.data.key === "lm-dataQueued" && evt.data.value) {
+    } else if (evt.data.key === "lm-fetchReply" && evt.data.value) {
+        // update existing data first.
+        let day = DATE_TODAY.getDay();
+        let timetable = readFileData(TIMETABLE_FILE);
+        if (TIMETABLE_RECIEVED === false) {
+            if (day.toString() in timetable) {
+                updateTimetableView(timetable, false);
+            }
+        }
+
+        // show loder screen
         let clubName = evt.data.value;
         displayMessageOverlay(false);
         displayTimetable(false);
         displayLoadingScreen(true, `Retrieving Timetable...`, clubName);
 
-        // wait 5 sec check if then load previous data if it exists.
-        let day = DATE_TODAY.getDay();
-        let timetable = readFileData(TIMETABLE_FILE);
-        if (day.toString() in timetable) {
-            updateTimetableView(timetable);
-            updateTimetableIndex(timetable);
-        }
+        // wait 3 sec uidate screen.
         setTimeout(function () {
             if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
                 displayStatusBarIcon(true, "no-phone");
             }
             if (day.toString() in timetable) {
+                displayStatusBarIcon(true, "loading");
                 displayTimetable(true);
                 displayLoadingScreen(false);
             }
-        }, 5000);
+        }, 3000);
 
     } else if (evt.data.key === "lm-clubChanged" && evt.data.value) {
         let clubName = evt.data.value;
@@ -184,23 +193,10 @@ messaging.peerSocket.onmessage = function(evt) {
 // Message socket opens.
 messaging.peerSocket.onopen = function() {
     console.log("App Socket Open");
+    TIMETABLE_RECIEVED = false;
     displayTimetable(false);
     displayLoadingScreen(true);
     sendValue({key: "lm-fetch"});
-
-    // wait 5 sec check if connection is lost then load previous data if it exists.
-    let day = DATE_TODAY.getDay();
-    let timetable = readFileData(TIMETABLE_FILE);
-    setTimeout(function () {
-        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
-            if (day.toString() in timetable) {
-                updateTimetableView(timetable);
-                updateTimetableIndex(timetable);
-                displayLoadingScreen(false);
-                displayTimetable(true);
-            }
-        }
-    }, 5000);
 };
 
 // Message socket closes
@@ -230,8 +226,7 @@ TIMETABLE_LIST.delegate = {
                     tile.getElementById("color").style.fill = item.color;
                 }
 
-                // SOME THING IS NOT RIGHT HERE DATA IS NOT IN SORTED.
-                // if (time - DATE_TODAY > 0) {
+                // if (item.ended === "y") {
                 //     tile.getElementById("text-title").style.fill = "#4f4f4f";
                 //     tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
                 //     tile.getElementById("text-L").style.fill = "#4f4f4f";
@@ -250,6 +245,15 @@ TIMETABLE_LIST.length = 10;
 
 // Slide to the date selection menu screen. (not yet implemented)
 STATUS_BAR_MENU.onclick = function(evt) {
+
+    TIMETABLE_RECIEVED = false;
+
+    let day = DATE_TODAY.getDay();
+    let timetable = readFileData(TIMETABLE_FILE);
+    if (day.toString() in timetable) {
+        updateTimetableView(timetable);
+    }
+
     // TEMPORARY logic code to refresh timetable update this once date menu is implemented.
     if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
         displayStatusBarIcon(true, 'no-phone');
@@ -259,24 +263,28 @@ STATUS_BAR_MENU.onclick = function(evt) {
     }
 
     // wait 3 sec check if connection is lost then load previous data if it exists.
-    let day = DATE_TODAY.getDay();
-    let timetable = readFileData(TIMETABLE_FILE);
     setTimeout(function () {
-        if (day.toString() in timetable) {
-            updateTimetableView(timetable);
-            updateTimetableIndex(timetable);
-            displayLoadingScreen(false);
-            displayTimetable(true);
-        }
+        displayLoadingScreen(false);
+        displayTimetable(true);
     }, 3000);
 
 }
 
 // Jump to the next avaliable class.
 STATUS_BAR_INFO.onclick = function(evt) {
-    let timetable = readFileData(TIMETABLE_FILE);
-    if (timetable) {
-        updateTimetableIndex(timetable);
+    let day = DATE_TODAY.getDay();
+    let timetableData = readFileData(TIMETABLE_FILE);
+    if (day.toString() in timetableData) {
+        let timetable = timetableData[day.toString()];
+        let i;
+        let time;
+        for (i = 0; i < timetable.length; i++) {
+            time = new Date(timetable[i].date);
+            if (time - DATE_TODAY > 0) {
+                TIMETABLE_LIST.value = i;
+                break;
+            }
+        }
     }
 }
 
@@ -294,7 +302,6 @@ function initUI () {
     let timetable = readFileData(TIMETABLE_FILE);
     if (day.toString() in timetable) {
         updateTimetableView(timetable);
-        updateTimetableIndex(timetable);
         displayLoadingScreen(false);
         displayTimetable(true);
     }
