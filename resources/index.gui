@@ -33,20 +33,23 @@
   <rect id="lm-status-bg" />
   <text id="lm-status-date">(No Data)</text>
   <text id="lm-status-time">00:00am</text>
-  <section id="lm-prev">
+
+  <section id="lm-menu">
     <arc arc-width="2" start-angle="0" sweep-angle="360" />
-    <text>-</text>
+    <text>&lt;</text>
   </section>
-  <section id="lm-next">
+  <section id="lm-refresh">
     <arc arc-width="2" start-angle="0" sweep-angle="360" />
-    <text>+</text>
+    <image id="no-phone" href="images/no_phone.png" display="none" />
+    <g id="bg-loading" display="none">
+      <animateTransform attributeType="rotate" begin="load" dur="3" begin="enable"
+                        from="0" to="360" repeatCount="indefinite"/>
+      <image href="images/refresh.png" />
+    </g>
   </section>
-  <section id="lm-find">
-    <arc arc-width="2" start-angle="0" sweep-angle="360" />
-    <g transform="rotate(90)"><text>&lt;</text></g>
-  </section>
-  <rect id="lm-status_refesh" width="33%" height="32" pointer-events="all" opacity="0" />
-  <rect id="lm-status_next" x= "33%" width="33%" height="32" pointer-events="all" opacity="0" />
-  <rect id="lm-status_find" x="66%" width="33%" height="32" pointer-events="all" opacity="0" />
+
+  <rect id="lm-status-menu" width="33%" height="32" pointer-events="all" opacity="0" />
+  <rect id="lm-status-refesh" x= "33%" width="33%" height="32" pointer-events="all" opacity="0" />
+  <rect id="lm-status-info" x="66%" width="33%" height="32" pointer-events="all" opacity="0" />
 
 </svg>

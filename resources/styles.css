@@ -21,24 +21,24 @@
   text-length: 32;
 }
 #lm-tile text#text-L{
-  x: 4%;
+  x: 7;
   y: 85%;
-  font-size: 18;
+  font-size: 20;
   text-anchor: start;
   text-length: 8;
 }
 #lm-tile text#text-R{
-  x: 95%;
+  x: 100%-7;
   y: 85%;
-  font-size: 18;
+  font-size: 20;
   text-anchor: end;
   text-length: 32;
 }
 #lm-tile rect#background {
-  x: 1%;
-  y: 3%;
-  width: 98%;
-  height: 96%;
+  x: 3;
+  y: 2;
+  width: 100%-6;
+  height: 100%-4;
   fill:#2a2d2e;
 }
 .lm-tile-cnr {
@@ -52,8 +52,8 @@
   fill:black;
 }
 #lm-status-time {
-  x: 100%-25;
-  y: 21;
+  x: 100%-2;
+  y: 22;
   font-size: 20;
   font-family: System-Bold;
   font-weight: regular;
@@ -63,7 +63,7 @@
 }
 #lm-status-date {
   x: 26;
-  y: 21;
+  y: 22;
   font-size: 20;
   font-family: System-Bold;
   font-weight: regular;
@@ -71,59 +71,38 @@
   text-anchor: start;
   text-length: 16;
 }
-#lm-prev {
+#lm-menu {
   x: 13;
   y: 15;
 }
-#lm-prev text {
+#lm-menu text {
   x: -4;
   y: +5;
   font-size: 20;
   font-family: System-Bold;
   fill: #eb1f4e;
 }
-#lm-prev arc {
+#lm-menu arc {
   x: -10;
   y: -10;
-  width:20;
-  height:20;
+  width:21;
+  height:21;
   fill:#eb1f4e;
 }
-#lm-next {
-  x: 53%;
+#lm-refresh {
+  x: 55%;
   y: 15;
 }
-#lm-next text {
-  x: -5;
-  y: +5;
-  font-size: 20;
-  font-family: System-Bold;
-  fill: #eb1f4e;
-}
-#lm-next arc {
+#lm-refresh image {
   x: -10;
   y: -10;
   width:20;
   height:20;
-  fill:#eb1f4e;
+  fill:#6b6b6b;
 }
-#lm-find {
+#lm-info {
   x: 100%-13;
   y: 15;
-}
-#lm-find text{
-  x: -3;
-  y: +4;
-  font-size: 18;
-  font-family: System-Bold;
-  fill: #1effce;
-}
-#lm-find arc {
-  x: -10;
-  y: -10;
-  width:20;
-  height:20;
-  fill:#1effce;
 }
 
 /* loder overlay */

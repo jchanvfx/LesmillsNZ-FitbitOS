@@ -5,6 +5,7 @@ import { me as appbit } from "appbit";
 import * as messaging from "messaging";
 import * as simpleClock from "./clock";
 
+const DATE_TODAY = new Date();
 const MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
 const TIMETABLE_FILE = "LM_TIMETABLE.cbor";
 
@@ -12,11 +13,13 @@ let TIMETABLE = [];
 let TIMETABLE_LIST = document.getElementById("lm-class-list");
 let LOADER_OVERLAY = document.getElementById("loading-screen");
 let MESSAGE_OVERLAY = document.getElementById("message-screen");
-let STATUS_BAR_TIME = document.getElementById("lm-status-time");
 let STATUS_BAR_DATE = document.getElementById("lm-status-date");
-let STATUS_BAR_REFRESH = document.getElementById("lm-status_refesh");
-let STATUS_BAR_NEXT = document.getElementById("lm-status_next");
-let STATUS_BAR_FIND = document.getElementById("lm-status_find");
+let STATUS_BAR_TIME = document.getElementById("lm-status-time");
+let STATUS_BAR_MENU = document.getElementById("lm-status-menu");
+let STATUS_BAR_INFO = document.getElementById("lm-status-info");
+let STATUS_BAR_REFRESH = document.getElementById("lm-status-refesh");
+let STATUS_BAR_NO_PHONE = document.getElementById("no-phone");
+let STATUS_BAR_LOADING = document.getElementById("bg-loading");
 
 // ----------------------------------------------------------------------------
 
@@ -36,6 +39,7 @@ function inboxFileTransferCallback() {
             displayMessageOverlay(false);
             displayLoadingScreen(false);
             displayTimetable(true);
+            updateTimetableIndex(timetable);
         }
     }
 }
@@ -97,8 +101,7 @@ function displayLoadingScreen(display=true, text="loading...", subText="") {
 
 // Update timetable tile list with new data.
 function updateTimetableView(timetableData) {
-    let dateToday = new Date();
-    let today = dateToday.getDay();
+    let today = DATE_TODAY.getDay();
 
     TIMETABLE.length = 0;
     for (var i = 0; i < timetableData[today.toString()].length; i++) {
@@ -109,6 +112,19 @@ function updateTimetableView(timetableData) {
     TIMETABLE_LIST.redraw();
     TIMETABLE_LIST.length = TIMETABLE.length;
     TIMETABLE_LIST.redraw();
+}
+
+// Update selected timetable tile.
+function updateTimetableIndex(timetableData) {
+    let i;
+    let time;
+    for (i = 0; i < timetable.length; i++) {
+        time = new Date(timetable[i].date);
+        if (time - DATE_TODAY < 0) {
+            TIMETABLE_LIST.value = i;
+            break;
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -166,15 +182,21 @@ TIMETABLE_LIST.delegate = {
                 tile.getElementById("text-R").text = item.desc;
                 if (item.color !== null) {
                     tile.getElementById("color").style.fill = item.color;
-                    tile.getElementById("colorIdx").style.fill = item.color;
+                }
+                if (time - DATE_TODAY < 0) {
+                    tile.getElementById("text-title").style.fill = "#4f4f4f";
+                    tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
+                    tile.getElementById("text-L").style.fill = "gold";
+                    tile.getElementById("text-R").style.fill = "#4f4f4f";
+                    tile.getElementById("color").style.fill = "#4f4f4f";
+                    tile.getElementById("disable1").style.display = "inline";
+                    tile.getElementById("disable2").style.display = "inline";
                 }
             }
-
             // let touch = tile.getElementById("touch-me");
             //     touch.onclick = evt => {
             //     console.log(`touched: ${info.index}`);
             // };
-
         }
     }
 };
@@ -182,12 +204,23 @@ TIMETABLE_LIST.delegate = {
 // TIMETABLE_LIST.length must be set AFTER TIMETABLE_LIST.delegate
 TIMETABLE_LIST.length = 10;
 
+//
+STATUS_BAR_MENU.onclick = function(evt) {
+    console.log("menu clicked");
+}
+
 // Refresh list when user clicks on top left area.
 STATUS_BAR_REFRESH.onclick = function(evt) {
     displayTimetable(false);
     displayLoadingScreen(true);
     sendValue({key: "lm-fetch"});
 };
+
+//
+STATUS_BAR_INFO.onclick = function(evt) {
+    // updateTimetableIndex();
+    console.log("info clicked");
+}
 
 // Process incomming file transfers.
 inboxFileTransferCallback();
