@@ -248,15 +248,28 @@ TIMETABLE_LIST.delegate = {
 // TIMETABLE_LIST.length must be set AFTER TIMETABLE_LIST.delegate
 TIMETABLE_LIST.length = 10;
 
-// Slide to the Days menu screen. (not yet implemented)
+// Slide to the date selection menu screen. (not yet implemented)
 STATUS_BAR_MENU.onclick = function(evt) {
-    // TEMPORARY logic code to refresh timetable update this once days menu is implemented.
+    // TEMPORARY logic code to refresh timetable update this once date menu is implemented.
     if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
         displayStatusBarIcon(true, 'no-phone');
     } else {
         displayStatusBarIcon(true, "loading");
         sendValue({key: "lm-fetch"});
     }
+
+    // wait 3 sec check if connection is lost then load previous data if it exists.
+    let day = DATE_TODAY.getDay();
+    let timetable = readFileData(TIMETABLE_FILE);
+    setTimeout(function () {
+        if (day.toString() in timetable) {
+            displayLoadingScreen(false);
+            displayTimetable(true);
+            updateTimetableView(timetable);
+            updateTimetableIndex(timetable);
+        }
+    }, 3000);
+
 }
 
 // Jump to the next avaliable class.
