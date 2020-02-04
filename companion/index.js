@@ -28,7 +28,9 @@ function fetchTimetableData(clubID) {
             let clsDate = new Date(clsInfo.StartDateTime);
             let clsDay = clsDate.getDay();
 
-            if ([today, tomrr].includes(clsDay)) {
+            // TODO: filtering current day for now.
+            // if ([today, tomrr].includes(clsDay)) {
+            if ([today].includes(clsDay)) {
                 let groupClass = {
                     name: clsInfo.ClassName,
                     date: clsInfo.StartDateTime,

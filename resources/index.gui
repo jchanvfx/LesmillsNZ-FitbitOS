@@ -34,9 +34,19 @@
   <text id="lm-status-date">(No Data)</text>
   <text id="lm-status-time">00:00am</text>
 
+  <!-- TEMPORARY JUMP TO BUTTON -->
+  <arc arc-width="3" start-angle="0" sweep-angle="300" x="100%-105" y="5"
+       width="20" height="20" fill="#eb1f4e"/>
+
   <section id="lm-menu">
-    <arc arc-width="2" start-angle="0" sweep-angle="360" />
-    <text>&lt;</text>
+
+    <!-- MENU DAYS BUTTON -->
+    <!-- <arc arc-width="2" start-angle="0" sweep-angle="360" /> -->
+    <!-- <text>&lt;</text> -->
+
+    <!-- TEMPORARY PLACE HOLDER -->
+    <image href="images/refresh.png" x="-10" y="-10" width="20"  height="20" fill="#eb1f4e" />
+
   </section>
   <section id="lm-refresh">
     <arc arc-width="2" start-angle="0" sweep-angle="360" />

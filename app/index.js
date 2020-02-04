@@ -217,24 +217,30 @@ TIMETABLE_LIST.delegate = {
 // TIMETABLE_LIST.length must be set AFTER TIMETABLE_LIST.delegate
 TIMETABLE_LIST.length = 10;
 
-//
+// Slide to the Days menu screen. (not yet implemented)
 STATUS_BAR_MENU.onclick = function(evt) {
-    console.log("menu clicked");
-}
-
-// Refresh list when user clicks on top left area.
-STATUS_BAR_REFRESH.onclick = function(evt) {
+    // TEMPORARY logic code to refresh timetable update this once days menu is implemented.
     if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
         displayStatusBarIcon(true, 'no-phone');
     } else {
         displayStatusBarIcon(true, "loading");
-        // displayTimetable(false);
-        // displayLoadingScreen(true);
         sendValue({key: "lm-fetch"});
     }
-};
+}
 
-//
+// Refresh list when user clicks on top middle area.
+// STATUS_BAR_REFRESH.onclick = function(evt) {
+//     if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+//         displayStatusBarIcon(true, 'no-phone');
+//     } else {
+//         displayStatusBarIcon(true, "loading");
+//         // displayTimetable(false);
+//         // displayLoadingScreen(true);
+//         sendValue({key: "lm-fetch"});
+//     }
+// };
+
+// Jump to the next avaliable class.
 STATUS_BAR_INFO.onclick = function(evt) {
     let timetable = readFileData(TIMETABLE_FILE);
     if (timetable) {
