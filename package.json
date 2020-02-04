@@ -19,7 +19,6 @@
       "access_exercise"
     ],
     "buildTargets": [
-      "higgs",
       "meson",
       "gemini",
       "mira"
