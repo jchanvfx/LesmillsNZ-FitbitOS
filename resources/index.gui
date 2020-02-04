@@ -39,11 +39,11 @@
 
   <section id="lm-menu">
 
-    <!-- MENU DAYS BUTTON -->
+    <!-- MENU BUTTON DISABLED -->
     <!-- <arc arc-width="2" start-angle="0" sweep-angle="360" /> -->
     <!-- <text>&lt;</text> -->
 
-    <!-- TEMPORARY PLACE HOLDER -->
+    <!-- TEMPORARY PLACE HOLDER BUTTON -->
     <image href="images/refresh.png" x="-10" y="-10" width="20"  height="20" fill="#eb1f4e" />
 
   </section>
