@@ -96,7 +96,7 @@ messaging.peerSocket.onmessage = function(evt) {
             let clubID = selectedClub.value;
             let clubName = selectedClub.name;
             fetchTimetableData(clubID);
-            sendValue({key: "lm-dataQueued", value: clubName});
+            sendValue({key: "lm-fetchReply", value: clubName});
         } else {
             sendValue({key: "lm-noClub"});
         }

@@ -52,53 +52,37 @@
   fill:black;
 }
 #lm-status-time {
-  x: 100%-28;
-  y: 22;
+  x: 100%-30;
+  y: 23;
   font-size: 20;
   font-family: System-Bold;
   font-weight: regular;
-  fill: #1effce;
+  fill: #d6d6d6;
+  /* fill: #1effce; */
   text-anchor: end;
   text-length: 8;
 }
 #lm-status-date {
-  x: 26;
-  y: 22;
+  x: 28;
+  y: 23;
   font-size: 20;
   font-family: System-Bold;
   font-weight: regular;
-  fill: #eb1f4e;
+  fill: #d6d6d6;
   text-anchor: start;
   text-length: 16;
 }
-#lm-menu {
-  x: 13;
-  y: 15;
-}
-#lm-menu text {
-  x: -4;
-  y: +5;
-  font-size: 20;
-  font-family: System-Bold;
-  fill: #eb1f4e;
-}
-#lm-menu arc {
-  x: -10;
-  y: -10;
-  width:21;
-  height:21;
-  fill:#eb1f4e;
-}
-#lm-refresh {
+#lm-stats {
   x: 55%;
-  y: 15;
+  y: 16;
 }
-#lm-refresh image {
+#lm-stats image {
   x: -10;
   y: -10;
   width:20;
   height:20;
-  fill:#6b6b6b;
+  /* fill:#6b6b6b; */
+  fill:#467ca6;
 }
 #lm-info {
   x: 100%-13;

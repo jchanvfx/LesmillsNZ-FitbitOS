@@ -1,7 +1,7 @@
 function settingsComponent(props) {
     return (
         <Page>
-            <Section title={<Text bold align="center">App Settings</Text>}/>
+            <Section title={<Text bold align="center">LesMills Timetable Settings</Text>}/>
             <Select
                 title="Club Location"
                 label={`Selection`}
