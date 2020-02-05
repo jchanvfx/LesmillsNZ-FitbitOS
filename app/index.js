@@ -20,14 +20,17 @@ const STATUS_BAR_LOADING = document.getElementById("bg-loading");
 
 const MSG_NO_CLUB = "Please set a club location from the app's settings in the phone app to display timetable.";
 
-let TIMETABLE_RECIEVED = false;
+let DATA_QUEUED = false;
 
 // ----------------------------------------------------------------------------
 
 // Clock callback for updating date and time.
 function clockCallback(data) {
-    STATUS_BAR_DATE.text = `Today ${data.date}`;
-    STATUS_BAR_TIME.text = data.time;
+    try {
+        STATUS_BAR_DATE.text = `Today ${data.date}`;
+        STATUS_BAR_TIME.text = data.time;
+    }
+    catch (e) {}
 }
 
 // File recieved transfer callback.
@@ -36,11 +39,12 @@ function inboxFileTransferCallback() {
     while (fileName = inbox.nextFile()) {
         if (fileName == TIMETABLE_FILE) {
             console.log(`File ${TIMETABLE_FILE} recieved!`);
+            DATA_QUEUED = false;
+
             displayMessageOverlay(false);
             displayLoadingScreen(false);
             displayStatusBarIcon(false);
 
-            TIMETABLE_RECIEVED = true;
             let timetable = readFileSync(TIMETABLE_FILE, "cbor");
             updateTimetableView(timetable);
             displayTimetable(true);
@@ -70,9 +74,6 @@ function readFileData(fileName) {
     }
     return parseData;
 }
-
-
-// ----------------------------------------------------------------------------
 
 // Toggle status bar icons.
 function displayStatusBarIcon(display=false, icon="") {
@@ -156,11 +157,14 @@ messaging.peerSocket.onmessage = function(evt) {
     if (evt.data.key === "lm-noClub") {
         displayLoadingScreen(false);
         displayMessageOverlay(true, MSG_NO_CLUB);
+    } else if (evt.data.key === "lm-dataQueued") {
+        DATA_QUEUED = true;
+        displayStatusBarIcon(false);
     } else if (evt.data.key === "lm-fetchReply" && evt.data.value) {
         // update existing data first.
         let day = DATE_TODAY.getDay();
         let timetable = readFileData(TIMETABLE_FILE);
-        if (TIMETABLE_RECIEVED === false) {
+        if (DATA_QUEUED === false) {
             if (day.toString() in timetable) {
                 updateTimetableView(timetable, false);
             }
@@ -172,17 +176,19 @@ messaging.peerSocket.onmessage = function(evt) {
         displayTimetable(false);
         displayLoadingScreen(true, `Retrieving Timetable...`, clubName);
 
-        // wait 3.5 sec update screen.
+        // wait 3 sec update screen.
         setTimeout(function () {
             if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
                 displayStatusBarIcon(true, "no-phone");
             }
             if (day.toString() in timetable) {
-                displayStatusBarIcon(true, "loading");
+                if (DATA_QUEUED === false) {
+                    displayStatusBarIcon(true, "loading");
+                }
                 displayTimetable(true);
                 displayLoadingScreen(false);
             }
-        }, 3500);
+        }, 3000);
 
     } else if (evt.data.key === "lm-clubChanged" && evt.data.value) {
         let clubName = evt.data.value;
@@ -195,16 +201,13 @@ messaging.peerSocket.onmessage = function(evt) {
 // Message socket opens.
 messaging.peerSocket.onopen = function() {
     console.log("App Socket Open");
-    TIMETABLE_RECIEVED = false;
-    displayTimetable(false);
-    displayLoadingScreen(true);
     sendValue({key: "lm-fetch"});
 };
 
 // Message socket closes
 messaging.peerSocket.onclose = function() {
-    displayStatusBarIcon(true, "no-phone");
     console.log("App Socket Closed");
+    displayStatusBarIcon(true, "no-phone");
 
 };
 
@@ -270,28 +273,24 @@ TIMETABLE_LIST.length = 10;
 
 // Slide to the date selection menu screen. (not yet implemented)
 STATUS_BAR_MENU.onclick = function(evt) {
+    // prevent multiple triggers so app won't crash.
+    if (DATA_QUEUED === false) {
 
-    TIMETABLE_RECIEVED = false;
+        // TEMPORARY: logic code to refresh timetable.
+        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+            displayStatusBarIcon(true, 'no-phone');
+        } else {
+            displayStatusBarIcon(true, "loading");
+            sendValue({key: "lm-fetch"});
+        }
 
-    let day = DATE_TODAY.getDay();
-    let timetable = readFileData(TIMETABLE_FILE);
-    if (day.toString() in timetable) {
-        updateTimetableView(timetable);
+        // wait 3 secs update the screen.
+        setTimeout(function () {
+            displayLoadingScreen(false);
+            displayTimetable(true);
+        }, 3000);
+
     }
-
-    // TEMPORARY logic code to refresh timetable update this once date menu is implemented.
-    if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
-        displayStatusBarIcon(true, 'no-phone');
-    } else {
-        displayStatusBarIcon(true, "loading");
-        sendValue({key: "lm-fetch"});
-    }
-
-    // wait 3.5 sec update the screen.
-    setTimeout(function () {
-        displayLoadingScreen(false);
-        displayTimetable(true);
-    }, 3500);
 
 }
 
@@ -323,16 +322,17 @@ simpleClock.initialize("seconds", "shortDate", clockCallback);
 // Initial UI setup.
 // ============================================================================
 function initUI () {
-    displayMessageOverlay(true, "Phone Not Connected\n\nSync device in Fitbit mobile app.");
-    let day = DATE_TODAY.getDay();
-    let timetable = readFileData(TIMETABLE_FILE);
-    if (day.toString() in timetable) {
-        updateTimetableView(timetable);
-        displayLoadingScreen(false);
-        displayTimetable(true);
-    }
     if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
         displayStatusBarIcon(true, "no-phone");
+        let day = DATE_TODAY.getDay();
+        let timetable = readFileData(TIMETABLE_FILE);
+        if (day.toString() in timetable) {
+            displayTimetable(true);
+            displayLoadingScreen(false);
+            updateTimetableView(timetable);
+        } else {
+            displayMessageOverlay(true, "Phone Not Connected\nPlease sync device in Fitbit mobile app.");
+        }
     }
 }
 initUI();

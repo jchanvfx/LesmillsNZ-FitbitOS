@@ -46,6 +46,7 @@ function fetchTimetableData(clubID) {
         // Queue timetable data.
         outbox.enqueue(TIMETABLE_FILE, encode(timetableData))
         .then(function(ft) {
+            sendValue({key: "lm-dataQueued"});
             console.log(`Transfer of "${TIMETABLE_FILE}" successfully queued.`);
         })
         .catch(function(err) {
