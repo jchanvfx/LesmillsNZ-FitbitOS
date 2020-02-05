@@ -40,21 +40,14 @@
       <!-- br --> <rect x="98%-7" y="96%-8" width="10" height="10" fill="black" />
                   <circle r="10" cx="98%-7" cy="96%-8" class="lm-tile-cnr" />
       <!-- class color -->
-      <line id="color" x1="1%" y1="57%" x2="98%" y2="57%" fill="#545454" stroke-width="2" />
+      <rect id="color" x="8" y="57%" width="100%-16" height="2" fill="#545454"/>
       <!-- info text -->
       <text id="text-L" />
       <text id="text-R" />
       <text id="text-title" />
       <text id="text-subtitle" />
-      <!-- disabled -->
-      <section x="50%" y="50%-5" >
-        <line id="disable1" x1="-14" y1="14" x2="14" y2="-14"
-              fill="gold" stroke-width="2" display="none" />
-        <arc id="disable2" arc-width="2" start-angle="0" sweep-angle="360"
-             x="-21" y="-21" width="42" height="42" fill="gold" display="none"/>
-      </section>
       <!-- touch pointer -->
-      <rect id="touch-me" pointer-events="all" x="0" y="1"
+      <rect id="touch" pointer-events="all" x="0" y="1"
             width="100%" height="100%-2" opacity="0" />
     </symbol>
 

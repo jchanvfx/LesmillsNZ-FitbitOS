@@ -128,7 +128,9 @@ function updateTimetableView(timetableData, jumpToIndex=true) {
 
     TIMETABLE.length = 0;
     for (var i = 0; i < timetableData[today.toString()].length; i++) {
-        TIMETABLE.push(timetableData[today.toString()][i]);
+        let itm = timetableData[today.toString()][i];
+        itm.finished = (i < current_idx) ? "y" : "n";
+        TIMETABLE.push(itm);
     }
     // work around to refresh the virtual tile list.
     TIMETABLE_LIST.length = 0;
@@ -170,7 +172,7 @@ messaging.peerSocket.onmessage = function(evt) {
         displayTimetable(false);
         displayLoadingScreen(true, `Retrieving Timetable...`, clubName);
 
-        // wait 3 sec uidate screen.
+        // wait 3.5 sec update screen.
         setTimeout(function () {
             if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
                 displayStatusBarIcon(true, "no-phone");
@@ -180,7 +182,7 @@ messaging.peerSocket.onmessage = function(evt) {
                 displayTimetable(true);
                 displayLoadingScreen(false);
             }
-        }, 3000);
+        }, 3500);
 
     } else if (evt.data.key === "lm-clubChanged" && evt.data.value) {
         let clubName = evt.data.value;
@@ -211,30 +213,41 @@ messaging.peerSocket.onclose = function() {
 // Initialize timetable list.
 TIMETABLE_LIST.delegate = {
     getTileInfo: function(index) {
-        return {index: index, type: "lm-pool"};
+        let item = TIMETABLE[index];
+        return {
+            index: index,
+            type: "lm-pool",
+            name: item.name,
+            instructor: item.instructor,
+            date: item.date,
+            desc: item.desc,
+            color: (item.color !== null) ? item.color : "#545454",
+            finished: item.finished,
+        };
     },
     configureTile: function(tile, info) {
         if (info.type == "lm-pool") {
             if (TIMETABLE.length > 1) {
-                let item = TIMETABLE[info.index];
-                let time = new Date(item.date);
-                tile.getElementById("text-title").text = item.name.toUpperCase();
-                tile.getElementById("text-subtitle").text = item.instructor;
-                tile.getElementById("text-L").text = simpleClock.formatDateToAmPm(time);
-                tile.getElementById("text-R").text = item.desc;
-                if (item.color !== null) {
-                    tile.getElementById("color").style.fill = item.color;
-                }
+                let itmDate = new Date(info.date);
+                tile.getElementById("text-title").text = info.name.toUpperCase();
+                tile.getElementById("text-subtitle").text = info.instructor;
+                tile.getElementById("text-L").text = simpleClock.formatDateToAmPm(itmDate);
+                tile.getElementById("text-R").text = info.desc;
 
-                // if (item.ended === "y") {
-                //     tile.getElementById("text-title").style.fill = "#4f4f4f";
-                //     tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
-                //     tile.getElementById("text-L").style.fill = "#4f4f4f";
-                //     tile.getElementById("text-R").style.fill = "#4f4f4f";
-                //     tile.getElementById("color").style.fill = "#4f4f4f";
-                //     tile.getElementById("disable1").style.display = "inline";
-                //     tile.getElementById("disable2").style.display = "inline";
-                // }
+                if (info.finished == "y") {
+                    tile.getElementById("text-title").style.fill = "#6e6e6e";
+                    tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
+                    tile.getElementById("text-L").style.fill = "#6e6e6e";
+                    tile.getElementById("text-R").style.fill = "#6e6e6e";
+                    tile.getElementById("color").style.fill = "#4f4f4f";
+                } else {
+                    tile.getElementById("text-title").style.fill = "white";
+                    tile.getElementById("text-subtitle").style.fill = "white";
+                    tile.getElementById("text-L").style.fill = "white";
+                    tile.getElementById("text-R").style.fill = "white";
+                    tile.getElementById("color").style.fill = "white";
+                    tile.getElementById("color").style.fill = info.color;
+                }
             }
         }
     }
@@ -262,11 +275,11 @@ STATUS_BAR_MENU.onclick = function(evt) {
         sendValue({key: "lm-fetch"});
     }
 
-    // wait 3 sec check if connection is lost then load previous data if it exists.
+    // wait 3.5 sec update the screen.
     setTimeout(function () {
         displayLoadingScreen(false);
         displayTimetable(true);
-    }, 3000);
+    }, 3500);
 
 }
 
@@ -298,6 +311,7 @@ simpleClock.initialize("seconds", "shortDate", clockCallback);
 // Initial UI setup.
 // ============================================================================
 function initUI () {
+    displayMessageOverlay(true, "Phone Not Connected\n\nSync device in Fitbit mobile app.");
     let day = DATE_TODAY.getDay();
     let timetable = readFileData(TIMETABLE_FILE);
     if (day.toString() in timetable) {
