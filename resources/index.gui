@@ -50,7 +50,7 @@
     </g>
   </section>
 
-  <rect id="lm-status-menu" width="50%" height="60" pointer-events="all" opacity="0" />
-  <rect id="lm-status-info" x="50%" width="50%" height="60" pointer-events="all" opacity="0" />
+  <rect id="lm-status-menu" width="50%" height="70" pointer-events="all" opacity="0" />
+  <rect id="lm-status-info" x="50%" width="50%" height="70" pointer-events="all" opacity="0" />
 
 </svg>
