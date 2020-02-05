@@ -214,40 +214,52 @@ messaging.peerSocket.onclose = function() {
 TIMETABLE_LIST.delegate = {
     getTileInfo: function(index) {
         let item = TIMETABLE[index];
-        return {
-            index: index,
-            type: "lm-pool",
-            name: item.name,
-            instructor: item.instructor,
-            date: item.date,
-            desc: item.desc,
-            color: (item.color !== null) ? item.color : "#545454",
-            finished: item.finished,
-        };
+        if (TIMETABLE.length > 0) {
+            return {
+                index: index,
+                type: "lm-pool",
+                name: item.name,
+                instructor: item.instructor,
+                date: item.date,
+                desc: item.desc,
+                color: (item.color !== null) ? item.color : "#545454",
+                finished: item.finished,
+            };
+        } else {
+            // need this here or we'll get a "Error 22 Critical glue error"
+            return {
+                index: index,
+                type: "lm-pool",
+                name: "{no data}",
+                instructor: "",
+                date: "",
+                desc: "",
+                color: "",
+                finished: "y",
+            };
+        }
     },
     configureTile: function(tile, info) {
         if (info.type == "lm-pool") {
-            if (TIMETABLE.length > 1) {
-                let itmDate = new Date(info.date);
-                tile.getElementById("text-title").text = info.name.toUpperCase();
-                tile.getElementById("text-subtitle").text = info.instructor;
-                tile.getElementById("text-L").text = simpleClock.formatDateToAmPm(itmDate);
-                tile.getElementById("text-R").text = info.desc;
+            let itmDate = new Date(info.date);
+            tile.getElementById("text-title").text = info.name.toUpperCase();
+            tile.getElementById("text-subtitle").text = info.instructor;
+            tile.getElementById("text-L").text = simpleClock.formatDateToAmPm(itmDate);
+            tile.getElementById("text-R").text = info.desc;
 
-                if (info.finished == "y") {
-                    tile.getElementById("text-title").style.fill = "#6e6e6e";
-                    tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
-                    tile.getElementById("text-L").style.fill = "#6e6e6e";
-                    tile.getElementById("text-R").style.fill = "#6e6e6e";
-                    tile.getElementById("color").style.fill = "#4f4f4f";
-                } else {
-                    tile.getElementById("text-title").style.fill = "white";
-                    tile.getElementById("text-subtitle").style.fill = "white";
-                    tile.getElementById("text-L").style.fill = "white";
-                    tile.getElementById("text-R").style.fill = "white";
-                    tile.getElementById("color").style.fill = "white";
-                    tile.getElementById("color").style.fill = info.color;
-                }
+            if (info.finished == "y") {
+                tile.getElementById("text-title").style.fill = "#6e6e6e";
+                tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
+                tile.getElementById("text-L").style.fill = "#6e6e6e";
+                tile.getElementById("text-R").style.fill = "#6e6e6e";
+                tile.getElementById("color").style.fill = "#4f4f4f";
+            } else {
+                tile.getElementById("text-title").style.fill = "white";
+                tile.getElementById("text-subtitle").style.fill = "white";
+                tile.getElementById("text-L").style.fill = "white";
+                tile.getElementById("text-R").style.fill = "white";
+                tile.getElementById("color").style.fill = "white";
+                tile.getElementById("color").style.fill = info.color;
             }
         }
     }
