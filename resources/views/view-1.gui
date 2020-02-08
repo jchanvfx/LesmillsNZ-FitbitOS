@@ -1,0 +1,34 @@
+<svg viewport-fill="grey">
+
+    <!-- <text class="title">This is view-1.</text> -->
+
+    <!-- LesMills Virtual Tile -->
+    <section y="32" height="100%-32">
+        <use id="lm-class-list" href="#tile-list" display="none">
+            <var id="virtual" value="1" />
+            <var id="reorder-enabled" value="0" />
+            <var id="peek-enabled" value="0" />
+            <var id="separator-height-bottom" value="2" />
+            <use id="lm-pool" href="#tile-list-pool">
+                <use id="lm-pool[0]" href="#lm-tile" />
+                <use id="lm-pool[1]" href="#lm-tile" />
+                <use id="lm-pool[2]" href="#lm-tile" />
+                <use id="lm-pool[3]" href="#lm-tile" />
+                <use id="lm-pool[4]" href="#lm-tile" />
+                <use id="lm-pool[5]" href="#lm-tile" />
+                <use id="lm-pool[6]" href="#lm-tile" />
+                <use id="lm-pool[7]" href="#lm-tile" />
+                <use id="lm-pool[8]" href="#lm-tile" />
+                <use id="lm-pool[9]" href="#lm-tile" />
+            </use>
+        </use>
+    </section>
+
+
+
+    <use id="v1-button" href="#push-button" class="btn">
+      <set href="#text" attributeName="text-buffer" to="GO view-2" />
+    </use>
+
+
+</svg>

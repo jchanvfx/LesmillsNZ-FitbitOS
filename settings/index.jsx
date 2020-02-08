@@ -1,7 +1,7 @@
 function settingsComponent(props) {
     return (
         <Page>
-            <Section title={<Text bold align="center">LM Timetable Settings</Text>}/>
+            <Section title={<Text bold align="center">Timetable Settings</Text>}/>
             <Select
                 title="Club Location"
                 label={`Selection`}
@@ -27,7 +27,6 @@ function settingsComponent(props) {
                     sublabel={option.addr}
                     />
                 }
-                // onSelection={(selection) => console.log(selection)}
             />
 
         </Page>
