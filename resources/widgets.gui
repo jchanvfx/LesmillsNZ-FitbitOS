@@ -5,6 +5,10 @@
     <!-- Additional Imports -->
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui" />
+
+    <!-- TEMPORARY BUTTON -->
+    <link rel="import" href="/mnt/sysassets/widgets/push_button_widget.gui" />
+
     <!-- Loader Widget -->
     <link rel="stylesheet" href="lm_widgets/loader_widget.css" />
     <link rel="import" href="lm_widgets/loader_widget.gui" />

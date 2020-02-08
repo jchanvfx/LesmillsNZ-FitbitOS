@@ -3,7 +3,7 @@
     <!-- <text class="title">This is view-1.</text> -->
 
     <!-- LesMills Virtual Tile -->
-    <section y="32" height="100%-32">
+    <!-- <section y="32" height="100%-32">
         <use id="lm-class-list" href="#tile-list" display="none">
             <var id="virtual" value="1" />
             <var id="reorder-enabled" value="0" />
@@ -22,7 +22,7 @@
                 <use id="lm-pool[9]" href="#lm-tile" />
             </use>
         </use>
-    </section>
+    </section> -->
 
 
 

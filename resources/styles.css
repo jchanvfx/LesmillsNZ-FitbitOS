@@ -1,49 +1,3 @@
-/* lm tile */
-#lm-tile {
-  height: 95;
-}
-#lm-tile text {
-  x: 50%;
-  text-anchor: middle;
-  font-family: System-Regular;
-  font-weight: regular;
-  fill: white;
-}
-#lm-tile text#text-title {
-  y: 30%;
-  font-size: 22;
-  font-family: System-Bold;
-  text-length: 32;
-}
-#lm-tile text#text-subtitle{
-  y: 50%;
-  font-size: 18;
-  text-length: 32;
-}
-#lm-tile text#text-L{
-  x: 7;
-  y: 85%;
-  font-size: 20;
-  text-anchor: start;
-  text-length: 8;
-}
-#lm-tile text#text-R{
-  x: 100%-7;
-  y: 85%;
-  font-size: 20;
-  text-anchor: end;
-  text-length: 32;
-}
-#lm-tile rect#background {
-  x: 3;
-  y: 2;
-  width: 100%-6;
-  height: 100%-4;
-  fill:#2a2d2e;
-}
-.lm-tile-cnr {
-  fill:#2a2d2e;
-}
 
 /* status bar */
 #lm-status-bg {
@@ -89,35 +43,6 @@
   y: 15;
 }
 
-/* loder overlay */
-#loader-overlay arc {
-  width:100;
-  height:100;
-}
-#loader-overlay text {
-  x:50%;
-  y:80%;
-  font-size:20;
-  text-anchor:middle;
-  fill:#4ebeff;
-  text-length: 32;
-}
-#loader-overlay text#sub-text{
-  y:90%-8;
-  font-size:16;
-  font-family: System-Bold;
-}
-#loader-overlay gradientRect {
-  width:100%;
-  height:100%;
-  gradient-type:radial;
-  gradient-x1:50%;
-  gradient-y1:50%;
-  gradient-x2:50%+120;
-  gradient-y2:50%+120;
-  gradient-color1:#0c1c38;
-  gradient-color2:black;
-}
 
 /* message overlay */
 #message-overlay rect {
@@ -136,3 +61,28 @@
   font-size:24;
   text-length: 128;
 }
+
+
+/* TEST STUFF */
+.title {
+    x: 50%;
+    y: 50%+15;
+    fill: fb-yellow;
+    font-family: System-Regular;
+    font-size: 40;
+    font-weight: bold;
+    text-anchor: middle;
+  }
+
+  .btn {
+    y: 100%-60;
+    height: 60;
+    fill: fb-red;
+    font-family: System-Regular;
+    font-size: 40;
+  }
+
+  #text {
+    y: 12;
+    fill: white;
+  }
