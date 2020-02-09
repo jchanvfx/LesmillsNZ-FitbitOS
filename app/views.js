@@ -25,12 +25,12 @@ export function init(_views, _prefix) {
     viewSelected = viewGUI;
     viewJSLoader()
       .then(({ init }) => {
-        
+
         document.replaceSync(`${viewsPrefix}${viewGUI}${viewsSuffix}`);
         init({ navigate });
       })
-      .catch(() => {
-        console.error(`Failed to load view JS: ${viewGUI}`);
+      .catch((err) => {
+        console.error(`Failed to load view JS:\n  ${viewGUI}:${err}`);
       });
   };
 

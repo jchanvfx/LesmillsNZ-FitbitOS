@@ -1,5 +1,3 @@
-let callbackFunc;
-
 // Timetable web API
 const urlAPI = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi";
 
@@ -18,8 +16,8 @@ export function fetchTimetableData(clubID, callbackFunc) {
             let today = new Date();
             let date1 = new Date(today);
             let date2 = new Date(today);
-            date1.setDate(dateToday.getDate() + 1);
-            date2.setDate(dateToday.getDate() + 2);
+            date1.setDate(today.getDate() + 1);
+            date2.setDate(today.getDate() + 2);
 
             let dKey = `${today.getDay()}${today.getDate()}${today.getMonth()}`;
             let dKey1 = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
@@ -44,7 +42,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
                         color: clsInfo.Colour,
                         desc: `${clsInfo.Site.SiteName} (${clsInfo.Duration}mins)`,
                     };
-                    timetable[clsDay.toString()].push(grpCls);
+                    timetable[clsKey.toString()].push(grpCls);
                 }
             }
             // sort data by class times.

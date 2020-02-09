@@ -17,8 +17,8 @@
     <link rel="import" href="lm_widgets/tile_item.gui" />
     <!-- Message Overlay -->
     <symbol id="message-overlay">
-      <rect/>
-      <textarea id="text"/>
+        <rect/>
+        <textarea id="text"/>
     </symbol>
   </defs>
 </svg>
