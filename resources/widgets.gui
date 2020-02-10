@@ -15,6 +15,17 @@
     <!-- LM Tile Item -->
     <link rel="stylesheet" href="lm_widgets/tile_item.css" />
     <link rel="import" href="lm_widgets/tile_item.gui" />
+    <!-- Status Bar -->
+    <symbol id="lm-status-bar">
+        <rect id="background"/>
+        <image id="back-btn" href="./resources/images/status_back.png" />
+        <text id="date1">(No Data)</text>
+        <text id="date2">(No Data)</text>
+        <text id="time">00:00am</text>
+        <image id="no-phone" href="./resources/images/no_phone.png" />
+        <rect id="click-l" pointer-events="all" />
+        <rect id="click-r" pointer-events="all" />
+    </symbol>
     <!-- Message Overlay -->
     <symbol id="message-overlay">
         <rect/>

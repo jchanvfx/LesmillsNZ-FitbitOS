@@ -1,7 +1,7 @@
 <svg viewport-fill="black">
 
     <!-- LesMills Virtual Tile -->
-    <section >
+    <section y="50" height="100%-60">
         <use id="lm-class-list" href="#tile-list" display="inline">
             <var id="virtual" value="1" />
             <var id="reorder-enabled" value="0" />
@@ -21,5 +21,11 @@
             </use>
         </use>
     </section>
+
+    <!-- Loading Screen -->
+    <use id="loading-screen" href="#loader-overlay" display="none" />
+
+    <!-- Status Bar -->
+    <use id="status-bar" href="#lm-status-bar" display="inline" />
 
 </svg>

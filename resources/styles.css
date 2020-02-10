@@ -1,65 +1,56 @@
-
-/* status bar */
-#lm-status-bg {
-  width:100%;
-  height:32;
-  fill:black;
+/* Status Bar */
+#lm-status-bar rect#background {
+    width:100%;
+    height:50;
+    fill:black;
 }
-#lm-status-time {
-  x: 100%-30;
-  y: 23;
-  font-size: 20;
-  font-family: System-Bold;
-  font-weight: regular;
-  fill: #d6d6d6;
-  /* fill: #1effce; */
-  text-anchor: end;
-  text-length: 8;
+#lm-status-bar rect#click-l {
+    width: 40%;
+    height: 60;
+    opacity: 0;
 }
-#lm-status-date {
-  x: 28;
-  y: 23;
-  font-size: 20;
-  font-family: System-Bold;
-  font-weight: regular;
-  fill: #d6d6d6;
-  text-anchor: start;
-  text-length: 16;
+#lm-status-bar rect#click-r {
+    x: 60%;
+    width: 40%;
+    height: 60;
+    opacity: 0;
 }
-#lm-stats {
-  x: 55%;
-  y: 16;
+#lm-status-bar text {
+    y: 20;
+    font-size: 20;
+    font-family: System-Bold;
+    font-weight: regular;
+    fill: #d6d6d6;
 }
-#lm-stats image {
-  x: -10;
-  y: -10;
-  width:20;
-  height:20;
-  /* fill:#6b6b6b; */
-  fill:#467ca6;
+#lm-status-bar text#date1 {
+    x: 30;
+    text-anchor: start;
+    text-length: 16;
 }
-#lm-info {
-  x: 100%-13;
-  y: 15;
+#lm-status-bar text#date2 {
+    x: 30;
+    y: 43;
+    text-anchor: start;
+    text-length: 16;
 }
-
-
-/* message overlay */
-#message-overlay rect {
-  fill:black;
-  width:100%;
-  height:100%;
+#lm-status-bar text#time {
+    x: 100%-10;
+    text-anchor: end;
+    text-length: 8;
 }
-#message-overlay textarea {
-  fill:white;
-  x:10;
-  y:20%;
-  width:100%-20;
-  height:80%;
-  text-anchor:start;
-  font-family:System-Regular;
-  font-size:24;
-  text-length: 128;
+#lm-status-bar image#back-btn {
+    x: 2;
+    y: 10;
+    width: 22;
+    height: 30;
+    fill:#1effce;
+}
+#lm-status-bar image#no-phone {
+    x:50%-13;
+    y: 10;
+    width: 26;
+    height: 26;
+    fill:#bf1c00;
 }
 
 

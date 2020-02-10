@@ -1,10 +1,18 @@
 <svg viewport-fill="black">
   <text
     x="50%"
-    y="50%+15"
+    y="40%+10"
     font-family="System-Regular"
     fill="white"
-    font-size="30"
+    font-size="20"
     font-weight="bold"
-    text-anchor="middle">Loading...</text>
+    text-anchor="middle">LesMills 0.0.2.b1</text>
+<text
+    x="50%"
+    y="40%+35"
+    font-family="System-Regular"
+    fill="white"
+    font-size="20"
+    font-weight="bold"
+    text-anchor="middle">Johnny Chan</text>
 </svg>

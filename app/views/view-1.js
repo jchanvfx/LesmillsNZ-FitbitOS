@@ -7,6 +7,11 @@ import { readFileSync, listDirSync } from "fs";
 const LM_FILE = "LM_TIMETABLE.cbor";
 const TIMETABLE = [];
 let TimetableList;
+let LoaderOverlay;
+let StatusBar;
+let StatusBtnBack;
+let StatusBtnRefresh;
+let StatusBarPhone;
 let OnFileRecievedUpdate;
 
 let views;
@@ -19,10 +24,26 @@ export function init(_views) {
 
 // when this view is mounted, setup elements and events.
 function onMount() {
+    TIMETABLE.length = 0;
+    TimetableList = document.getElementById("lm-class-list");
+    LoaderOverlay = document.getElementById("loading-screen");
+    StatusBar = document.getElementById("status-bar");
+    let dateStr = dateTime.getDate() + " " + dateTime.getMonthShortName();
+    StatusBar.getElementById("date1").text = "Today";
+    StatusBar.getElementById("date2").text = dateStr;
+    StatusBar.getElementById("time").text = dateTime.getTime12hr();
+    StatusBtnBack = StatusBar.getElementById("click-l");
+    StatusBtnRefresh = StatusBar.getElementById("click-r");
+    StatusBarPhone = StatusBar.getElementById("no-phone");
     OnFileRecievedUpdate = false;
+
     setupTimetable();
     initTimetable();
     connectEvents();
+
+    if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+        displayElement(StatusBarPhone, false);
+    }
 }
 
 // connect up add the events.
@@ -37,6 +58,9 @@ function connectEvents() {
     inbox.addEventListener("newfile", onDataRecieved);
     // update the time.
     dateTime.registerCallback(onTimeUpdate);
+
+    StatusBtnBack.onclick = onStatusBtnBackClicked;
+    StatusBtnRefresh.onclick = onStatusBtnRefreshClicked;
 };
 
 // sample button click with navigation.
@@ -69,8 +93,16 @@ function sendValue(key, data=null) {
             messaging.peerSocket.send({key: key, value: data});
         }
     } else if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
-        // TODO: display phone discpnnected icon.
+        displayElement(StatusBarPhone, true);
     }
+}
+
+function onStatusBtnBackClicked() {
+    console.log("Menu Clicked");
+}
+
+function onStatusBtnRefreshClicked() {
+    console.log("Refresh Clicked");
 }
 
 // callback when file transfer has completed.
@@ -84,6 +116,7 @@ function onDataRecieved() {
             if (OnFileRecievedUpdate) {
                 let data = readFileSync(LM_FILE, "cbor");
                 updateTimetable(data);
+                displayElement(TimetableList, true);
                 OnFileRecievedUpdate = false;
             }
 
@@ -127,25 +160,18 @@ function onConnectionClosed() {
 }
 // time update callback.
 function onTimeUpdate(data) {
-    // console.log(`time: ${data.time}`);
+    StatusBar.getElementById("time").text = data.time;
 };
-
 // load timetable data and intialize the list UI
 function initTimetable() {
     let data = readFile(LM_FILE);
     let date = dateTime.getDateObj();
-    let date1 = dateTime.getDateObj(date);
-    let date2 = dateTime.getDateObj(date);
-    date1.setDate(date.getDate() + 1);
-    date2.setDate(date.getDate() + 2);
 
     let dKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
-    let dKey1 = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
-    let dKey2 = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
-
     if (dKey in data) {
         updateTimetable(data);
-        // request background update.
+        displayElement(TimetableList, true);
+        // request background update if last sync is more than 48hrs ago.
         let fetchedTime = new Date(data['fetched']);
         let timeDiff = Math.round(Math.abs(date - fetchedTime) / 36e5);
         if (timeDiff < 48) {
@@ -163,12 +189,25 @@ function initTimetable() {
     //        display phone connection lost screen.
 }
 
-// UI METHODS
+
+// Gui Methods
 //-----------------------------------------------------------------------------
+
+// toggle widget visibility.
+function displayElement(element, display=true) {
+    element.style.display = display ? "inline" : "none";
+}
+
+// toggle loading screen widget visibility.
+function displayLoader(display=true, text="loading...", subText="") {
+    LoaderOverlay.getElementById("text").text = text;
+    LoaderOverlay.getElementById("sub-text").text = subText;
+    LoaderOverlay.animate(display ? "enable" : "disable");
+    LoaderOverlay.style.display = display ? "inline" : "none";;
+}
 
 // initialize timetable list.
 function setupTimetable() {
-    TimetableList = document.getElementById("lm-class-list");
     TimetableList.delegate = {
         getTileInfo: index => {
             if (TIMETABLE.length != 0) {

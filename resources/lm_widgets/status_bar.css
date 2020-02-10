@@ -1,0 +1,41 @@
+/* status bar */
+#lm-status-bg {
+    width:100%;
+    height:60;
+    fill:black;
+}
+#lm-status-time {
+    x: 100%-30;
+    y: 23;
+    font-size: 20;
+    font-family: System-Bold;
+    font-weight: regular;
+    fill: #d6d6d6;
+    text-anchor: end;
+    text-length: 8;
+}
+#lm-status-date {
+    x: 28;
+    y: 23;
+    font-size: 20;
+    font-family: System-Bold;
+    font-weight: regular;
+    fill: #d6d6d6;
+    text-anchor: start;
+    text-length: 16;
+}
+#lm-stats {
+    x: 55%;
+    y: 16;
+}
+#lm-stats image {
+    x: -10;
+    y: -10;
+    width:20;
+    height:20;
+    fill:#467ca6;
+}
+#lm-info {
+    x: 100%-13;
+    y: 15;
+}
