@@ -7,6 +7,8 @@ import { readFileSync, listDirSync } from "fs";
 const LM_FILE = "LM_TIMETABLE.cbor";
 const TIMETABLE = [];
 let TimetableList;
+let OnFileRecievedUpdate;
+
 let views;
 
 export function init(_views) {
@@ -17,6 +19,7 @@ export function init(_views) {
 
 // when this view is mounted, setup elements and events.
 function onMount() {
+    OnFileRecievedUpdate = false;
     setupTimetable();
     initTimetable();
     connectEvents();
@@ -77,8 +80,12 @@ function onDataRecieved() {
         if (filename == LM_FILE) {
             console.log(`File ${LM_FILE} recieved!`);
 
-            let data = readFileSync(LM_FILE, "cbor");
-            updateTimetable(data);
+            // update timetable if specified.
+            if (OnFileRecievedUpdate) {
+                let data = readFileSync(LM_FILE, "cbor");
+                updateTimetable(data);
+                OnFileRecievedUpdate = false;
+            }
 
             // TODO update ui elements
 
@@ -127,16 +134,30 @@ function onTimeUpdate(data) {
 function initTimetable() {
     let data = readFile(LM_FILE);
     let date = dateTime.getDateObj();
-    let dKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
+    let date1 = dateTime.getDateObj(date);
+    let date2 = dateTime.getDateObj(date);
+    date1.setDate(date.getDate() + 1);
+    date2.setDate(date.getDate() + 2);
 
-    console.log(JSON.stringify(data));
+    let dKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
+    let dKey1 = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
+    let dKey2 = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
 
     if (dKey in data) {
         updateTimetable(data);
+        // request background update.
+        let fetchedTime = new Date(data['fetched']);
+        let timeDiff = Math.round(Math.abs(date - fetchedTime) / 36e5);
+        if (timeDiff < 48) {
+            OnFileRecievedUpdate = false;
+            sendValue("lm-fetch");
+        }
         return;
     }
 
     console.log('EMPTY DATA');
+
+    OnFileRecievedUpdate = true;
     sendValue("lm-fetch");
     //  TODO: show loading screen or
     //        display phone connection lost screen.

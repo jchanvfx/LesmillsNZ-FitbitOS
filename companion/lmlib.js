@@ -25,7 +25,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
             let fltrs = [dKey, dKey1, dKey2];
 
             let timetable = {};
-            timetable['fetched'] = today.toString()
+            timetable['fetched'] = today.toJSON();
             timetable[dKey.toString()] = [];
             timetable[dKey1.toString()] = [];
             timetable[dKey2.toString()] = [];
