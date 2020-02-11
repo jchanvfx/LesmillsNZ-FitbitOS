@@ -9,10 +9,14 @@ const TIMETABLE = [];
 let TimetableList;
 let LoaderOverlay;
 let StatusBar;
-let StatusBtnBack;
+let StatusBtnMenu;
 let StatusBtnRefresh;
 let StatusBarPhone;
-let OnFileRecievedUpdate;
+let MenuScreen;
+let MenuBtn1;
+let MenuBtn2;
+let MenuBtn3;
+let OnFileRecievedUpdateGui;
 
 let views;
 
@@ -28,16 +32,19 @@ function onMount() {
     TimetableList = document.getElementById("lm-class-list");
     LoaderOverlay = document.getElementById("loading-screen");
     StatusBar = document.getElementById("status-bar");
-    let dateStr = dateTime.getDate() + " " + dateTime.getMonthShortName();
-    StatusBar.getElementById("date1").text = "Today";
-    StatusBar.getElementById("date2").text = dateStr;
+    StatusBar.getElementById("date1").text = `${dateTime.getDayShortName()} (Today)`;
+    StatusBar.getElementById("date2").text = dateTime.getDate() + " " + dateTime.getMonthName();
     StatusBar.getElementById("time").text = dateTime.getTime12hr();
-    StatusBtnBack = StatusBar.getElementById("click-l");
+    StatusBtnMenu = StatusBar.getElementById("click-l");
     StatusBtnRefresh = StatusBar.getElementById("click-r");
     StatusBarPhone = StatusBar.getElementById("no-phone");
-    OnFileRecievedUpdate = false;
+    MenuScreen = document.getElementById("menu-screen");
+    MenuBtn1 = MenuScreen.getElementById("btn1");
+    MenuBtn2 = MenuScreen.getElementById("btn2");
+    MenuBtn3 = MenuScreen.getElementById("btn3");
+    OnFileRecievedUpdateGui = false;
 
-    setupTimetable();
+    buildTimetable();
     initTimetable();
     connectEvents();
 
@@ -45,9 +52,10 @@ function onMount() {
         displayElement(StatusBarPhone, false);
     }
 }
-
 // connect up add the events.
 function connectEvents() {
+    // update the time.
+    dateTime.registerCallback(onTimeUpdate);
     // message socket opens.
     messaging.peerSocket.onopen = onConnectionOpen;
     // message socket closes
@@ -56,20 +64,13 @@ function connectEvents() {
     messaging.peerSocket.onmessage = onMessageRecieved;
     // process incomming data transfers.
     inbox.addEventListener("newfile", onDataRecieved);
-    // update the time.
-    dateTime.registerCallback(onTimeUpdate);
-
-    StatusBtnBack.onclick = onStatusBtnBackClicked;
-    StatusBtnRefresh.onclick = onStatusBtnRefreshClicked;
+    // button events.
+    StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
+    StatusBtnRefresh.addEventListener("click", onStatusBtnRefreshClicked);
+    MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
+    MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
+    MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
 };
-
-// sample button click with navigation.
-function clickHandler(_evt) {
-    console.log("view-1 Button Clicked!");
-    /* Navigate to another screen */
-    views.navigate("view-2");
-}
-
 // local file reader.
 function readFile(fileName) {
     let data = {};
@@ -83,7 +84,6 @@ function readFile(fileName) {
     }
     return data;
 }
-
 // send data to companion via Messaging API
 function sendValue(key, data=null) {
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
@@ -96,13 +96,50 @@ function sendValue(key, data=null) {
         displayElement(StatusBarPhone, true);
     }
 }
-
-function onStatusBtnBackClicked() {
-    console.log("Menu Clicked");
+// callback for the status bar menu button.
+function onStatusBtnMenuClicked() {
+    let date1 = new Date();
+    let date2 = new Date();
+    date1.setDate(date1.getDate() + 1);
+    date2.setDate(date2.getDate() + 2);
+    MenuBtn1.text =
+        `${dateTime.getDayShortName()} ` +
+        `${dateTime.getDate()} ` +
+        `${dateTime.getMonthShortName()}`;
+    MenuBtn2.text =
+        `${dateTime.DAYS_SHORT[date1.getDay()]} ` +
+        `${date1.getDate()} ` +
+        `${dateTime.MONTHS_SHORT[date1.getMonth()]} `;
+    MenuBtn3.text =
+        `${dateTime.DAYS_SHORT[date2.getDay()]} ` +
+        `${date2.getDate()} ` +
+        `${dateTime.MONTHS_SHORT[date2.getMonth()]}`;
+    MenuScreen.style.display = "inline";
+    MenuScreen.animate("enable");
 }
-
+// callback for the status refresh button.
 function onStatusBtnRefreshClicked() {
     console.log("Refresh Clicked");
+}
+// callback menu buttons.
+function onMenuBtn1Clicked() {
+    StatusBar.getElementById("date1").text = `${dateTime.getDayShortName()} (Today)`;
+    MenuScreen.animate("disable");
+    setTimeout(() => {MenuScreen.style.display = "none";}, 800);
+}
+function onMenuBtn2Clicked() {
+    let date = new Date();
+    date.setDate(date.getDate() + 1);
+    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date.getDay()]}`;
+    MenuScreen.animate("disable");
+    setTimeout(() => {MenuScreen.style.display = "none";}, 800);
+}
+function onMenuBtn3Clicked() {
+    let date = new Date();
+    date.setDate(date.getDate() + 2);
+    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date.getDay()]}`;
+    MenuScreen.animate("disable");
+    setTimeout(() => {MenuScreen.style.display = "none";}, 800);
 }
 
 // callback when file transfer has completed.
@@ -113,16 +150,19 @@ function onDataRecieved() {
             console.log(`File ${LM_FILE} recieved!`);
 
             // update timetable if specified.
-            if (OnFileRecievedUpdate) {
+            if (OnFileRecievedUpdateGui) {
+                OnFileRecievedUpdateGui = false;
                 let data = readFileSync(LM_FILE, "cbor");
                 updateTimetable(data);
                 displayElement(TimetableList, true);
-                OnFileRecievedUpdate = false;
+                displayLoader(false);
             }
-
-            // TODO update ui elements
-
         }
+    }
+    if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+        displayElement(StatusBarPhone, false);
+    } else {
+        displayElement(StatusBarPhone, true);
     }
 }
 // callback when a message is recieved.
@@ -140,7 +180,10 @@ function onMessageRecieved(evt) {
             }
             break;
         case "lm-fetchReply":
-            console.log('fetch recieved');
+            if (OnFileRecievedUpdateGui) {
+                let clubName = evt.data.value;
+                displayLoader(true, "Retrieving Timetable...", clubName);
+            }
             break;
         case "lm-dataQueued":
             console.log('FileTransfer data has been queued');
@@ -166,29 +209,28 @@ function onTimeUpdate(data) {
 function initTimetable() {
     let data = readFile(LM_FILE);
     let date = dateTime.getDateObj();
-
     let dKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     if (dKey in data) {
         updateTimetable(data);
         displayElement(TimetableList, true);
-        // request background update if last sync is more than 48hrs ago.
+        // request background update if last sync is more than 48hrs ago
+        // then fetch data in the background.
         let fetchedTime = new Date(data['fetched']);
         let timeDiff = Math.round(Math.abs(date - fetchedTime) / 36e5);
         if (timeDiff < 48) {
-            OnFileRecievedUpdate = false;
+            OnFileRecievedUpdateGui = false;
             sendValue("lm-fetch");
         }
         return;
     }
 
-    console.log('EMPTY DATA');
-
-    OnFileRecievedUpdate = true;
+    console.log('Requesting Data...');
+    OnFileRecievedUpdateGui = true;
     sendValue("lm-fetch");
-    //  TODO: show loading screen or
-    //        display phone connection lost screen.
-}
+    displayElement(TimetableList, false);
 
+    // TODO: display phone connection lost screen if socket closed.
+}
 
 // Gui Methods
 //-----------------------------------------------------------------------------
@@ -203,11 +245,11 @@ function displayLoader(display=true, text="loading...", subText="") {
     LoaderOverlay.getElementById("text").text = text;
     LoaderOverlay.getElementById("sub-text").text = subText;
     LoaderOverlay.animate(display ? "enable" : "disable");
-    LoaderOverlay.style.display = display ? "inline" : "none";;
+    LoaderOverlay.style.display = display ? "inline" : "none";
 }
 
 // initialize timetable list.
-function setupTimetable() {
+function buildTimetable() {
     TimetableList.delegate = {
         getTileInfo: index => {
             if (TIMETABLE.length != 0) {
@@ -232,7 +274,7 @@ function setupTimetable() {
                     date: dateTime.getDateObj(),
                     desc: "---",
                     color: "",
-                    finished: "y",
+                    finished: true,
                 };
             }
         },

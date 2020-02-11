@@ -5,9 +5,7 @@
     <!-- Additional Imports -->
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui" />
-
-    <!-- TEMPORARY BUTTON -->
-    <link rel="import" href="/mnt/sysassets/widgets/push_button_widget.gui" />
+    <link rel="import" href="/mnt/sysassets/widgets/square_button_widget.gui" />
 
     <!-- Loader Widget -->
     <link rel="stylesheet" href="lm_widgets/loader_widget.css" />
@@ -18,7 +16,7 @@
     <!-- Status Bar -->
     <symbol id="lm-status-bar">
         <rect id="background"/>
-        <image id="back-btn" href="./resources/images/status_back.png" />
+        <image id="menu-btn" href="./resources/images/menu_btn.png" />
         <text id="date1">(No Data)</text>
         <text id="date2">(No Data)</text>
         <text id="time">00:00am</text>
@@ -30,6 +28,26 @@
     <symbol id="message-overlay">
         <rect/>
         <textarea id="text"/>
+    </symbol>
+    <!-- LM Menu -->
+    <symbol id="days-menu">
+        <section y="50" height="100%-50">
+            <animate attributeName="x" begin="enable" from="-100%" to="0%" dur="0.5" easing="ease-in-out" />
+            <animate attributeName="x" begin="disable" from="0%" to="-100%" dur="0.5" easing="ease-in-out"/>
+            <rect width="100%" height="100%" fill="black" />
+            <use id="btn1" href="#square-button" fill="#ff4b3b">
+                <set href="#text" attributeName="text-length" to="12" />
+                <set href="#text" attributeName="text-buffer" to="button1" />
+            </use>
+            <use id="btn2" href="#square-button" y="$" fill="#ff4b3b">
+                <set href="#text" attributeName="text-length" to="12" />
+                <set href="#text" attributeName="text-buffer" to="button2" />
+            </use>
+            <use id="btn3" href="#square-button" y="$" fill="#ff4b3b">
+                <set href="#text" attributeName="text-length" to="12" />
+                <set href="#text" attributeName="text-buffer" to="button3" />
+            </use>
+        </section>
     </symbol>
   </defs>
 </svg>

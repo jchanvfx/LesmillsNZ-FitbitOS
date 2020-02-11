@@ -16,4 +16,4 @@ const views = init(
 // Select the first view (view-1) after 1 second
 setTimeout(() => {
   views.navigate("view-1");
-}, 1500);
+}, 1000);

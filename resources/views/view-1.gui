@@ -1,8 +1,8 @@
 <svg viewport-fill="black">
 
     <!-- LesMills Virtual Tile -->
-    <section y="50" height="100%-60">
-        <use id="lm-class-list" href="#tile-list" display="inline">
+    <section y="50" height="100%-50">
+        <use id="lm-class-list" href="#tile-list" display="none">
             <var id="virtual" value="1" />
             <var id="reorder-enabled" value="0" />
             <var id="peek-enabled" value="0" />
@@ -21,10 +21,10 @@
             </use>
         </use>
     </section>
-
     <!-- Loading Screen -->
     <use id="loading-screen" href="#loader-overlay" display="none" />
-
+    <!-- Day Selector Menu -->
+    <use id="menu-screen" href="#days-menu" display="none" />
     <!-- Status Bar -->
     <use id="status-bar" href="#lm-status-bar" display="inline" />
 

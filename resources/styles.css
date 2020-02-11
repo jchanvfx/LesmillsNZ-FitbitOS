@@ -23,12 +23,12 @@
     fill: #d6d6d6;
 }
 #lm-status-bar text#date1 {
-    x: 30;
+    x: 45;
     text-anchor: start;
     text-length: 16;
 }
 #lm-status-bar text#date2 {
-    x: 30;
+    x: 45;
     y: 43;
     text-anchor: start;
     text-length: 16;
@@ -38,42 +38,17 @@
     text-anchor: end;
     text-length: 8;
 }
-#lm-status-bar image#back-btn {
+#lm-status-bar image#menu-btn {
     x: 2;
-    y: 10;
-    width: 22;
-    height: 30;
+    y: 3;
+    width: 35;
+    height: 40;
     fill:#1effce;
 }
 #lm-status-bar image#no-phone {
-    x:50%-13;
-    y: 10;
+    x:50%+10;
+    y: 12;
     width: 26;
     height: 26;
     fill:#bf1c00;
 }
-
-
-/* TEST STUFF */
-.title {
-    x: 50%;
-    y: 50%+15;
-    fill: fb-yellow;
-    font-family: System-Regular;
-    font-size: 40;
-    font-weight: bold;
-    text-anchor: middle;
-  }
-
-  .btn {
-    y: 100%-60;
-    height: 60;
-    fill: fb-red;
-    font-family: System-Regular;
-    font-size: 40;
-  }
-
-  #text {
-    y: 12;
-    fill: white;
-  }
