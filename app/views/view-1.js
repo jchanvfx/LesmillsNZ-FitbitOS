@@ -98,6 +98,11 @@ function sendValue(key, data=null) {
 }
 // callback for the status bar menu button.
 function onStatusBtnMenuClicked() {
+    if (MenuScreen.style.display == "inline") {
+        MenuScreen.animate("disable");
+        setTimeout(() => {MenuScreen.style.display = "none";}, 800);
+        return;
+    }
     let date1 = new Date();
     let date2 = new Date();
     date1.setDate(date1.getDate() + 1);
