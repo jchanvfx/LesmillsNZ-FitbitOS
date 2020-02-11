@@ -16,6 +16,7 @@ let MenuScreen;
 let MenuBtn1;
 let MenuBtn2;
 let MenuBtn3;
+let MessageOverlay;
 let OnFileRecievedUpdateGui;
 
 let views;
@@ -42,6 +43,7 @@ function onMount() {
     MenuBtn1 = MenuScreen.getElementById("btn1");
     MenuBtn2 = MenuScreen.getElementById("btn2");
     MenuBtn3 = MenuScreen.getElementById("btn3");
+    MessageOverlay = document.getElementById("message-screen");
     OnFileRecievedUpdateGui = false;
 
     buildTimetable();
@@ -125,6 +127,14 @@ function onStatusBtnMenuClicked() {
 // callback for the status refresh button.
 function onStatusBtnRefreshClicked() {
     console.log("Refresh Clicked");
+    let currentIdx = 0;
+    let date = dateTime.getDateObj();
+    let time;
+    for (var i = 0; i < TIMETABLE.length; i++) {
+        time = new Date(TIMETABLE[i].date);
+        if (time - date > 0) {currentIdx = i; break;}
+    }
+    TimetableList.value = currentIdx;
 }
 // callback menu buttons.
 function onMenuBtn1Clicked() {
@@ -153,6 +163,9 @@ function onDataRecieved() {
     while (filename = inbox.nextFile()) {
         if (filename == LM_FILE) {
             console.log(`File ${LM_FILE} recieved!`);
+            // hide loader & message screen just incase.
+            displayLoader(false);
+            displayMessage(false);
 
             // update timetable if specified.
             if (OnFileRecievedUpdateGui) {
@@ -160,7 +173,6 @@ function onDataRecieved() {
                 let data = readFileSync(LM_FILE, "cbor");
                 updateTimetable(data);
                 displayElement(TimetableList, true);
-                displayLoader(false);
             }
         }
     }
@@ -175,24 +187,31 @@ function onMessageRecieved(evt) {
     switch (evt.data.key) {
         case "lm-noClub":
             console.log("no club selected.");
-            // TODO: prompt no club selected warning.
+            displayMessage(
+                true,
+                "Please set a LesMills club location from the phone app settings.",
+                "Club Not Set"
+            );
             break;
         case "lm-clubChanged":
             if (evt.data.value) {
+                // TODO: poke display.
+                OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
                 console.log(`Club changed to: ${clubName}`);
-                // TODO: propt loading screen with club name.
+                displayLoader(true, "Changing Clubs...", clubName);
             }
             break;
         case "lm-fetchReply":
             if (OnFileRecievedUpdateGui) {
+                // TODO: poke display.
                 let clubName = evt.data.value;
                 displayLoader(true, "Retrieving Timetable...", clubName);
             }
             break;
         case "lm-dataQueued":
             console.log('FileTransfer data has been queued');
-            // TODO: propt loading screen.
+            // TODO: propt loading screen. ("waiting for data")
             break;
         default:
             return;
@@ -244,13 +263,20 @@ function initTimetable() {
 function displayElement(element, display=true) {
     element.style.display = display ? "inline" : "none";
 }
-
+// toggle message overlay widget visibility.
+function displayMessage(display=true, text="", title="") {
+    let mixedText = MessageOverlay.getElementById("#mixedtext");
+    let mixedTextBody = mixedText.getElementById("copy");
+    mixedText.text = display ? title : "";
+    mixedTextBody.text = display ? text : "";
+    displayElement(MessageOverlay, display);
+}
 // toggle loading screen widget visibility.
 function displayLoader(display=true, text="loading...", subText="") {
     LoaderOverlay.getElementById("text").text = text;
     LoaderOverlay.getElementById("sub-text").text = subText;
     LoaderOverlay.animate(display ? "enable" : "disable");
-    LoaderOverlay.style.display = display ? "inline" : "none";
+    displayElement(LoaderOverlay, display);
 }
 
 // initialize timetable list.

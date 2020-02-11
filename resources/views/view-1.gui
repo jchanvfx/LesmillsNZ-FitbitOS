@@ -21,11 +21,13 @@
             </use>
         </use>
     </section>
+    <!-- Message Screen -->
+    <use id="message-screen" href="#message-overlay" display="none" />
     <!-- Loading Screen -->
     <use id="loading-screen" href="#loader-overlay" display="none" />
     <!-- Day Selector Menu -->
     <use id="menu-screen" href="#days-menu" display="none" />
     <!-- Status Bar -->
-    <use id="status-bar" href="#lm-status-bar" display="inline" />
+    <use id="status-bar" href="#lm-status-bar" />
 
 </svg>

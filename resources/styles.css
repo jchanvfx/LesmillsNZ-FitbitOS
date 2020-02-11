@@ -1,3 +1,8 @@
+/* defaults */
+text {
+    font-family:System-Regular;
+}
+
 /* Status Bar */
 #lm-status-bar rect#background {
     width:100%;

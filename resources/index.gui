@@ -6,7 +6,7 @@
     fill="white"
     font-size="20"
     font-weight="bold"
-    text-anchor="middle">LesMills 0.0.2.b1</text>
+    text-anchor="middle">Johnny Chan</text>
 <text
     x="50%"
     y="40%+35"
@@ -14,5 +14,5 @@
     fill="white"
     font-size="20"
     font-weight="bold"
-    text-anchor="middle">Johnny Chan</text>
+    text-anchor="middle">Build: v0.0.2</text>
 </svg>
