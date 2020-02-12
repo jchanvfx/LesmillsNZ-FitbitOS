@@ -117,16 +117,6 @@ function readFile(fileName) {
     return data;
 }
 
-// TODO: node version doesn't support ecmascript6 features.
-if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function(searchString, position) {
-        position = position || 0;
-        return this.indexOf(searchString, position) === position;
-    };
-}
-
-// NOT SURE WHY THE FUCK STARTS WITH IS NOT WORKING...............
-
 // clean up old local data files.
 function cleanUpFiles() {
     let date = dateTime.getDateObj();
@@ -139,14 +129,15 @@ function cleanUpFiles() {
     let listDir = listDirSync("/private/data");
     while((dirIter = listDir.next()) && !dirIter.done) {
         if (dirIter.value === undefined) {continue;}
-        let startsWithPrefix = dirIter.value.startsWith(LM_PREFIX);
+
         console.log(`Remove: ${dirIter.value}`);
-        // if (startsWithPrefix.toString() == "true") {
-        //     if (!keepList.includes(dirIter.value)) {
-        //         console.log('DEL');
-        //         // unlinkSync(dirIter.value);
-        //     }
-        // }
+        // ECMAScript 5.1 doesn't support "String.startsWith()"
+        if (dirIter.value.indexOf(LM_PREFIX) === 0) {
+            if (!keepList.includes(dirIter.value)) {
+                console.log('DEL');
+                // unlinkSync(dirIter.value);
+            }
+        }
     }
 }
 
