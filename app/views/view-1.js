@@ -399,7 +399,7 @@ function setTimetableDay(dKey, jumpToIndex=true) {
         // then fetch data in the background.
         let fetchedTime = new Date(data['fetched']);
         let timeDiff = Math.round(Math.abs(date - fetchedTime) / 36e5);
-        if (timeDiff < 48) {
+        if (timeDiff > 48) {
             OnFileRecievedUpdateGui = false;
             sendValue("lm-fetch");
         }
