@@ -2,54 +2,80 @@ import document from "document";
 import * as dateTime from "../datelib"
 import * as messaging from "messaging";
 import { inbox } from "file-transfer"
-import { readFileSync, listDirSync } from "fs";
+import { readFileSync, listDirSync, unlinkSync } from "fs";
 
-const LM_FILE = "LM_TIMETABLE.cbor";
+const LM_PREFIX = "LM_dat";
 const TIMETABLE = [];
+
 let TimetableList;
 let LoaderOverlay;
 let StatusBar;
 let StatusBtnMenu;
 let StatusBtnRefresh;
 let StatusBarPhone;
+let MessageOverlay;
 let MenuScreen;
 let MenuBtn1;
 let MenuBtn2;
 let MenuBtn3;
-let MessageOverlay;
+
 let OnFileRecievedUpdateGui;
+let CurrentDayKey;
 
+const date1 = new Date();
+const date2 = new Date();
+date1.setDate(date1.getDate() + 1);
+date2.setDate(date2.getDate() + 2);
+
+// screen initialize.
 let views;
-
 export function init(_views) {
     views = _views;
     console.log("view-1 init()");
     onMount();
 }
 
-// when this view is mounted, setup elements and events.
+// entry point when this view is mounted, setup elements and events.
 function onMount() {
-    TIMETABLE.length = 0;
     TimetableList = document.getElementById("lm-class-list");
     LoaderOverlay = document.getElementById("loading-screen");
     StatusBar = document.getElementById("status-bar");
-    StatusBar.getElementById("date1").text = `${dateTime.getDayShortName()} (Today)`;
-    StatusBar.getElementById("date2").text = dateTime.getDate() + " " + dateTime.getMonthName();
-    StatusBar.getElementById("time").text = dateTime.getTime12hr();
     StatusBtnMenu = StatusBar.getElementById("click-l");
     StatusBtnRefresh = StatusBar.getElementById("click-r");
     StatusBarPhone = StatusBar.getElementById("no-phone");
+    MessageOverlay = document.getElementById("message-screen");
     MenuScreen = document.getElementById("menu-screen");
     MenuBtn1 = MenuScreen.getElementById("btn1");
     MenuBtn2 = MenuScreen.getElementById("btn2");
     MenuBtn3 = MenuScreen.getElementById("btn3");
-    MessageOverlay = document.getElementById("message-screen");
+
+    MenuBtn1.text =
+        `${dateTime.getDayShortName()} ` +
+        `${dateTime.getDate()} ` +
+        `${dateTime.getMonthShortName()}`;
+    MenuBtn2.text =
+        `${dateTime.DAYS_SHORT[date1.getDay()]} ` +
+        `${date1.getDate()} ` +
+        `${dateTime.MONTHS_SHORT[date1.getMonth()]} `;
+    MenuBtn3.text =
+        `${dateTime.DAYS_SHORT[date2.getDay()]} ` +
+        `${date2.getDate()} ` +
+        `${dateTime.MONTHS_SHORT[date2.getMonth()]}`;
+
+    TIMETABLE.length = 0;
+
+    StatusBar.getElementById("date1").text = `${dateTime.getDayShortName()} (Today)`;
+    StatusBar.getElementById("date2").text = dateTime.getDate() + " " + dateTime.getMonthName();
+    StatusBar.getElementById("time").text = dateTime.getTime12hr();
+
+    let date = dateTime.getDateObj();
+    CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     OnFileRecievedUpdateGui = false;
 
+    // initialize here.
     buildTimetable();
-    initTimetable();
     connectEvents();
-
+    setTimetableDay(CurrentDayKey);
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
         displayElement(StatusBarPhone, false);
     }
@@ -73,6 +99,10 @@ function connectEvents() {
     MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
     MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
 };
+
+// Util Methods
+//-----------------------------------------------------------------------------
+
 // local file reader.
 function readFile(fileName) {
     let data = {};
@@ -86,6 +116,43 @@ function readFile(fileName) {
     }
     return data;
 }
+
+// TODO: node version doesn't support ecmascript6 features.
+if (!String.prototype.startsWith) {
+    String.prototype.startsWith = function(searchString, position) {
+        position = position || 0;
+        return this.indexOf(searchString, position) === position;
+    };
+}
+
+// NOT SURE WHY THE FUCK STARTS WITH IS NOT WORKING...............
+
+// clean up old local data files.
+function cleanUpFiles() {
+    let date = dateTime.getDateObj();
+    let keepList = [
+        `${LM_PREFIX}${date.getDay()}${date.getDate()}${date.getMonth()}.cbor`,
+        `${LM_PREFIX}${date1.getDay()}${date1.getDate()}${date1.getMonth()}.cbor`,
+        `${LM_PREFIX}${date2.getDay()}${date2.getDate()}${date2.getMonth()}.cbor`,
+    ];
+    let dirIter;
+    let listDir = listDirSync("/private/data");
+    while((dirIter = listDir.next()) && !dirIter.done) {
+        if (dirIter.value === undefined) {continue;}
+        let startsWithPrefix = dirIter.value.startsWith(LM_PREFIX);
+        console.log(`Remove: ${dirIter.value}`);
+        // if (startsWithPrefix.toString() == "true") {
+        //     if (!keepList.includes(dirIter.value)) {
+        //         console.log('DEL');
+        //         // unlinkSync(dirIter.value);
+        //     }
+        // }
+    }
+}
+
+// Event Methods
+//-----------------------------------------------------------------------------
+
 // send data to companion via Messaging API
 function sendValue(key, data=null) {
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
@@ -98,71 +165,14 @@ function sendValue(key, data=null) {
         displayElement(StatusBarPhone, true);
     }
 }
-// callback for the status bar menu button.
-function onStatusBtnMenuClicked() {
-    if (MenuScreen.style.display == "inline") {
-        MenuScreen.animate("disable");
-        setTimeout(() => {MenuScreen.style.display = "none";}, 800);
-        return;
-    }
-    let date1 = new Date();
-    let date2 = new Date();
-    date1.setDate(date1.getDate() + 1);
-    date2.setDate(date2.getDate() + 2);
-    MenuBtn1.text =
-        `${dateTime.getDayShortName()} ` +
-        `${dateTime.getDate()} ` +
-        `${dateTime.getMonthShortName()}`;
-    MenuBtn2.text =
-        `${dateTime.DAYS_SHORT[date1.getDay()]} ` +
-        `${date1.getDate()} ` +
-        `${dateTime.MONTHS_SHORT[date1.getMonth()]} `;
-    MenuBtn3.text =
-        `${dateTime.DAYS_SHORT[date2.getDay()]} ` +
-        `${date2.getDate()} ` +
-        `${dateTime.MONTHS_SHORT[date2.getMonth()]}`;
-    MenuScreen.style.display = "inline";
-    MenuScreen.animate("enable");
-}
-// callback for the status refresh button.
-function onStatusBtnRefreshClicked() {
-    console.log("Refresh Clicked");
-    let currentIdx = 0;
-    let date = dateTime.getDateObj();
-    let time;
-    for (var i = 0; i < TIMETABLE.length; i++) {
-        time = new Date(TIMETABLE[i].date);
-        if (time - date > 0) {currentIdx = i; break;}
-    }
-    TimetableList.value = currentIdx;
-}
-// callback menu buttons.
-function onMenuBtn1Clicked() {
-    StatusBar.getElementById("date1").text = `${dateTime.getDayShortName()} (Today)`;
-    MenuScreen.animate("disable");
-    setTimeout(() => {MenuScreen.style.display = "none";}, 800);
-}
-function onMenuBtn2Clicked() {
-    let date = new Date();
-    date.setDate(date.getDate() + 1);
-    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date.getDay()]}`;
-    MenuScreen.animate("disable");
-    setTimeout(() => {MenuScreen.style.display = "none";}, 800);
-}
-function onMenuBtn3Clicked() {
-    let date = new Date();
-    date.setDate(date.getDate() + 2);
-    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date.getDay()]}`;
-    MenuScreen.animate("disable");
-    setTimeout(() => {MenuScreen.style.display = "none";}, 800);
-}
 
 // callback when file transfer has completed.
 function onDataRecieved() {
     let filename;
+    let CurrentDayKeyFile = `${LM_PREFIX}${CurrentDayKey}.cbor`;
     while (filename = inbox.nextFile()) {
-        if (filename == LM_FILE) {
-            console.log(`File ${LM_FILE} recieved!`);
+        if (filename == CurrentDayKeyFile) {
+            console.log(`File ${filename} recieved!`);
             // hide loader & message screen just incase.
             displayLoader(false);
             displayMessage(false);
@@ -170,9 +180,7 @@ function onDataRecieved() {
             // update timetable if specified.
             if (OnFileRecievedUpdateGui) {
                 OnFileRecievedUpdateGui = false;
-                let data = readFileSync(LM_FILE, "cbor");
-                updateTimetable(data);
-                displayElement(TimetableList, true);
+                setTimetableDay(CurrentDayKey);
             }
         }
     }
@@ -229,31 +237,54 @@ function onConnectionClosed() {
 function onTimeUpdate(data) {
     StatusBar.getElementById("time").text = data.time;
 };
-// load timetable data and intialize the list UI
-function initTimetable() {
-    let data = readFile(LM_FILE);
-    let date = dateTime.getDateObj();
-    let dKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
-    if (dKey in data) {
-        updateTimetable(data);
-        displayElement(TimetableList, true);
-        // request background update if last sync is more than 48hrs ago
-        // then fetch data in the background.
-        let fetchedTime = new Date(data['fetched']);
-        let timeDiff = Math.round(Math.abs(date - fetchedTime) / 36e5);
-        if (timeDiff < 48) {
-            OnFileRecievedUpdateGui = false;
-            sendValue("lm-fetch");
-        }
+
+// Button Methods
+//-----------------------------------------------------------------------------
+
+// callback for the status bar menu button.
+function onStatusBtnMenuClicked() {
+    if (MenuScreen.style.display == "inline") {
+        MenuScreen.animate("disable");
+        setTimeout(() => {MenuScreen.style.display = "none";}, 800);
         return;
     }
-
-    console.log('Requesting Data...');
-    OnFileRecievedUpdateGui = true;
-    sendValue("lm-fetch");
-    displayElement(TimetableList, false);
-
-    // TODO: display phone connection lost screen if socket closed.
+    MenuScreen.style.display = "inline";
+    MenuScreen.animate("enable");
+}
+// callback for the status refresh button.
+function onStatusBtnRefreshClicked() {
+    console.log("Refresh Clicked");
+    let currentIdx = 0;
+    let date = dateTime.getDateObj();
+    let time;
+    for (let i = 0; i < TIMETABLE.length; i++) {
+        time = new Date(TIMETABLE[i].date);
+        if (time - date > 0) {currentIdx = i; break;}
+    }
+    TimetableList.value = currentIdx;
+}
+// callback menu buttons.
+function onMenuBtn1Clicked() {
+    StatusBar.getElementById("date1").text = `${dateTime.getDayShortName()} (Today)`;
+    MenuScreen.animate("disable");
+    setTimeout(() => {MenuScreen.style.display = "none";}, 800);
+    let date = dateTime.getDateObj();
+    CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
+    setTimetableDay(CurrentDayKey);
+}
+function onMenuBtn2Clicked() {
+    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date1.getDay()]}`;
+    MenuScreen.animate("disable");
+    setTimeout(() => {MenuScreen.style.display = "none";}, 800);
+    CurrentDayKey = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
+    setTimetableDay(CurrentDayKey);
+}
+function onMenuBtn3Clicked() {
+    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date2.getDay()]}`;
+    MenuScreen.animate("disable");
+    setTimeout(() => {MenuScreen.style.display = "none";}, 800);
+    CurrentDayKey = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
+    setTimetableDay(CurrentDayKey);
 }
 
 // Gui Methods
@@ -336,36 +367,59 @@ function buildTimetable() {
     TimetableList.length = 10;
 }
 
-// update the timetable list
-function updateTimetable(data, jumpToIndex=true) {
-    // find nearest class index.
-    let currentIdx = 0;
-    let date = dateTime.getDateObj();
-    let dKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
-    if (dKey in data) {
-        let timetable = data[dKey.toString()];
+// set the timetable list with specified day.
+function setTimetableDay(dKey, jumpToIndex=true) {
+    // find data file eg. "LM_dat123.cbor"
+    // return: "{fetched: <tstamp>, value: <array>}"
+    let data = readFile(LM_PREFIX + dKey + ".cbor");
+
+    if (data.fetched && data.value) {
+        console.log("Found Data...");
+
+        // find next class index.
+        let currentIdx = 0;
+        let date = dateTime.getDateObj();
         let time;
-        for (var i = 0; i < timetable.length; i++) {
-            time = new Date(timetable[i].date);
+        for (let i = 0; i < data.value.length; i++) {
+            time = new Date(data.value[i].date);
             if (time - date > 0) {currentIdx = i; break;}
         }
-    }
-    // repopulate the timetable array.
-    TIMETABLE.length = 0;
-    if (dKey in data) {
-        for (var i = 0; i < data[dKey.toString()].length; i++) {
-            let itm = data[dKey.toString()][i];
+
+        // re-populate the timetable store array.
+        TIMETABLE.length = 0;
+        for (let i = 0; i < data.value.length; i++) {
+            let itm = data.value[i];
             itm.finished = (i < currentIdx);
             TIMETABLE.push(itm);
         }
+
+        // refresh to the list.
+        TimetableList.length = TIMETABLE.length;
+        TimetableList.redraw();
+
+        // jump to latest tile.
+        if (jumpToIndex) {
+            TimetableList.value = currentIdx;
+        }
+
+        displayElement(TimetableList, true);
+
+        // request background update if last sync is more than 48hrs ago
+        // then fetch data in the background.
+        let fetchedTime = new Date(data['fetched']);
+        let timeDiff = Math.round(Math.abs(date - fetchedTime) / 36e5);
+        if (timeDiff < 48) {
+            OnFileRecievedUpdateGui = false;
+            sendValue("lm-fetch");
+        }
+
+        cleanUpFiles();
+        return;
     }
-    // workaround to refresh to the list.
-    TimetableList.length = 0;
-    TimetableList.redraw();
-    TimetableList.length = TIMETABLE.length;
-    TimetableList.redraw();
-    // jump to latest tile.
-    if (jumpToIndex) {
-        TimetableList.value = currentIdx;
-    }
+
+    console.log('Requesting Data...');
+    OnFileRecievedUpdateGui = true;
+    sendValue("lm-fetch");
+    displayElement(TimetableList, false);
+    cleanUpFiles();
 }

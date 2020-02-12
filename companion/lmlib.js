@@ -30,7 +30,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
             timetable[dKey1.toString()] = [];
             timetable[dKey2.toString()] = [];
             // retrive and query 3 days of data.
-            for (var i = 0; i < data.Classes.length; i++) {
+            for (let i = 0; i < data.Classes.length; i++) {
                 let clsInfo = data.Classes[i];
                 let clsDate = new Date(clsInfo.StartDateTime);
                 let clsKey = `${clsDate.getDay()}${clsDate.getDate()}${clsDate.getMonth()}`;
@@ -46,7 +46,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
                 }
             }
             // sort data by class times.
-            for (var i = 0; i < fltrs.length; i++) {
+            for (let i = 0; i < fltrs.length; i++) {
                 timetable[fltrs[i]].sort((a, b) => (a.date > b.date) ? 1 : -1);
             }
             // execute callback.

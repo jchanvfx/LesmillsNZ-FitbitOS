@@ -5,7 +5,8 @@ import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
 
-const LM_FILE = "LM_TIMETABLE.cbor";
+const LM_PREFIX = "LM_dat";
+const LM_EXT = ".cbor";
 
 // check permissions
 if (!companion.permissions.granted("access_internet")) {
@@ -38,7 +39,27 @@ function sendData(key, data, filename) {
 }
 // fetch timetable callback send data to device
 function timetableCallback(data) {
-    sendData("lm-dataQueued", data, LM_FILE);
+    let today = new Date();
+    let date1 = new Date(today);
+    let date2 = new Date(today);
+    date1.setDate(today.getDate() + 1);
+    date2.setDate(today.getDate() + 2);
+
+    let keys = [
+        `${today.getDay()}${today.getDate()}${today.getMonth()}`,
+        `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`,
+        `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`,
+    ];
+    for (let i = 0; i < keys.length; i++) {
+        let dayKey = keys[i];
+        let dayData = data[dayKey.toString()];
+        let fileName = `${LM_PREFIX}${dayKey}${LM_EXT}`;
+        sendData(
+            "lm-dataQueued",
+            {fetched: data.fetched, value:dayData},
+            fileName
+        );
+    }
 }
 
 // ----------------------------------------------------------------------------
