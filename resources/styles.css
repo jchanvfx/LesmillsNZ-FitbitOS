@@ -41,7 +41,7 @@ text {
 #lm-status-bar text#time {
     x: 100%-10;
     text-anchor: end;
-    text-length: 8;
+    text-length: 7;
 }
 #lm-status-bar image#menu-btn {
     x: 2;

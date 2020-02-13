@@ -52,13 +52,8 @@ function timetableCallback(data) {
     ];
     for (let i = 0; i < keys.length; i++) {
         let dayKey = keys[i];
-        let dayData = data[dayKey.toString()];
         let fileName = `${LM_PREFIX}${dayKey}${LM_EXT}`;
-        sendData(
-            "lm-dataQueued",
-            {fetched: data.fetched, value:dayData},
-            fileName
-        );
+        sendData("lm-dataQueued", data[dayKey.toString()], fileName);
     }
 }
 
