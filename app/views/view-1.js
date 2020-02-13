@@ -5,7 +5,8 @@ import { inbox } from "file-transfer"
 import { readFileSync, listDirSync, unlinkSync } from "fs";
 
 const LM_PREFIX = "LM_dat";
-const TIMETABLE = [];
+
+let TIMETABLE = {fetched: undefined, value: []};
 
 let TimetableList;
 let LoaderOverlay;
@@ -22,6 +23,7 @@ let MenuBtn3;
 let OnFileRecievedUpdateGui;
 let CurrentDayKey;
 
+const date = new Date();
 const date1 = new Date();
 const date2 = new Date();
 date1.setDate(date1.getDate() + 1);
@@ -62,23 +64,18 @@ function onMount() {
         `${date2.getDate()} ` +
         `${dateTime.MONTHS_SHORT[date2.getMonth()]}`;
 
-    TIMETABLE.length = 0;
-
     StatusBar.getElementById("date1").text = `${dateTime.getDayShortName()} (Today)`;
     StatusBar.getElementById("date2").text = dateTime.getDate() + " " + dateTime.getMonthName();
     StatusBar.getElementById("time").text = dateTime.getTime12hr();
 
-    let date = dateTime.getDateObj();
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     OnFileRecievedUpdateGui = false;
 
     // initialize here.
     buildTimetable();
-    connectEvents();
     setTimetableDay(CurrentDayKey);
-    if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-        displayElement(StatusBarPhone, false);
-    }
+
+    connectEvents();
 }
 // connect up add the events.
 function connectEvents() {
@@ -119,7 +116,6 @@ function readFile(fileName) {
 
 // clean up old local data files.
 function cleanUpFiles() {
-    let date = dateTime.getDateObj();
     let keepList = [
         `${LM_PREFIX}${date.getDay()}${date.getDate()}${date.getMonth()}.cbor`,
         `${LM_PREFIX}${date1.getDay()}${date1.getDate()}${date1.getMonth()}.cbor`,
@@ -219,10 +215,12 @@ function onMessageRecieved(evt) {
 // callback message socket opens.
 function onConnectionOpen() {
     console.log("App Socket Open");
+    displayElement(StatusBarPhone, false);
 }
 // callback message socket closes.
 function onConnectionClosed() {
     console.log("App Socket Closed");
+    displayElement(StatusBarPhone, true);
 }
 // time update callback.
 function onTimeUpdate(data) {
@@ -246,20 +244,20 @@ function onStatusBtnMenuClicked() {
 function onStatusBtnRefreshClicked() {
     console.log("Refresh Clicked");
     let currentIdx = 0;
-    let date = dateTime.getDateObj();
     let time;
-    for (let i = 0; i < TIMETABLE.length; i++) {
-        time = new Date(TIMETABLE[i].date);
-        if (time - date > 0) {currentIdx = i; break;}
+    let i = TIMETABLE.value.length, x = 0;
+    while (i--) {
+        x++;
+        time = new Date(TIMETABLE.value[x].date);
+        if (time - date > 0) {currentIdx = x; break;}
     }
     TimetableList.value = currentIdx;
 }
 // callback menu buttons.
 function onMenuBtn1Clicked() {
-    StatusBar.getElementById("date1").text = `${dateTime.getDayShortName()} (Today)`;
+    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date.getDay()]} (Today)`;
     MenuScreen.animate("disable");
     setTimeout(() => {MenuScreen.style.display = "none";}, 800);
-    let date = dateTime.getDateObj();
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     setTimetableDay(CurrentDayKey);
 }
@@ -294,7 +292,7 @@ function displayMessage(display=true, text="", title="") {
     displayElement(MessageOverlay, display);
 }
 // toggle loading screen widget visibility.
-function displayLoader(display=true, text="loading...", subText="") {
+function displayLoader(display=true, text="Loading...", subText="") {
     LoaderOverlay.getElementById("text").text = text;
     LoaderOverlay.getElementById("sub-text").text = subText;
     LoaderOverlay.animate(display ? "enable" : "disable");
@@ -305,8 +303,8 @@ function displayLoader(display=true, text="loading...", subText="") {
 function buildTimetable() {
     TimetableList.delegate = {
         getTileInfo: index => {
-            if (TIMETABLE.length != 0) {
-                let tileInfo = TIMETABLE[index];
+            if (TIMETABLE.value.length != 0) {
+                let tileInfo = TIMETABLE.value[index];
                 return {
                     index: index,
                     type: "lm-pool",
@@ -315,21 +313,18 @@ function buildTimetable() {
                     date: tileInfo.date,
                     desc: tileInfo.desc,
                     color: (tileInfo.color !== null) ? tileInfo.color : "#545454",
-                    finished: tileInfo.finished,
-                };
-            } else {
-                // need this here or we'll get a "Error 22 Critical glue error"
-                return {
-                    index: index,
-                    type: "lm-pool",
-                    name: "{no data}",
-                    instructor: "---",
-                    date: dateTime.getDateObj(),
-                    desc: "---",
-                    color: "",
-                    finished: true,
                 };
             }
+            // need this here or we'll get a "Error 22 Critical glue error"
+            return {
+                index: index,
+                type: "lm-pool",
+                name: "{no data}",
+                instructor: "---",
+                date: date,
+                desc: "---",
+                color: "",
+            };
         },
         configureTile: (tile, info) => {
             if (info.type == "lm-pool") {
@@ -338,7 +333,7 @@ function buildTimetable() {
                 tile.getElementById("text-subtitle").text = info.instructor;
                 tile.getElementById("text-L").text = dateTime.formatTo12hrTime(itmDate);
                 tile.getElementById("text-R").text = info.desc;
-                if (info.finished) {
+                if (itmDate - date > 0) {
                     tile.getElementById("text-title").style.fill = "#6e6e6e";
                     tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
                     tile.getElementById("text-L").style.fill = "#6e6e6e";
@@ -360,32 +355,30 @@ function buildTimetable() {
 
 // set the timetable list with specified day.
 function setTimetableDay(dKey, jumpToIndex=true) {
+    displayElement(TimetableList, false);
+    displayLoader(true);
+
     // find data file eg. "LM_dat123.cbor"
     // return: "{fetched: <tstamp>, value: <array>}"
-    let data = readFile(LM_PREFIX + dKey + ".cbor");
+    TIMETABLE.fetched = undefined;
+    TIMETABLE.value.length = 0;
+    TIMETABLE = readFile(LM_PREFIX + dKey + ".cbor");
 
-    if (data.fetched && data.value) {
+    if (TIMETABLE.fetched && TIMETABLE.value) {
         console.log("Found Data...");
 
         // find next class index.
         let currentIdx = 0;
-        let date = dateTime.getDateObj();
         let time;
-        for (let i = 0; i < data.value.length; i++) {
-            time = new Date(data.value[i].date);
-            if (time - date > 0) {currentIdx = i; break;}
-        }
-
-        // re-populate the timetable store array.
-        TIMETABLE.length = 0;
-        for (let i = 0; i < data.value.length; i++) {
-            let itm = data.value[i];
-            itm.finished = (i < currentIdx);
-            TIMETABLE.push(itm);
+        let i = TIMETABLE.value.length, x = 0;
+        while (i--) {
+            x++;
+            time = new Date(TIMETABLE.value[x].date);
+            if (time - date > 0) {currentIdx = x; break;}
         }
 
         // refresh to the list.
-        TimetableList.length = TIMETABLE.length;
+        TimetableList.length = TIMETABLE.value.length;
         TimetableList.redraw();
 
         // jump to latest tile.
@@ -394,10 +387,11 @@ function setTimetableDay(dKey, jumpToIndex=true) {
         }
 
         displayElement(TimetableList, true);
+        displayLoader(false);
 
         // request background update if last sync is more than 48hrs ago
         // then fetch data in the background.
-        let fetchedTime = new Date(data['fetched']);
+        let fetchedTime = new Date(TIMETABLE.fetched);
         let timeDiff = Math.round(Math.abs(date - fetchedTime) / 36e5);
         if (timeDiff > 48) {
             OnFileRecievedUpdateGui = false;
@@ -408,9 +402,9 @@ function setTimetableDay(dKey, jumpToIndex=true) {
         return;
     }
 
-    console.log('Requesting Data...');
+    console.log('Fetching Database...');
     OnFileRecievedUpdateGui = true;
+    displayLoader(true, "Fetching Database...");
     sendValue("lm-fetch");
-    displayElement(TimetableList, false);
     cleanUpFiles();
 }
