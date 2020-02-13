@@ -2,11 +2,10 @@ import document from "document";
 import * as dateTime from "../datelib"
 import * as messaging from "messaging";
 import { inbox } from "file-transfer"
-import { readFileSync, listDirSync, unlinkSync } from "fs";
+import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 
 const LM_PREFIX = "LM_dat";
-
-let TIMETABLE = {fetched: undefined, value: []};
+const TIMETABLE = [];
 
 let TimetableList;
 let LoaderOverlay;
@@ -80,11 +79,19 @@ function onMount() {
 // connect up add the events.
 function connectEvents() {
     // update the time.
-    dateTime.registerCallback(onTimeUpdate);
+    dateTime.registerCallback( data => {
+        StatusBar.getElementById("time").text = data.time;
+    });
     // message socket opens.
-    messaging.peerSocket.onopen = onConnectionOpen;
+    messaging.peerSocket.onopen = () => {
+        console.log("App Socket Open");
+        displayElement(StatusBarPhone, false);
+    };
     // message socket closes
-    messaging.peerSocket.onclose = onConnectionClosed;
+    messaging.peerSocket.onclose = () => {
+        console.log("App Socket Closed");
+        displayElement(StatusBarPhone, true);
+    };
     // message recieved.
     messaging.peerSocket.onmessage = onMessageRecieved;
     // process incomming data transfers.
@@ -99,20 +106,6 @@ function connectEvents() {
 
 // Util Methods
 //-----------------------------------------------------------------------------
-
-// local file reader.
-function readFile(fileName) {
-    let data = {};
-    let dirIter;
-    let listDir = listDirSync("/private/data");
-    while((dirIter = listDir.next()) && !dirIter.done) {
-        if (dirIter.value == fileName) {
-            data = readFileSync(fileName, "cbor");
-            break;
-        }
-    }
-    return data;
-}
 
 // clean up old local data files.
 function cleanUpFiles() {
@@ -212,20 +205,6 @@ function onMessageRecieved(evt) {
             return;
     }
 }
-// callback message socket opens.
-function onConnectionOpen() {
-    console.log("App Socket Open");
-    displayElement(StatusBarPhone, false);
-}
-// callback message socket closes.
-function onConnectionClosed() {
-    console.log("App Socket Closed");
-    displayElement(StatusBarPhone, true);
-}
-// time update callback.
-function onTimeUpdate(data) {
-    StatusBar.getElementById("time").text = data.time;
-};
 
 // Button Methods
 //-----------------------------------------------------------------------------
@@ -245,10 +224,10 @@ function onStatusBtnRefreshClicked() {
     console.log("Refresh Clicked");
     let currentIdx = 0;
     let time;
-    let i = TIMETABLE.value.length, x = 0;
+    let i = TIMETABLE.length, x = 0;
     while (i--) {
         x++;
-        time = new Date(TIMETABLE.value[x].date);
+        time = new Date(TIMETABLE[x].date);
         if (time - date > 0) {currentIdx = x; break;}
     }
     TimetableList.value = currentIdx;
@@ -303,8 +282,8 @@ function displayLoader(display=true, text="Loading...", subText="") {
 function buildTimetable() {
     TimetableList.delegate = {
         getTileInfo: index => {
-            if (TIMETABLE.value.length != 0) {
-                let tileInfo = TIMETABLE.value[index];
+            if (TIMETABLE.length != 0) {
+                let tileInfo = TIMETABLE[index];
                 return {
                     index: index,
                     type: "lm-pool",
@@ -358,27 +337,30 @@ function setTimetableDay(dKey, jumpToIndex=true) {
     displayElement(TimetableList, false);
     displayLoader(true);
 
+    let fileName = `${LM_PREFIX}${dkey}.cbor`
+
     // find data file eg. "LM_dat123.cbor"
     // return: "{fetched: <tstamp>, value: <array>}"
-    TIMETABLE.fetched = undefined;
-    TIMETABLE.value.length = 0;
-    TIMETABLE = readFile(LM_PREFIX + dKey + ".cbor");
+    TIMETABLE.length = 0;
+    if (existsSync("/private/data/" + fileName)) {
+        TIMETABLE = readFileSync(fileName, "cbor");
+    }
 
-    if (TIMETABLE.fetched && TIMETABLE.value) {
+    if (TIMETABLE.length != 0) {
         console.log("Found Data...");
 
         // find next class index.
         let currentIdx = 0;
         let time;
-        let i = TIMETABLE.value.length, x = 0;
+        let i = TIMETABLE.length, x = 0;
         while (i--) {
             x++;
-            time = new Date(TIMETABLE.value[x].date);
+            time = new Date(TIMETABLE[x].date);
             if (time - date > 0) {currentIdx = x; break;}
         }
 
         // refresh to the list.
-        TimetableList.length = TIMETABLE.value.length;
+        TimetableList.length = TIMETABLE.length;
         TimetableList.redraw();
 
         // jump to latest tile.
@@ -389,10 +371,10 @@ function setTimetableDay(dKey, jumpToIndex=true) {
         displayElement(TimetableList, true);
         displayLoader(false);
 
-        // request background update if last sync is more than 48hrs ago
+        // request background update if the file modified is more than 48hrs old.
         // then fetch data in the background.
-        let fetchedTime = new Date(TIMETABLE.fetched);
-        let timeDiff = Math.round(Math.abs(date - fetchedTime) / 36e5);
+        let mTime = statSync(fileName).mtime;
+        let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
         if (timeDiff > 48) {
             OnFileRecievedUpdateGui = false;
             sendValue("lm-fetch");
