@@ -126,10 +126,12 @@ function cleanUpFiles() {
     while((dirIter = listDir.next()) && !dirIter.done) {
         if (dirIter.value === undefined) {continue;}
 
-        // ECMAScript 5.1 doesn't support "String.startsWith()"
+        // ECMAScript 5.1 doesn't support "String.startsWith()" and "Array.includes()"
         if (dirIter.value.indexOf(LM_PREFIX) === 0) {
-            unlinkSync(dirIter.value);
-            console.log(`Deleted: ${dirIter.value}`);
+            if (keepList.indexOf(dirIter.value) < 0) {
+                unlinkSync(dirIter.value);
+                console.log(`Deleted: ${dirIter.value}`);
+            }
         }
     }
 }
@@ -309,7 +311,7 @@ function buildTimetable() {
                 tile.getElementById("text-subtitle").text = info.instructor;
                 tile.getElementById("text-L").text = dateTime.formatTo12hrTime(itmDate);
                 tile.getElementById("text-R").text = info.desc;
-                if (itmDate - date > 0) {
+                if (itmDate - date < 0) {
                     tile.getElementById("text-title").style.fill = "#6e6e6e";
                     tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
                     tile.getElementById("text-L").style.fill = "#6e6e6e";
@@ -372,6 +374,7 @@ function setTimetableDay(dKey, jumpToIndex=true) {
         // then fetch data in the background.
         let mTime = statSync(fileName).mtime;
         let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
+        console.log(`TIME DIFFERENCE:: ${timeDiff}hrs`);
         if (timeDiff > 48) {
             OnFileRecievedUpdateGui = false;
             sendValue("lm-fetch");
