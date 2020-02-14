@@ -223,7 +223,7 @@ function onStatusBtnRefreshClicked() {
     console.log("Refresh Clicked");
     let currentIdx = 0;
     let time;
-    let i = LM_TIMETABLE.length, x = 0;
+    let i = LM_TIMETABLE.length, x = -1;
     while (i--) {
         x++;
         time = new Date(LM_TIMETABLE[x].date);
@@ -334,24 +334,24 @@ function buildTimetable() {
 // set the timetable list with specified day.
 function setTimetableDay(dKey, jumpToIndex=true) {
     displayElement(TimetableList, false);
-    displayLoader(true, "Loading Data...");
+    displayLoader(true, "Processing...");
 
     let fileName = `${LM_PREFIX}${dKey}.cbor`
 
-    // find data file eg. "LM_dat123.cbor"
-    // return: "{fetched: <tstamp>, value: <array>}"
+    // find previously fetched file locally eg. "LM_dat123.cbor"
     LM_TIMETABLE.length = 0;
     if (existsSync("/private/data/" + fileName)) {
         LM_TIMETABLE = readFileSync(fileName, "cbor");
     }
 
     if (LM_TIMETABLE.length != 0) {
-        console.log("Found Data...");
+        console.log(`Loading data file: ${fileName}`);
+        displayLoader(true, "Loading Data...");
 
         // find next class index.
         let currentIdx = 0;
         let time;
-        let i = LM_TIMETABLE.length, x = 0;
+        let i = LM_TIMETABLE.length, x = -1;
         while (i--) {
             x++;
             time = new Date(LM_TIMETABLE[x].date);
@@ -374,10 +374,15 @@ function setTimetableDay(dKey, jumpToIndex=true) {
         // then fetch data in the background.
         let mTime = statSync(fileName).mtime;
         let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
-        console.log(`TIME DIFFERENCE:: ${timeDiff}hrs`);
         if (timeDiff > 48) {
+            console.log(`File ${fileName} outdated by ${timeDiff}hrs`);
             OnFileRecievedUpdateGui = false;
             sendValue("lm-fetch");
+        } else {
+            displayElement(
+                StatusBarPhone,
+                messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
+            );
         }
 
         cleanUpFiles();
@@ -390,11 +395,15 @@ function setTimetableDay(dKey, jumpToIndex=true) {
     sendValue("lm-fetch");
     cleanUpFiles();
 
-    // 5 second grace period before displing message.
+    // Give 5 second period before displaying connection lost message.
     setTimeout(() => {
         if (LoaderOverlay.style.display == 'inline') {
             displayLoader(false);
-            displayMessage(true, "Can't Connection to Phone", "Connection Lost");
+            displayMessage(
+                true,
+                "Failed to retrive data from phone.",
+                "Connection Lost"
+            );
         }
     }, 5000);
 }
