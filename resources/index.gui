@@ -1,56 +1,18 @@
-<svg>
-  <defs></defs>
-
-  <!-- LesMills VIRTUAL TILE -->
-  <section y="32" height="100%-32">
-    <use id="lm-class-list" href="#tile-list" class="lm-tile-list" display="none">
-      <var id="virtual" value="1" />
-      <var id="reorder-enabled" value="0" />
-      <var id="peek-enabled" value="0" />
-      <var id="separator-height-bottom" value="2" />
-      <use id="lm-pool" href="#tile-list-pool">
-        <use id="lm-pool[0]" href="#lm-tile" />
-        <use id="lm-pool[1]" href="#lm-tile" />
-        <use id="lm-pool[2]" href="#lm-tile" />
-        <use id="lm-pool[3]" href="#lm-tile" />
-        <use id="lm-pool[4]" href="#lm-tile" />
-        <use id="lm-pool[5]" href="#lm-tile" />
-        <use id="lm-pool[6]" href="#lm-tile" />
-        <use id="lm-pool[7]" href="#lm-tile" />
-        <use id="lm-pool[8]" href="#lm-tile" />
-        <use id="lm-pool[9]" href="#lm-tile" />
-      </use>
-    </use>
-  </section>
-
-  <!-- MESSAGE OVERLAY -->
-  <use id="message-screen" href="#message-overlay" display="none"/>
-
-  <!-- LOADER OVERLAY -->
-  <use id="loading-screen" href="#loader-overlay" display="none"/>
-
-  <!-- STATUS BAR -->
-  <rect id="lm-status-bg" />
-  <text id="lm-status-date">(No Data)</text>
-  <text id="lm-status-time">00:00am</text>
-
-  <!-- TEMPORARY JUMP TO BUTTON -->
-  <image href="images/jump_to.png" x="100%-24" y="6" width="22"  height="22" fill="#1effce" />
-
-  <!-- TEMPORARY REFRESH BUTTON -->
-  <image href="images/refresh.png" x="2" y="6" width="22"  height="22" fill="#eb1f4e" />
-
-  <section id="lm-stats">
-    <arc arc-width="2" start-angle="0" sweep-angle="360" />
-    <image id="no-phone" href="images/no_phone.png" />
-    <g id="bg-loading" display="none">
-      <animateTransform attributeType="rotate" begin="load" dur="3" begin="enable"
-                        from="0" to="360" repeatCount="indefinite"/>
-      <image href="images/refresh.png" />
-    </g>
-  </section>
-
-  <rect id="lm-status-menu" width="50%" height="70" pointer-events="all" opacity="0" />
-  <rect id="lm-status-info" x="50%" width="50%" height="70" pointer-events="all" opacity="0" />
-
+<svg viewport-fill="black">
+    <text
+        x="50%"
+        y="40%+10"
+        font-family="System-Regular"
+        fill="white"
+        font-size="20"
+        font-weight="bold"
+        text-anchor="middle">initializing build</text>
+    <text
+        x="50%"
+        y="40%+35"
+        font-family="System-Regular"
+        fill="white"
+        font-size="20"
+        font-weight="bold"
+        text-anchor="middle">v0.0.2</text>
 </svg>

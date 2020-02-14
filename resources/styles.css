@@ -1,138 +1,112 @@
-/* lm tile */
-#lm-tile {
-  height: 95;
-}
-#lm-tile text {
-  x: 50%;
-  text-anchor: middle;
-  font-family: System-Regular;
-  font-weight: regular;
-  fill: white;
-}
-#lm-tile text#text-title {
-  y: 30%;
-  font-size: 22;
-  font-family: System-Bold;
-  text-length: 32;
-}
-#lm-tile text#text-subtitle{
-  y: 50%;
-  font-size: 18;
-  text-length: 32;
-}
-#lm-tile text#text-L{
-  x: 7;
-  y: 85%;
-  font-size: 20;
-  text-anchor: start;
-  text-length: 8;
-}
-#lm-tile text#text-R{
-  x: 100%-7;
-  y: 85%;
-  font-size: 20;
-  text-anchor: end;
-  text-length: 32;
-}
-#lm-tile rect#background {
-  x: 3;
-  y: 2;
-  width: 100%-6;
-  height: 100%-4;
-  fill:#2a2d2e;
-}
-.lm-tile-cnr {
-  fill:#2a2d2e;
+/* defaults */
+text {
+    font-family:System-Regular;
 }
 
-/* status bar */
-#lm-status-bg {
-  width:100%;
-  height:32;
-  fill:black;
+/* Status Bar */
+#lm-status-bar rect#background {
+    width:100%;
+    height:50;
+    fill:black;
 }
-#lm-status-time {
-  x: 100%-30;
-  y: 23;
-  font-size: 20;
-  font-family: System-Bold;
-  font-weight: regular;
-  fill: #d6d6d6;
-  /* fill: #1effce; */
-  text-anchor: end;
-  text-length: 8;
+#lm-status-bar rect#click-l {
+    width: 40%;
+    height: 60;
+    opacity: 0;
 }
-#lm-status-date {
-  x: 28;
-  y: 23;
-  font-size: 20;
-  font-family: System-Bold;
-  font-weight: regular;
-  fill: #d6d6d6;
-  text-anchor: start;
-  text-length: 16;
+#lm-status-bar rect#click-r {
+    x: 60%;
+    width: 40%;
+    height: 60;
+    opacity: 0;
 }
-#lm-stats {
-  x: 55%;
-  y: 16;
+#lm-status-bar text {
+    y: 20;
+    font-size: 20;
+    font-family: System-Bold;
+    font-weight: regular;
+    fill: #d6d6d6;
 }
-#lm-stats image {
-  x: -10;
-  y: -10;
-  width:20;
-  height:20;
-  /* fill:#6b6b6b; */
-  fill:#467ca6;
+#lm-status-bar text#date1 {
+    x: 45;
+    text-anchor: start;
+    text-length: 16;
 }
-#lm-info {
-  x: 100%-13;
-  y: 15;
+#lm-status-bar text#date2 {
+    x: 45;
+    y: 43;
+    text-anchor: start;
+    text-length: 16;
+}
+#lm-status-bar text#time {
+    x: 100%-10;
+    text-anchor: end;
+    text-length: 7;
+}
+#lm-status-bar image#menu-btn {
+    x: 2;
+    y: 3;
+    width: 35;
+    height: 40;
+    fill:#1effce;
+}
+#lm-status-bar image#no-phone {
+    x:50%+10;
+    y: 12;
+    width: 26;
+    height: 26;
+    fill:#bf1c00;
+}
+#lm-status-bar image#jump-to {
+    x:100%-30;
+    y: 26;
+    width: 18;
+    height: 18;
+    fill:#1effce;
 }
 
-/* loder overlay */
+/* Loader Overlay */
 #loader-overlay arc {
-  width:100;
-  height:100;
+    width:100;
+    height:100;
+}
+#loader-overlay arc#arc1{
+    x:-50;
+    y:-50;
+    fill:#4ebeff;
+    arc-width:5;
+    start-angle:0;
+    sweep-angle:60;
+}
+#loader-overlay arc#arc2{
+    x:50%-50;
+    y:50%-50;
+    fill:#11435d;
+    arc-width:12;
+    start-angle:0;
+    sweep-angle:360;
 }
 #loader-overlay text {
-  x:50%;
-  y:80%;
-  font-size:20;
-  text-anchor:middle;
-  fill:#4ebeff;
-  text-length: 32;
+    x:50%;
+    y:80%;
+    font-size:20;
+    text-anchor:middle;
+    fill:#4ebeff;
+    text-length: 32;
 }
 #loader-overlay text#sub-text{
-  y:90%-8;
-  font-size:16;
-  font-family: System-Bold;
+    y:90%-8;
+    font-size:16;
+    font-family: System-Bold;
 }
 #loader-overlay gradientRect {
-  width:100%;
-  height:100%;
-  gradient-type:radial;
-  gradient-x1:50%;
-  gradient-y1:50%;
-  gradient-x2:50%+120;
-  gradient-y2:50%+120;
-  gradient-color1:#0c1c38;
-  gradient-color2:black;
-}
-
-/* message overlay */
-#message-overlay rect {
-  fill:black;
-  width:100%;
-  height:100%;
-}
-#message-overlay textarea {
-  fill:white;
-  x:10;
-  y:20%;
-  width:100%-20;
-  height:80%;
-  text-anchor:start;
-  font-family:System-Regular;
-  font-size:24;
-  text-length: 128;
+    width:100%;
+    height:100%;
+    gradient-type:radial;
+    gradient-x1:50%;
+    gradient-y1:50%;
+    gradient-x2:50%+120;
+    gradient-y2:50%+120;
+    gradient-color1:#0c1c38;
+    gradient-color2:black;
 }
