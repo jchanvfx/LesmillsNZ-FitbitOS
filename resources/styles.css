@@ -57,3 +57,10 @@ text {
     height: 26;
     fill:#bf1c00;
 }
+#lm-status-bar image#jump-to {
+    x:100%-30;
+    y: 26;
+    width: 18;
+    height: 18;
+    fill:#1effce;
+}

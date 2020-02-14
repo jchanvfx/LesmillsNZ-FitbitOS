@@ -1,10 +1,10 @@
 import clock from "clock";
 import document from "document";
-import * as dateTime from "../datelib"
 import * as messaging from "messaging";
 import { me } from "appbit";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
+import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
 
 const LM_PREFIX = "LM_dat";
 const LM_TIMETABLE = [];
@@ -53,21 +53,21 @@ function onMount() {
     MenuBtn3 = MenuScreen.getElementById("btn3");
 
     MenuBtn1.text =
-        `${dateTime.DAYS_SHORT[date.getDay()]} ` +
+        `${DAYS_SHORT[date.getDay()]} ` +
         `${date.getDate()} ` +
-        `${dateTime.MONTHS_SHORT[date.getMonth()]}`;
+        `${MONTHS_SHORT[date.getMonth()]}`;
     MenuBtn2.text =
-        `${dateTime.DAYS_SHORT[date1.getDay()]} ` +
+        `${DAYS_SHORT[date1.getDay()]} ` +
         `${date1.getDate()} ` +
-        `${dateTime.MONTHS_SHORT[date1.getMonth()]} `;
+        `${MONTHS_SHORT[date1.getMonth()]} `;
     MenuBtn3.text =
-        `${dateTime.DAYS_SHORT[date2.getDay()]} ` +
+        `${DAYS_SHORT[date2.getDay()]} ` +
         `${date2.getDate()} ` +
-        `${dateTime.MONTHS_SHORT[date2.getMonth()]}`;
+        `${MONTHS_SHORT[date2.getMonth()]}`;
 
-    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date.getDay()]} (Today)`;
-    StatusBar.getElementById("date2").text = `${date.getDate()} ${dateTime.MONTHS[date.getMonth()]}`;
-    StatusBar.getElementById("time").text = dateTime.formatTo12hrTime(date);
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
+    StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
+    StatusBar.getElementById("time").text = formatTo12hrTime(date);
 
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     OnFileRecievedUpdateGui = false;
@@ -82,7 +82,7 @@ function onMount() {
     // register time callback.
     clock.granularity = "minutes";
     clock.addEventListener("tick", evt => {
-        StatusBar.getElementById("time").text = dateTime.formatTo12hrTime(evt.date);
+        StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
     });
     // message socket opens.
     messaging.peerSocket.onopen = () => {
@@ -245,22 +245,22 @@ function onStatusBtnRefreshClicked() {
 // callback menu buttons.
 function onMenuBtn1Clicked() {
     MenuScreen.style.display = "none";
-    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date.getDay()]} (Today)`;
-    StatusBar.getElementById("date2").text = `${date.getDate()} ${dateTime.MONTHS[date.getMonth()]}`;
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
+    StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     setTimetableDay(CurrentDayKey);
 }
 function onMenuBtn2Clicked() {
     MenuScreen.style.display = "none";
-    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date1.getDay()]}`;
-    StatusBar.getElementById("date2").text = `${date1.getDate()} ${dateTime.MONTHS[date1.getMonth()]}`;
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]}`;
+    StatusBar.getElementById("date2").text = `${date1.getDate()} ${MONTHS[date1.getMonth()]}`;
     CurrentDayKey = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
     setTimetableDay(CurrentDayKey);
 }
 function onMenuBtn3Clicked() {
     MenuScreen.style.display = "none";
-    StatusBar.getElementById("date1").text = `${dateTime.DAYS_SHORT[date2.getDay()]}`;
-    StatusBar.getElementById("date2").text = `${date2.getDate()} ${dateTime.MONTHS[date2.getMonth()]}`;
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date2.getDay()]}`;
+    StatusBar.getElementById("date2").text = `${date2.getDate()} ${MONTHS[date2.getMonth()]}`;
     CurrentDayKey = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
     setTimetableDay(CurrentDayKey);
 }
@@ -320,7 +320,7 @@ function buildTimetable() {
                 let itmDate = new Date(info.date);
                 tile.getElementById("text-title").text = info.name.toUpperCase();
                 tile.getElementById("text-subtitle").text = info.instructor;
-                tile.getElementById("text-L").text = dateTime.formatTo12hrTime(itmDate);
+                tile.getElementById("text-L").text = formatTo12hrTime(itmDate);
                 tile.getElementById("text-R").text = info.desc;
                 if (itmDate - date < 0) {
                     tile.getElementById("text-title").style.fill = "#6e6e6e";
