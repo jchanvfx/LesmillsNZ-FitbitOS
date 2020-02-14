@@ -12,11 +12,22 @@
     <link rel="import" href="/mnt/sysassets/widgets/mixed_text_widget.gui"/>
 
     <!-- Loader Widget -->
-    <link rel="stylesheet" href="lm_widgets/loader_widget.css" />
-    <link rel="import" href="lm_widgets/loader_widget.gui" />
-    <!-- LM Tile Item -->
-    <link rel="stylesheet" href="lm_widgets/tile_item.css" />
-    <link rel="import" href="lm_widgets/tile_item.gui" />
+    <symbol id="loader-overlay" focusable="false">
+        <gradientRect/>
+        <arc id="arc2" />
+        <g id="animation" transform="translate(50%, 50%)">
+            <animateTransform
+                attributeType="rotate"
+                begin="enable"
+                dur="3"
+                from="0"
+                to="360"
+                repeatCount="indefinite"/>
+            <arc id="arc1" />
+        </g>
+        <text id="text" >loading...</text>
+        <text id="sub-text"></text>
+    </symbol>
     <!-- Status Bar -->
     <symbol id="lm-status-bar">
         <rect id="background"/>
@@ -41,9 +52,14 @@
             </use>
         </section>
     </symbol>
+    <!-- LM Tile Item -->
+    <link rel="stylesheet" href="lm_widgets/tile_item.css" />
+    <link rel="import" href="lm_widgets/tile_item.gui" />
     <!-- LM Menu -->
     <symbol id="days-menu">
         <section y="50" height="100%-50">
+            <animate attributeName="x" begin="enable" from="-100%" to="0%" dur="0.3" easing="ease-in-out" />
+            <animate attributeName="x" begin="disable" from="0%" to="-100%" dur="0.3" easing="ease-in-out"/>
             <rect width="100%" height="100%" fill="black" />
             <use id="btn1" href="#square-button" fill="#1effce">
                 <set href="#text" attributeName="text-length" to="12" />

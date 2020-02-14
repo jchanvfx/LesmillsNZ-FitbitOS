@@ -1,18 +1,18 @@
 <svg viewport-fill="black">
-  <text
-    x="50%"
-    y="40%+10"
-    font-family="System-Regular"
-    fill="white"
-    font-size="20"
-    font-weight="bold"
-    text-anchor="middle">Timetable</text>
-<text
-    x="50%"
-    y="40%+35"
-    font-family="System-Regular"
-    fill="white"
-    font-size="20"
-    font-weight="bold"
-    text-anchor="middle">Version: 0.0.2a</text>
+    <text
+        x="50%"
+        y="40%+10"
+        font-family="System-Regular"
+        fill="white"
+        font-size="20"
+        font-weight="bold"
+        text-anchor="middle">initializing build</text>
+    <text
+        x="50%"
+        y="40%+35"
+        font-family="System-Regular"
+        fill="white"
+        font-size="20"
+        font-weight="bold"
+        text-anchor="middle">v0.0.2</text>
 </svg>

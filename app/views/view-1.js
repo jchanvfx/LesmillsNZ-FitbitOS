@@ -103,7 +103,8 @@ function onMount() {
         if (evt.key === "back") {
             evt.preventDefault();
             if (MenuScreen.style.display == "inline") {
-                MenuScreen.style.display = "none";
+                MenuScreen.animate("disable");
+                setTimeout(() => {MenuScreen.style.display = "none";}, 300);
             } else {
                 me.exit();
             }
@@ -112,8 +113,10 @@ function onMount() {
     StatusBtnMenu.addEventListener("click", () => {
         if (MenuScreen.style.display == "none") {
             MenuScreen.style.display = "inline";
+            MenuScreen.animate("enable");
         } else {
-            MenuScreen.style.display = "none";
+            MenuScreen.animate("disable");
+            setTimeout(() => {MenuScreen.style.display = "none";}, 300);
         }
     });
     StatusBtnRefresh.addEventListener("click", onStatusBtnRefreshClicked);
@@ -197,7 +200,7 @@ function onMessageRecieved(evt) {
             displayLoader(false);
             displayMessage(
                 true,
-                "Please set a LesMills club location from the phone app settings.",
+                "Please set a club location from the phone app settings.",
                 "Club Not Set"
             );
             break;
@@ -345,7 +348,7 @@ function buildTimetable() {
 // set the timetable list with specified day.
 function setTimetableDay(dKey, jumpToIndex=true) {
     displayElement(TimetableList, false);
-    displayLoader(true, "Processing...");
+    displayLoader(true, "Loading Data...");
 
     let fileName = `${LM_PREFIX}${dKey}.cbor`
 
@@ -357,44 +360,47 @@ function setTimetableDay(dKey, jumpToIndex=true) {
 
     if (LM_TIMETABLE.length != 0) {
         console.log(`Loading data file: ${fileName}`);
-        displayLoader(true, "Loading Data...");
 
-        // find next class index.
-        let currentIdx = 0;
-        let time;
-        let i = LM_TIMETABLE.length, x = -1;
-        while (i--) {
-            x++;
-            time = new Date(LM_TIMETABLE[x].date);
-            if (time - date > 0) {currentIdx = x; break;}
-        }
+        setTimeout(() => {
 
-        // refresh to the list.
-        TimetableList.length = LM_TIMETABLE.length;
-        TimetableList.redraw();
+            // find next class index.
+            let currentIdx = 0;
+            let time;
+            let i = LM_TIMETABLE.length, x = -1;
+            while (i--) {
+                x++;
+                time = new Date(LM_TIMETABLE[x].date);
+                if (time - date > 0) {currentIdx = x; break;}
+            }
 
-        // jump to latest tile.
-        if (jumpToIndex) {
-            TimetableList.value = currentIdx;
-        }
+            // refresh to the list.
+            TimetableList.length = LM_TIMETABLE.length;
+            TimetableList.redraw();
 
-        displayElement(TimetableList, true);
-        displayLoader(false);
+            // jump to latest tile.
+            if (jumpToIndex) {
+                TimetableList.value = currentIdx;
+            }
 
-        // request background update if the file modified is more than 48hrs old.
-        // then fetch data in the background.
-        let mTime = statSync(fileName).mtime;
-        let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
-        if (timeDiff > 48) {
-            console.log(`File ${fileName} outdated by ${timeDiff}hrs`);
-            OnFileRecievedUpdateGui = false;
-            sendValue("lm-fetch");
-        } else {
-            displayElement(
-                StatusBarPhone,
-                messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
-            );
-        }
+            displayElement(TimetableList, true);
+            displayLoader(false);
+
+            // request background update if the file modified is more than 48hrs old.
+            // then fetch data in the background.
+            let mTime = statSync(fileName).mtime;
+            let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
+            if (timeDiff > 48) {
+                console.log(`File ${fileName} outdated by ${timeDiff}hrs`);
+                OnFileRecievedUpdateGui = false;
+                sendValue("lm-fetch");
+            } else {
+                displayElement(
+                    StatusBarPhone,
+                    messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
+                );
+            }
+
+        }, 1000);
 
         cleanUpFiles();
         return;
@@ -406,7 +412,7 @@ function setTimetableDay(dKey, jumpToIndex=true) {
     sendValue("lm-fetch");
     cleanUpFiles();
 
-    // Give 5 second period before displaying connection lost message.
+    // Give 8 second period before displaying connection lost message.
     setTimeout(() => {
         if (LoaderOverlay.style.display == 'inline') {
             displayLoader(false);
@@ -416,5 +422,5 @@ function setTimetableDay(dKey, jumpToIndex=true) {
                 "Connection Lost"
             );
         }
-    }, 5000);
+    }, 8000);
 }
