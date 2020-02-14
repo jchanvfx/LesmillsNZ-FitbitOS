@@ -126,13 +126,10 @@ function cleanUpFiles() {
     while((dirIter = listDir.next()) && !dirIter.done) {
         if (dirIter.value === undefined) {continue;}
 
-        console.log(`Remove: ${dirIter.value}`);
         // ECMAScript 5.1 doesn't support "String.startsWith()"
-        if (dirIter.value.indexOf(LM_PREFIX) == 0) {
-            if (!keepList.includes(dirIter.value)) {
-                console.log('DEL');
-                // unlinkSync(dirIter.value);
-            }
+        if (dirIter.value.indexOf(LM_PREFIX) === 0) {
+            unlinkSync(dirIter.value);
+            console.log(`Deleted: ${dirIter.value}`);
         }
     }
 }
