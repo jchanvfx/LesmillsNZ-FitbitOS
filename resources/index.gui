@@ -6,7 +6,7 @@
     fill="white"
     font-size="20"
     font-weight="bold"
-    text-anchor="middle">LesMills Timetable</text>
+    text-anchor="middle">Timetable</text>
 <text
     x="50%"
     y="40%+35"
@@ -14,5 +14,5 @@
     fill="white"
     font-size="20"
     font-weight="bold"
-    text-anchor="middle">Build: v0.0.2a</text>
+    text-anchor="middle">Version: 0.0.2a</text>
 </svg>

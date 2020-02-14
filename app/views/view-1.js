@@ -2,6 +2,7 @@ import clock from "clock";
 import document from "document";
 import * as dateTime from "../datelib"
 import * as messaging from "messaging";
+import { me } from "appbit";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 
@@ -98,6 +99,16 @@ function onMount() {
     // process incomming data transfers.
     inbox.addEventListener("newfile", onDataRecieved);
     // button events.
+    document.addEventListener("keypress", evt => {
+        if (evt.key === "back") {
+            evt.preventDefault();
+            if (MenuScreen.style.display == "inline") {
+                MenuScreen.style.display = "none";
+            } else {
+                me.exit();
+            }
+        }
+    });
     StatusBtnMenu.addEventListener("click", () => {
         if (MenuScreen.style.display == "none") {
             MenuScreen.style.display = "inline";
