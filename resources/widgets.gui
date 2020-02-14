@@ -46,15 +46,15 @@
             <!-- <animate attributeName="x" begin="enable" from="-100%" to="0%" dur="0.5" easing="ease-in-out" /> -->
             <!-- <animate attributeName="x" begin="disable" from="0%" to="-100%" dur="0.5" easing="ease-in-out"/> -->
             <rect width="100%" height="100%" fill="black" />
-            <use id="btn1" href="#square-button" fill="#ff4b3b">
+            <use id="btn1" href="#square-button" fill="#1effce">
                 <set href="#text" attributeName="text-length" to="12" />
                 <set href="#text" attributeName="text-buffer" to="button1" />
             </use>
-            <use id="btn2" href="#square-button" y="$" fill="#ff4b3b">
+            <use id="btn2" href="#square-button" y="$" fill="#1effce">
                 <set href="#text" attributeName="text-length" to="12" />
                 <set href="#text" attributeName="text-buffer" to="button2" />
             </use>
-            <use id="btn3" href="#square-button" y="$" fill="#ff4b3b">
+            <use id="btn3" href="#square-button" y="$" fill="#1effce">
                 <set href="#text" attributeName="text-length" to="12" />
                 <set href="#text" attributeName="text-buffer" to="button3" />
             </use>
