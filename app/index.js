@@ -7,13 +7,13 @@ import { init } from "./views";
 const views = init(
     [
         ["timetable", () => import("./views/timetable")],
-        ["view-2", () => import("./views/view-2")],
-        ["view-3", () => import("./views/view-3")]
+        ["classes", () => import("./views/classes")],
+        // ["base-template", () => import("./views/_base_tmpl")],
     ],
     "./resources/views/"
 );
 
-// Select the first view (view-1) after 1 second
+// Select the first view after 1 second
 setTimeout(() => {
     views.navigate("timetable");
 }, 1000);
