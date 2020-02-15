@@ -1,37 +1,32 @@
 import document from "document";
+import { me } from "appbit";
 
 let views;
 
+// screen initialize.
 export function init(_views) {
   views = _views;
-  console.log("view-3 init()");
+  console.log("classes init()");
   onMount();
 }
 
-/**
- * When this view is mounted, setup elements and events.
- */
+// entry point when this view is mounted, setup elements and events.
 function onMount() {
-  let btn = document.getElementById("v3-button");
-  btn.addEventListener("click", clickHandler);
-  document.addEventListener("keypress", keyHandler);
+    let btn = document.getElementById("btn1");
+
+    btn.addEventListener("click", clickHandler);
+    document.addEventListener("keypress", keyHandler);
 }
 
-/**
- * Sample button click with navigation.
- */
 function clickHandler(_evt) {
-  console.log("view-3 Button Clicked!");
-  /* Navigate to another screen */
-  views.navigate("view-1");
+    console.log("view-2 Button Clicked!");
+    // views.navigate("");
 }
 
-/**
- * Sample keypress handler to navigate backwards.
- */
 function keyHandler(evt) {
-  if (evt.key === "back") {
-    evt.preventDefault();
-    views.navigate("view-2");
-  }
+    if (evt.key === "back") {
+        evt.preventDefault();
+        // views.navigate("");
+        me.exit();
+    }
 }

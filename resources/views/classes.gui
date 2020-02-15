@@ -1,6 +1,22 @@
-<svg viewport-fill="#666666">
-  <text class="title">This is view-3.</text>
-  <use id="v3-button" href="#push-button" class="btn">
-    <set href="#text" attributeName="text-buffer" to="GO view-1" />
-  </use>
+<svg viewport-fill="black">
+    <!-- Main Wrapper -->
+    <section y="50" height="100%-50">
+        <text
+            x="50%"
+            y="50%"
+            font-family="System-Regular"
+            fill="#4bfbc7"
+            font-size="30"
+            font-weight="bold"
+            text-anchor="middle">Test Text</text>
+
+        <use id="btn1" href="#square-button" fill="#1effce">
+            <set href="#text" attributeName="text-length" to="12" />
+            <set href="#text" attributeName="text-buffer" to="Test Button" />
+        </use>
+    </section>
+
+    <!-- Status Bar -->
+    <use id="status-bar" href="#lm-status-bar" />
+
 </svg>
