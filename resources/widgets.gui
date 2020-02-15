@@ -53,7 +53,6 @@
         </section>
     </symbol>
     <!-- LM Tile Item -->
-    <link rel="stylesheet" href="lm_widgets/tile_item.css" />
     <link rel="import" href="lm_widgets/tile_item.gui" />
     <!-- LM Menu -->
     <symbol id="days-menu">

@@ -26,12 +26,9 @@ function clickHandler(_evt) {
   views.navigate("view-3");
 }
 
-/**
- * Sample keypress handler to navigate backwards.
- */
 function keyHandler(evt) {
   if (evt.key === "back") {
     evt.preventDefault();
-    views.navigate("view-1");
+    views.navigate("timetable");
   }
 }
