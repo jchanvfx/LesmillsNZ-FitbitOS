@@ -19,6 +19,7 @@ let StatusBtnRefresh;
 let StatusBarPhone;
 let MessageOverlay;
 let MenuScreen;
+let MenuBtnWorkout;
 let MenuBtn1;
 let MenuBtn2;
 let MenuBtn3;
@@ -50,6 +51,7 @@ function onMount() {
     StatusBarPhone = StatusBar.getElementById("no-phone");
     MessageOverlay = document.getElementById("message-screen");
     MenuScreen = document.getElementById("menu-screen");
+    MenuBtnWorkout = MenuScreen.getElementById("btn_classes");
     MenuBtn1 = MenuScreen.getElementById("btn1");
     MenuBtn2 = MenuScreen.getElementById("btn2");
     MenuBtn3 = MenuScreen.getElementById("btn3");
@@ -122,6 +124,7 @@ function onMount() {
         }
     });
     StatusBtnRefresh.addEventListener("click", onStatusBtnRefreshClicked);
+    MenuBtnWorkout.addEventListener("activate", onMenuBtnWorkoutClicked);
     MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
     MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
     MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
@@ -252,6 +255,10 @@ function onStatusBtnRefreshClicked() {
     TimetableList.value = currentIdx;
 }
 // callback menu buttons.
+function onMenuBtnWorkoutClicked () {
+    MenuScreen.style.display = "none";
+    views.navigate("classes");
+}
 function onMenuBtn1Clicked() {
     MenuScreen.style.display = "none";
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
@@ -301,27 +308,15 @@ function displayLoader(display=true, text="", subText="") {
 function buildTimetable() {
     TimetableList.delegate = {
         getTileInfo: index => {
-            if (LM_TIMETABLE.length != 0) {
-                let tileInfo = LM_TIMETABLE[index];
-                return {
-                    index: index,
-                    type: "lm-pool",
-                    name: tileInfo.name,
-                    instructor: tileInfo.instructor,
-                    date: tileInfo.date,
-                    desc: tileInfo.desc,
-                    color: (tileInfo.color !== null) ? tileInfo.color : "#545454",
-                };
-            }
-            // need this here or we'll get a "Error 22 Critical glue error"
+            let tileInfo = LM_TIMETABLE[index];
             return {
                 index: index,
                 type: "lm-pool",
-                name: "",
-                instructor: "",
-                date: date,
-                desc: "",
-                color: "#545454",
+                name: tileInfo.name,
+                instructor: tileInfo.instructor,
+                date: tileInfo.date,
+                desc: tileInfo.desc,
+                color: (tileInfo.color !== null) ? tileInfo.color : "#545454",
             };
         },
         configureTile: (tile, info) => {
@@ -348,7 +343,7 @@ function buildTimetable() {
         }
     }
     // TimetableList.length must be set AFTER TimetableList.delegate
-    TimetableList.length = 10;
+    TimetableList.length = 0;
 }
 
 // set the timetable list with specified day.

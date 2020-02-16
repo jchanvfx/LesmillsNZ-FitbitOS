@@ -1,5 +1,6 @@
 import document from "document";
 import { me } from "appbit";
+import { debugLog } from "../utils"
 
 let views;
 
@@ -19,14 +20,13 @@ function onMount() {
 }
 
 function clickHandler(_evt) {
-    console.log("view-2 Button Clicked!");
+    debugLog("Button Clicked!");
     // views.navigate("");
 }
 
 function keyHandler(evt) {
     if (evt.key === "back") {
         evt.preventDefault();
-        // views.navigate("");
-        me.exit();
+        views.navigate("timetable");
     }
 }
