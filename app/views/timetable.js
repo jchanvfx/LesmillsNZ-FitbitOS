@@ -86,6 +86,7 @@ function onMount() {
     // register time callback.
     clock.granularity = "minutes";
     clock.addEventListener("tick", evt => {
+        // TODO: clock event doesn't un-register when switching views.
         StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
     });
     // message socket opens.
@@ -256,8 +257,9 @@ function onStatusBtnRefreshClicked() {
 }
 // callback menu buttons.
 function onMenuBtnWorkoutClicked () {
+    // TODO: clock event doesn't un-register when switching views.
     MenuScreen.style.display = "none";
-    views.navigate("classes");
+    // views.navigate("classes");
 }
 function onMenuBtn1Clicked() {
     MenuScreen.style.display = "none";
