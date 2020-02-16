@@ -6,9 +6,10 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
+import { debugLog } from "../utils"
 
 const LM_PREFIX = "LM_dat";
-const LM_TIMETABLE = [];
+let LM_TIMETABLE = [];
 
 let TimetableList;
 let LoaderOverlay;
@@ -35,7 +36,7 @@ date2.setDate(date2.getDate() + 2);
 let views;
 export function init(_views) {
     views = _views;
-    console.log("timetable init()");
+    debugLog("timetable init()");
     onMount();
 }
 
@@ -87,12 +88,12 @@ function onMount() {
     });
     // message socket opens.
     messaging.peerSocket.onopen = () => {
-        console.log("App Socket Open");
+        debugLog("App Socket Open");
         displayElement(StatusBarPhone, false);
     };
     // message socket closes
     messaging.peerSocket.onclose = () => {
-        console.log("App Socket Closed");
+        debugLog("App Socket Closed");
         displayElement(StatusBarPhone, true);
     };
     // message recieved.
@@ -145,7 +146,7 @@ function cleanUpFiles() {
         if (dirIter.value.indexOf(LM_PREFIX) === 0) {
             if (keepList.indexOf(dirIter.value) < 0) {
                 unlinkSync(dirIter.value);
-                console.log(`Deleted: ${dirIter.value}`);
+                debugLog(`Deleted: ${dirIter.value}`);
             }
         }
     }
@@ -176,7 +177,7 @@ function onDataRecieved() {
     let CurrentDayKeyFile = `${LM_PREFIX}${CurrentDayKey}.cbor`;
     while (fileName = inbox.nextFile()) {
         if (fileName == CurrentDayKeyFile) {
-            console.log(`File ${fileName} recieved!`);
+            debugLog(`File ${fileName} recieved!`);
             // hide loader & message screen just incase.
             displayLoader(false);
             displayMessage(false);
@@ -185,6 +186,7 @@ function onDataRecieved() {
             if (OnFileRecievedUpdateGui) {
                 OnFileRecievedUpdateGui = false;
                 setTimetableDay(CurrentDayKey);
+                display.poke();
             }
         }
     }
@@ -197,7 +199,7 @@ function onDataRecieved() {
 function onMessageRecieved(evt) {
     switch (evt.data.key) {
         case "lm-noClub":
-            console.log("no club selected.");
+            debugLog("no club selected.");
             displayLoader(false);
             displayMessage(
                 true,
@@ -207,23 +209,26 @@ function onMessageRecieved(evt) {
             break;
         case "lm-clubChanged":
             if (evt.data.value) {
-                // TODO: poke display.
+                display.poke();
                 OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
-                console.log(`Club changed to: ${clubName}`);
+                debugLog(`Club changed to: ${clubName}`);
                 displayLoader(true, "Changing Clubs...", clubName);
             }
             break;
         case "lm-fetchReply":
             if (OnFileRecievedUpdateGui) {
-                // TODO: poke display.
+                display.poke();
                 let clubName = evt.data.value;
                 displayLoader(true, "Retrieving Timetable...", clubName);
             }
             break;
         case "lm-dataQueued":
-            console.log('FileTransfer data has been queued');
-            // TODO: propt loading screen. ("waiting for data")
+            let clubName = evt.data.value;
+            debugLog(`FileTransfer data has been queued: ${clubName}`);
+            if (LoaderOverlay.style.display == 'inline') {
+                displayLoader(true, "Waiting for Data...", clubName);
+            }
             break;
         default:
             return;
@@ -235,7 +240,7 @@ function onMessageRecieved(evt) {
 
 // callback for the status refresh button.
 function onStatusBtnRefreshClicked() {
-    console.log("Refresh Clicked");
+    debugLog("Refresh Clicked");
     let currentIdx = 0;
     let time;
     let i = LM_TIMETABLE.length, x = -1;
@@ -353,14 +358,14 @@ function setTimetableDay(dKey, jumpToIndex=true) {
 
     let fileName = `${LM_PREFIX}${dKey}.cbor`
 
-    // find previously fetched file locally eg. "LM_dat123.cbor"
+    // load locally fetched data file locally eg. "LM_dat123.cbor"
     LM_TIMETABLE.length = 0;
     if (existsSync("/private/data/" + fileName)) {
         LM_TIMETABLE = readFileSync(fileName, "cbor");
     }
 
     if (LM_TIMETABLE.length != 0) {
-        console.log(`Loading data file: ${fileName}`);
+        debugLog(`Loading data file: ${fileName}`);
 
         setTimeout(() => {
 
@@ -391,7 +396,7 @@ function setTimetableDay(dKey, jumpToIndex=true) {
             let mTime = statSync(fileName).mtime;
             let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
             if (timeDiff > 48) {
-                console.log(`File ${fileName} outdated by ${timeDiff}hrs`);
+                debugLog(`File ${fileName} outdated by ${timeDiff}hrs`);
                 OnFileRecievedUpdateGui = false;
                 sendValue("lm-fetch");
             } else {
@@ -401,14 +406,14 @@ function setTimetableDay(dKey, jumpToIndex=true) {
                 );
             }
 
-        }, 1000);
+        }, 500);
 
         display.poke()
         cleanUpFiles();
         return;
     }
 
-    console.log('Fetching Database...');
+    debugLog('Fetching Database...');
     OnFileRecievedUpdateGui = true;
     displayLoader(true, "Requesting Timetable...", "www.lesmills.co.nz");
     sendValue("lm-fetch");

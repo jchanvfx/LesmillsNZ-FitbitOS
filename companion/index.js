@@ -24,12 +24,16 @@ function sendValue(key, data=null) {
     }
 }
 // send data to device via FileTransfer API
-function sendData(key, data, filename) {
+function sendData(key, data, filename, message=null) {
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
         // queue data.
         outbox.enqueue(filename, encode(data))
         .then(function(ft) {
-            messaging.peerSocket.send({key: key});
+            if (message == null) {
+                messaging.peerSocket.send({key: key});
+            } else {
+                messaging.peerSocket.send({key: key, value: message});
+            }
             console.log(`Transfer of "${filename}" successfully queued.`);
         })
         .catch(function(err) {
@@ -39,6 +43,10 @@ function sendData(key, data, filename) {
 }
 // fetch timetable callback send data to device
 function timetableCallback(data) {
+    let clubSettings = settingsStorage.getItem("clubID");
+    let selectedClub = JSON.parse(clubSettings).values[0];
+    let clubName = selectedClub.name;
+
     let today = new Date();
     let date1 = new Date(today);
     let date2 = new Date(today);
@@ -53,7 +61,7 @@ function timetableCallback(data) {
     for (let i = 0; i < keys.length; i++) {
         let dayKey = keys[i];
         let fileName = `${LM_PREFIX}${dayKey}${LM_EXT}`;
-        sendData("lm-dataQueued", data[dayKey.toString()], fileName);
+        sendData("lm-dataQueued", data[dayKey.toString()], fileName, clubName);
     }
 }
 
@@ -70,7 +78,7 @@ settingsStorage.onchange = function(evt) {
 // message is received
 messaging.peerSocket.onmessage = (evt) => {
     if (evt.data.key === "lm-fetch") {
-        let clubSettings = settingsStorage.getItem("clubID")
+        let clubSettings = settingsStorage.getItem("clubID");
         if (clubSettings != null) {
             let selectedClub = JSON.parse(clubSettings).values[0];
             let clubID = selectedClub.value;

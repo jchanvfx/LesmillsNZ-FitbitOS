@@ -26,7 +26,7 @@
     <!-- Loading Screen -->
     <use id="loading-screen" href="#loader-overlay" display="none" />
     <!-- Day Selector Menu -->
-    <use id="menu-screen" href="#days-menu" display="none" />
+    <use id="menu-screen" href="#side-menu" display="none" />
     <!-- Status Bar -->
     <use id="status-bar" href="#lm-status-bar" />
 
