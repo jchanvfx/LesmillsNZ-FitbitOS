@@ -5,15 +5,15 @@ import { init } from "./views";
  * JavaScript module is lazily loaded alongside its view.
  */
 const views = init(
-  [
-    ["view-1", () => import("./views/view-1")],
-    ["view-2", () => import("./views/view-2")],
-    ["view-3", () => import("./views/view-3")]
-  ],
-  "./resources/views/"
+    [
+        ["timetable", () => import("./views/timetable")],
+        ["classes", () => import("./views/classes")],
+        // ["base-template", () => import("./views/_base_tmpl")],
+    ],
+    "./resources/views/"
 );
 
-// Select the first view (view-1) after 1 second
+// Select the first view after 1 second
 setTimeout(() => {
-  views.navigate("view-1");
+    views.navigate("timetable");
 }, 1000);
