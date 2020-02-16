@@ -85,10 +85,7 @@ function onMount() {
 
     // register time callback.
     clock.granularity = "minutes";
-    clock.addEventListener("tick", evt => {
-        // TODO: clock event doesn't un-register when switching views.
-        StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
-    });
+    clock.addEventListener("tick", tickHandler);
     // message socket opens.
     messaging.peerSocket.onopen = () => {
         debugLog("App Socket Open");
@@ -131,8 +128,14 @@ function onMount() {
     MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
 }
 
-// Util Methods
+// Utils
 //-----------------------------------------------------------------------------
+
+// clock update.
+function tickHandler(evt) {
+    // TODO: check if clock event un-registers when switching views.
+    StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
+}
 
 // clean up old local data files.
 function cleanUpFiles() {
@@ -156,7 +159,7 @@ function cleanUpFiles() {
     }
 }
 
-// Event Methods
+// Messaging
 //-----------------------------------------------------------------------------
 
 // send data to companion via Messaging API
@@ -239,7 +242,7 @@ function onMessageRecieved(evt) {
     }
 }
 
-// Button Methods
+// Buttons
 //-----------------------------------------------------------------------------
 
 // callback for the status refresh button.
@@ -255,11 +258,12 @@ function onStatusBtnRefreshClicked() {
     }
     TimetableList.value = currentIdx;
 }
-// callback menu buttons.
+// Menu Screen.
 function onMenuBtnWorkoutClicked () {
-    // TODO: clock event doesn't un-register when switching views.
+    // TODO: check if clock event un-registers when switching views.
+    clock.removeEventListener("tick", tickHandler);
     MenuScreen.style.display = "none";
-    // views.navigate("classes");
+    views.navigate("classes");
 }
 function onMenuBtn1Clicked() {
     MenuScreen.style.display = "none";
@@ -283,14 +287,14 @@ function onMenuBtn3Clicked() {
     setTimetableDay(CurrentDayKey);
 }
 
-// Gui Methods
+// Gui
 //-----------------------------------------------------------------------------
 
-// toggle widget visibility.
+// toggle element visibility.
 function displayElement(element, display=true) {
     element.style.display = display ? "inline" : "none";
 }
-// toggle message overlay widget visibility.
+// toggle message screen widget visibility.
 function displayMessage(display=true, text="", title="") {
     let mixedText = MessageOverlay.getElementById("#mixedtext");
     let mixedTextBody = mixedText.getElementById("copy");
@@ -348,7 +352,7 @@ function buildTimetable() {
     TimetableList.length = 0;
 }
 
-// set the timetable list with specified day.
+// populate timetable list with specified day.
 function setTimetableDay(dKey, jumpToIndex=true) {
     displayElement(TimetableList, false);
     displayLoader(true, "Loading Timetable...");
