@@ -261,6 +261,8 @@ function onMessageRecieved(evt) {
 
 // Menu Screen.
 function onMenuBtnWorkoutClicked () {
+    // clear LM_TIMETABLE list or we'll run out of memory.
+    LM_TIMETABLE.length = 0;
     clock.removeEventListener("tick", tickHandler);
     MenuScreen.style.display = "none";
     views.navigate("classes");
