@@ -6,7 +6,7 @@ let views;
 // screen initialize.
 export function init(_views) {
   views = _views;
-  console.log("view-2 init()");
+  console.log("view-tmpl init()");
   onMount();
 }
 
@@ -19,7 +19,7 @@ function onMount() {
 }
 
 function clickHandler(_evt) {
-    console.log("view-2 Button Clicked!");
+    console.log("Button Clicked!");
     // views.navigate("");
 }
 

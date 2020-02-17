@@ -6,11 +6,11 @@
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/square_button_widget.gui" />
-
+    <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.gui" />
+    <!-- Dynamic Textarea -->
     <link rel="stylesheet" href="/mnt/sysassets/widgets/dynamic_textarea.css"/>
     <link rel="import" href="/mnt/sysassets/widgets/dynamic_textarea.gui"/>
     <link rel="import" href="/mnt/sysassets/widgets/mixed_text_widget.gui"/>
-
     <!-- Loader Widget -->
     <symbol id="loader-overlay" focusable="false">
         <gradientRect/>
@@ -55,7 +55,7 @@
     <!-- LM Tile Item -->
     <link rel="import" href="lm_widgets/tile_item.gui" />
     <!-- LM Menu -->
-    <link rel="import" href="lm_widgets/menu.gui" />
+    <link rel="import" href="menu.gui" />
 
   </defs>
 </svg>

@@ -19,6 +19,7 @@ let StatusBtnRefresh;
 let StatusBarPhone;
 let MessageOverlay;
 let MenuScreen;
+let MenuBtnWorkout;
 let MenuBtn1;
 let MenuBtn2;
 let MenuBtn3;
@@ -50,6 +51,7 @@ function onMount() {
     StatusBarPhone = StatusBar.getElementById("no-phone");
     MessageOverlay = document.getElementById("message-screen");
     MenuScreen = document.getElementById("menu-screen");
+    MenuBtnWorkout = MenuScreen.getElementById("btn_classes");
     MenuBtn1 = MenuScreen.getElementById("btn1");
     MenuBtn2 = MenuScreen.getElementById("btn2");
     MenuBtn3 = MenuScreen.getElementById("btn3");
@@ -79,13 +81,11 @@ function onMount() {
     setTimetableDay(CurrentDayKey);
 
     // connect up add the events.
-    // ========================================================================
+    // ----------------------------------------------------------------------------
 
     // register time callback.
     clock.granularity = "minutes";
-    clock.addEventListener("tick", evt => {
-        StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
-    });
+    clock.addEventListener("tick", tickHandler);
     // message socket opens.
     messaging.peerSocket.onopen = () => {
         debugLog("App Socket Open");
@@ -104,7 +104,7 @@ function onMount() {
     document.addEventListener("keypress", evt => {
         if (evt.key === "back") {
             evt.preventDefault();
-            if (MenuScreen.style.display == "inline") {
+            if (MenuScreen.style.display === "inline") {
                 MenuScreen.animate("disable");
                 setTimeout(() => {MenuScreen.style.display = "none";}, 300);
             } else {
@@ -113,7 +113,7 @@ function onMount() {
         }
     });
     StatusBtnMenu.addEventListener("click", () => {
-        if (MenuScreen.style.display == "none") {
+        if (MenuScreen.style.display === "none") {
             MenuScreen.style.display = "inline";
             MenuScreen.animate("enable");
         } else {
@@ -121,14 +121,31 @@ function onMount() {
             setTimeout(() => {MenuScreen.style.display = "none";}, 300);
         }
     });
-    StatusBtnRefresh.addEventListener("click", onStatusBtnRefreshClicked);
+    StatusBtnRefresh.addEventListener("click", () => {
+        debugLog("Refresh Clicked");
+        let currentIdx = 0;
+        let time;
+        let i = LM_TIMETABLE.length, x = -1;
+        while (i--) {
+            x++;
+            time = new Date(LM_TIMETABLE[x].date);
+            if (time - date > 0) {currentIdx = x; break;}
+        }
+        TimetableList.value = currentIdx;
+    });
+    MenuBtnWorkout.addEventListener("activate", onMenuBtnWorkoutClicked);
     MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
     MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
     MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
 }
 
-// Util Methods
-//-----------------------------------------------------------------------------
+// Utils
+// ----------------------------------------------------------------------------
+
+// clock update.
+function tickHandler(evt) {
+    StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
+}
 
 // clean up old local data files.
 function cleanUpFiles() {
@@ -152,8 +169,8 @@ function cleanUpFiles() {
     }
 }
 
-// Event Methods
-//-----------------------------------------------------------------------------
+// Messaging
+// ----------------------------------------------------------------------------
 
 // send data to companion via Messaging API
 function sendValue(key, data=null) {
@@ -176,7 +193,7 @@ function onDataRecieved() {
     let fileName;
     let CurrentDayKeyFile = `${LM_PREFIX}${CurrentDayKey}.cbor`;
     while (fileName = inbox.nextFile()) {
-        if (fileName == CurrentDayKeyFile) {
+        if (fileName === CurrentDayKeyFile) {
             debugLog(`File ${fileName} recieved!`);
             // hide loader & message screen just incase.
             displayLoader(false);
@@ -226,7 +243,7 @@ function onMessageRecieved(evt) {
         case "lm-dataQueued":
             let clubName = evt.data.value;
             debugLog(`FileTransfer data has been queued: ${clubName}`);
-            if (LoaderOverlay.style.display == 'inline') {
+            if (LoaderOverlay.style.display === 'inline') {
                 displayLoader(true, "Waiting for Data...", clubName);
             }
             break;
@@ -235,23 +252,15 @@ function onMessageRecieved(evt) {
     }
 }
 
-// Button Methods
-//-----------------------------------------------------------------------------
+// Buttons
+// ----------------------------------------------------------------------------
 
-// callback for the status refresh button.
-function onStatusBtnRefreshClicked() {
-    debugLog("Refresh Clicked");
-    let currentIdx = 0;
-    let time;
-    let i = LM_TIMETABLE.length, x = -1;
-    while (i--) {
-        x++;
-        time = new Date(LM_TIMETABLE[x].date);
-        if (time - date > 0) {currentIdx = x; break;}
-    }
-    TimetableList.value = currentIdx;
+// Menu Screen.
+function onMenuBtnWorkoutClicked () {
+    clock.removeEventListener("tick", tickHandler);
+    MenuScreen.style.display = "none";
+    views.navigate("classes");
 }
-// callback menu buttons.
 function onMenuBtn1Clicked() {
     MenuScreen.style.display = "none";
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
@@ -274,14 +283,14 @@ function onMenuBtn3Clicked() {
     setTimetableDay(CurrentDayKey);
 }
 
-// Gui Methods
-//-----------------------------------------------------------------------------
+// Gui
+// ----------------------------------------------------------------------------
 
-// toggle widget visibility.
+// toggle element visibility.
 function displayElement(element, display=true) {
     element.style.display = display ? "inline" : "none";
 }
-// toggle message overlay widget visibility.
+// toggle message screen widget visibility.
 function displayMessage(display=true, text="", title="") {
     let mixedText = MessageOverlay.getElementById("#mixedtext");
     let mixedTextBody = mixedText.getElementById("copy");
@@ -301,27 +310,15 @@ function displayLoader(display=true, text="", subText="") {
 function buildTimetable() {
     TimetableList.delegate = {
         getTileInfo: index => {
-            if (LM_TIMETABLE.length != 0) {
-                let tileInfo = LM_TIMETABLE[index];
-                return {
-                    index: index,
-                    type: "lm-pool",
-                    name: tileInfo.name,
-                    instructor: tileInfo.instructor,
-                    date: tileInfo.date,
-                    desc: tileInfo.desc,
-                    color: (tileInfo.color !== null) ? tileInfo.color : "#545454",
-                };
-            }
-            // need this here or we'll get a "Error 22 Critical glue error"
+            let tileInfo = LM_TIMETABLE[index];
             return {
                 index: index,
                 type: "lm-pool",
-                name: "",
-                instructor: "",
-                date: date,
-                desc: "",
-                color: "#545454",
+                name: tileInfo.name,
+                instructor: tileInfo.instructor,
+                date: tileInfo.date,
+                desc: tileInfo.desc,
+                color: (tileInfo.color !== null) ? tileInfo.color : "#545454",
             };
         },
         configureTile: (tile, info) => {
@@ -348,10 +345,10 @@ function buildTimetable() {
         }
     }
     // TimetableList.length must be set AFTER TimetableList.delegate
-    TimetableList.length = 10;
+    TimetableList.length = 0;
 }
 
-// set the timetable list with specified day.
+// populate timetable list with specified day.
 function setTimetableDay(dKey, jumpToIndex=true) {
     displayElement(TimetableList, false);
     displayLoader(true, "Loading Timetable...");
@@ -421,7 +418,7 @@ function setTimetableDay(dKey, jumpToIndex=true) {
 
     // Give 6 second period before displaying connection lost or retry.
     setTimeout(() => {
-        if (LoaderOverlay.style.display == 'inline') {
+        if (LoaderOverlay.style.display === 'inline') {
             if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
                 displayLoader(false);
                 displayMessage(
