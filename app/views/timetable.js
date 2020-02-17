@@ -104,7 +104,7 @@ function onMount() {
     document.addEventListener("keypress", evt => {
         if (evt.key === "back") {
             evt.preventDefault();
-            if (MenuScreen.style.display == "inline") {
+            if (MenuScreen.style.display === "inline") {
                 MenuScreen.animate("disable");
                 setTimeout(() => {MenuScreen.style.display = "none";}, 300);
             } else {
@@ -183,7 +183,7 @@ function onDataRecieved() {
     let fileName;
     let CurrentDayKeyFile = `${LM_PREFIX}${CurrentDayKey}.cbor`;
     while (fileName = inbox.nextFile()) {
-        if (fileName == CurrentDayKeyFile) {
+        if (fileName === CurrentDayKeyFile) {
             debugLog(`File ${fileName} recieved!`);
             // hide loader & message screen just incase.
             displayLoader(false);
@@ -233,7 +233,7 @@ function onMessageRecieved(evt) {
         case "lm-dataQueued":
             let clubName = evt.data.value;
             debugLog(`FileTransfer data has been queued: ${clubName}`);
-            if (LoaderOverlay.style.display == 'inline') {
+            if (LoaderOverlay.style.display === 'inline') {
                 displayLoader(true, "Waiting for Data...", clubName);
             }
             break;
@@ -422,7 +422,7 @@ function setTimetableDay(dKey, jumpToIndex=true) {
 
     // Give 6 second period before displaying connection lost or retry.
     setTimeout(() => {
-        if (LoaderOverlay.style.display == 'inline') {
+        if (LoaderOverlay.style.display === 'inline') {
             if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
                 displayLoader(false);
                 displayMessage(
