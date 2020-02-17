@@ -8,6 +8,12 @@ import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs"
 import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
 import { debugLog } from "../utils"
 
+const date = new Date();
+const date1 = new Date();
+const date2 = new Date();
+date1.setDate(date1.getDate() + 1);
+date2.setDate(date2.getDate() + 2);
+
 const LM_PREFIX = "LM_dat";
 let LM_TIMETABLE = [];
 
@@ -26,12 +32,6 @@ let MenuBtn3;
 
 let OnFileRecievedUpdateGui;
 let CurrentDayKey;
-
-const date = new Date();
-const date1 = new Date();
-const date2 = new Date();
-date1.setDate(date1.getDate() + 1);
-date2.setDate(date2.getDate() + 2);
 
 // screen initialize.
 let views;
@@ -105,76 +105,85 @@ function onMount() {
     // process incomming data transfers.
     inbox.addEventListener("newfile", onDataRecieved);
     // button events.
-    document.addEventListener("keypress", evt => {
-        if (evt.key === "back") {
-            evt.preventDefault();
-            if (MenuScreen.style.display === "inline") {
-                MenuScreen.animate("disable");
-                setTimeout(() => {MenuScreen.style.display = "none";}, 300);
-            } else {
-                me.exit();
-            }
-        }
-    });
-    StatusBtnMenu.addEventListener("click", () => {
-        if (MenuScreen.style.display === "none") {
-            MenuScreen.style.display = "inline";
-            MenuScreen.animate("enable");
-        } else {
-            MenuScreen.animate("disable");
-            setTimeout(() => {MenuScreen.style.display = "none";}, 300);
-        }
-    });
-    StatusBtnRefresh.addEventListener("click", () => {
-        debugLog("Refresh Clicked");
-        let currentIdx = 0;
-        let time;
-        let i = LM_TIMETABLE.length, x = -1;
-        while (i--) {
-            x++;
-            time = new Date(LM_TIMETABLE[x].date);
-            if (time - date > 0) {currentIdx = x; break;}
-        }
-        TimetableList.value = currentIdx;
-    });
+    document.addEventListener("keypress", onKeyPressEvent);
+    StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
+    StatusBtnRefresh.addEventListener("click", onStatusBtnRefreshClicked);
     MenuBtnWorkout.addEventListener("activate", onMenuBtnWorkoutClicked);
     MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
     MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
     MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
 }
 
-// Utils
+// BUTTON
+// ----------------------------------------------------------------------------
+
+function onKeyPressEvent(evt) {
+    if (evt.key === "back") {
+        evt.preventDefault();
+        if (MenuScreen.style.display === "inline") {
+            MenuScreen.animate("disable");
+            setTimeout(() => {MenuScreen.style.display = "none";}, 300);
+        } else {
+            me.exit();
+        }
+    }
+}
+function onStatusBtnMenuClicked() {
+    if (MenuScreen.style.display === "none") {
+        MenuScreen.style.display = "inline";
+        MenuScreen.animate("enable");
+    } else {
+        MenuScreen.animate("disable");
+        setTimeout(() => {MenuScreen.style.display = "none";}, 300);
+    }
+}
+function onStatusBtnRefreshClicked() {
+    let currentIdx = 0;
+    let time;
+    let i = LM_TIMETABLE.length, x = -1;
+    while (i--) {
+        x++;
+        time = new Date(LM_TIMETABLE[x].date);
+        if (time - date > 0) {currentIdx = x; break;}
+    }
+    TimetableList.value = currentIdx;
+}
+function onMenuBtnWorkoutClicked() {
+    // clear LM_TIMETABLE list or we'll run out of memory.
+    LM_TIMETABLE.length = 0;
+    clock.removeEventListener("tick", tickHandler);
+    MenuScreen.style.display = "none";
+    views.navigate("classes");
+}
+function onMenuBtn1Clicked() {
+    MenuScreen.style.display = "none";
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
+    StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
+    CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
+    setTimetableDay(CurrentDayKey);
+}
+function onMenuBtn2Clicked() {
+    MenuScreen.style.display = "none";
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]}`;
+    StatusBar.getElementById("date2").text = `${date1.getDate()} ${MONTHS[date1.getMonth()]}`;
+    CurrentDayKey = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
+    setTimetableDay(CurrentDayKey);
+}
+function onMenuBtn3Clicked() {
+    MenuScreen.style.display = "none";
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date2.getDay()]}`;
+    StatusBar.getElementById("date2").text = `${date2.getDate()} ${MONTHS[date2.getMonth()]}`;
+    CurrentDayKey = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
+    setTimetableDay(CurrentDayKey);
+}
+
+// EVENTS
 // ----------------------------------------------------------------------------
 
 // clock update.
 function tickHandler(evt) {
     StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
 }
-
-// clean up old local data files.
-function cleanUpFiles() {
-    let keepList = [
-        `${LM_PREFIX}${date.getDay()}${date.getDate()}${date.getMonth()}.cbor`,
-        `${LM_PREFIX}${date1.getDay()}${date1.getDate()}${date1.getMonth()}.cbor`,
-        `${LM_PREFIX}${date2.getDay()}${date2.getDate()}${date2.getMonth()}.cbor`,
-    ];
-    let dirIter;
-    let listDir = listDirSync("/private/data");
-    while((dirIter = listDir.next()) && !dirIter.done) {
-        if (dirIter.value === undefined) {continue;}
-
-        // ECMAScript 5.1 doesn't support "String.startsWith()" and "Array.includes()"
-        if (dirIter.value.indexOf(LM_PREFIX) === 0) {
-            if (keepList.indexOf(dirIter.value) < 0) {
-                unlinkSync(dirIter.value);
-                debugLog(`Deleted: ${dirIter.value}`);
-            }
-        }
-    }
-}
-
-// Messaging
-// ----------------------------------------------------------------------------
 
 // send data to companion via Messaging API
 function sendValue(key, data=null) {
@@ -256,40 +265,31 @@ function onMessageRecieved(evt) {
     }
 }
 
-// Buttons
 // ----------------------------------------------------------------------------
 
-// Menu Screen.
-function onMenuBtnWorkoutClicked () {
-    // clear LM_TIMETABLE list or we'll run out of memory.
-    LM_TIMETABLE.length = 0;
-    clock.removeEventListener("tick", tickHandler);
-    MenuScreen.style.display = "none";
-    views.navigate("classes");
-}
-function onMenuBtn1Clicked() {
-    MenuScreen.style.display = "none";
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
-    StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
-    CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
-    setTimetableDay(CurrentDayKey);
-}
-function onMenuBtn2Clicked() {
-    MenuScreen.style.display = "none";
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]}`;
-    StatusBar.getElementById("date2").text = `${date1.getDate()} ${MONTHS[date1.getMonth()]}`;
-    CurrentDayKey = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
-    setTimetableDay(CurrentDayKey);
-}
-function onMenuBtn3Clicked() {
-    MenuScreen.style.display = "none";
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date2.getDay()]}`;
-    StatusBar.getElementById("date2").text = `${date2.getDate()} ${MONTHS[date2.getMonth()]}`;
-    CurrentDayKey = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
-    setTimetableDay(CurrentDayKey);
+// clean up old local files.
+function cleanUpFiles() {
+    let keepList = [
+        `${LM_PREFIX}${date.getDay()}${date.getDate()}${date.getMonth()}.cbor`,
+        `${LM_PREFIX}${date1.getDay()}${date1.getDate()}${date1.getMonth()}.cbor`,
+        `${LM_PREFIX}${date2.getDay()}${date2.getDate()}${date2.getMonth()}.cbor`,
+    ];
+    let dirIter;
+    let listDir = listDirSync("/private/data");
+    while((dirIter = listDir.next()) && !dirIter.done) {
+        if (dirIter.value === undefined) {continue;}
+
+        // ECMAScript 5.1 doesn't support "String.startsWith()" and "Array.includes()"
+        if (dirIter.value.indexOf(LM_PREFIX) === 0) {
+            if (keepList.indexOf(dirIter.value) < 0) {
+                unlinkSync(dirIter.value);
+                debugLog(`Deleted: ${dirIter.value}`);
+            }
+        }
+    }
 }
 
-// Gui
+// TIMETABLE LIST
 // ----------------------------------------------------------------------------
 
 // toggle element visibility.
@@ -372,23 +372,13 @@ function setTimetableDay(dKey, jumpToIndex=true) {
 
         setTimeout(() => {
 
-            // find next class index.
-            let currentIdx = 0;
-            let time;
-            let i = LM_TIMETABLE.length, x = -1;
-            while (i--) {
-                x++;
-                time = new Date(LM_TIMETABLE[x].date);
-                if (time - date > 0) {currentIdx = x; break;}
-            }
-
             // refresh to the list.
             TimetableList.length = LM_TIMETABLE.length;
             TimetableList.redraw();
 
             // jump to latest tile.
             if (jumpToIndex) {
-                TimetableList.value = currentIdx;
+                onStatusBtnRefreshClicked();
             }
 
             displayElement(TimetableList, true);
