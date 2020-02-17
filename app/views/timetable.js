@@ -81,7 +81,7 @@ function onMount() {
     setTimetableDay(CurrentDayKey);
 
     // connect up add the events.
-    // ========================================================================
+    // ----------------------------------------------------------------------------
 
     // register time callback.
     clock.granularity = "minutes";
@@ -113,7 +113,7 @@ function onMount() {
         }
     });
     StatusBtnMenu.addEventListener("click", () => {
-        if (MenuScreen.style.display == "none") {
+        if (MenuScreen.style.display === "none") {
             MenuScreen.style.display = "inline";
             MenuScreen.animate("enable");
         } else {
@@ -121,7 +121,18 @@ function onMount() {
             setTimeout(() => {MenuScreen.style.display = "none";}, 300);
         }
     });
-    StatusBtnRefresh.addEventListener("click", onStatusBtnRefreshClicked);
+    StatusBtnRefresh.addEventListener("click", () => {
+        debugLog("Refresh Clicked");
+        let currentIdx = 0;
+        let time;
+        let i = LM_TIMETABLE.length, x = -1;
+        while (i--) {
+            x++;
+            time = new Date(LM_TIMETABLE[x].date);
+            if (time - date > 0) {currentIdx = x; break;}
+        }
+        TimetableList.value = currentIdx;
+    });
     MenuBtnWorkout.addEventListener("activate", onMenuBtnWorkoutClicked);
     MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
     MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
@@ -129,11 +140,10 @@ function onMount() {
 }
 
 // Utils
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 // clock update.
 function tickHandler(evt) {
-    // TODO: check if clock event un-registers when switching views.
     StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
 }
 
@@ -160,7 +170,7 @@ function cleanUpFiles() {
 }
 
 // Messaging
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 // send data to companion via Messaging API
 function sendValue(key, data=null) {
@@ -243,24 +253,10 @@ function onMessageRecieved(evt) {
 }
 
 // Buttons
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
-// callback for the status refresh button.
-function onStatusBtnRefreshClicked() {
-    debugLog("Refresh Clicked");
-    let currentIdx = 0;
-    let time;
-    let i = LM_TIMETABLE.length, x = -1;
-    while (i--) {
-        x++;
-        time = new Date(LM_TIMETABLE[x].date);
-        if (time - date > 0) {currentIdx = x; break;}
-    }
-    TimetableList.value = currentIdx;
-}
 // Menu Screen.
 function onMenuBtnWorkoutClicked () {
-    // TODO: check if clock event un-registers when switching views.
     clock.removeEventListener("tick", tickHandler);
     MenuScreen.style.display = "none";
     views.navigate("classes");
@@ -288,7 +284,7 @@ function onMenuBtn3Clicked() {
 }
 
 // Gui
-//-----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 // toggle element visibility.
 function displayElement(element, display=true) {

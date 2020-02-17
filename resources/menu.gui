@@ -5,9 +5,9 @@
         <rect width="100%" height="100%" fill="black" />
         <use id="side-menu-scroll" href="#scrollview">
             <!-- Workouts -->
-            <use href="#scrollview-item" height="25">
-                <rect x="0" y="0" width="100%" height="100%" fill="#25282b" />
-                <text x="5" y="50%+8" fill="white" font-size="20" font-family="System-Bold" >Group Fitness</text>
+            <use href="#scrollview-item" height="25" class="side-menu-header">
+                <rect/>
+                <text>Group Fitness</text>
             </use>
             <use href="#scrollview-item" height="68">
                 <use id="btn_classes" href="#square-button" y="2" height="62" fill="#56b6e9">
@@ -15,9 +15,9 @@
                 </use>
             </use>
             <!-- Timetable -->
-            <use href="#scrollview-item" height="25">
-                <rect x="0" y="0" width="100%" height="100%" fill="#25282b" />
-                <text x="5" y="50%+8" fill="white" font-size="20" font-family="System-Bold" >Timetable</text>
+            <use href="#scrollview-item" height="25" class="side-menu-header">
+                <rect/>
+                <text>Timetable</text>
             </use>
             <use href="#scrollview-item" height="62">
                 <use id="btn1" href="#square-button" y="2" height="62" fill="#1effce">

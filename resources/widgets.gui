@@ -55,7 +55,7 @@
     <!-- LM Tile Item -->
     <link rel="import" href="lm_widgets/tile_item.gui" />
     <!-- LM Menu -->
-    <link rel="import" href="lm_widgets/menu.gui" />
+    <link rel="import" href="menu.gui" />
 
   </defs>
 </svg>

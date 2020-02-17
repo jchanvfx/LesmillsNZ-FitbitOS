@@ -6,13 +6,21 @@
         fill="#4bfbc7"
         font-size="30"
         font-weight="bold"
-        text-anchor="middle">LesMills - NZ</text>
+        text-anchor="middle">Initializing...</text>
     <text
         x="50%"
-        y="100%-23"
+        y="100%-46"
         font-family="System-Bold"
         fill="#9d9d9d"
         font-size="20"
         font-weight="bold"
-        text-anchor="middle">Version: 0.0.3</text>
+        text-anchor="middle">v0.0.3</text>
+    <text
+        x="50%"
+        y="100%-23"
+        font-family="System-Regular"
+        fill="#9d9d9d"
+        font-size="18"
+        font-weight="bold"
+        text-anchor="middle">2020 - Johnny Chan</text>
 </svg>
