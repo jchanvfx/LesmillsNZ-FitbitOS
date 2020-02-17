@@ -25,7 +25,7 @@
     <use id="message-screen" href="#message-overlay" display="none" />
     <!-- Loading Screen -->
     <use id="loading-screen" href="#loader-overlay" display="none" />
-    <!-- Day Selector Menu -->
+    <!-- Side Menu -->
     <use id="menu-screen" href="#side-menu" display="none" />
     <!-- Status Bar -->
     <use id="status-bar" href="#lm-status-bar" />

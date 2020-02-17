@@ -51,11 +51,14 @@ function onMount() {
     StatusBarPhone = StatusBar.getElementById("no-phone");
     MessageOverlay = document.getElementById("message-screen");
     MenuScreen = document.getElementById("menu-screen");
-    MenuBtnWorkout = MenuScreen.getElementById("btn_classes");
-    MenuBtn1 = MenuScreen.getElementById("btn1");
-    MenuBtn2 = MenuScreen.getElementById("btn2");
-    MenuBtn3 = MenuScreen.getElementById("btn3");
+    MenuBtnWorkout = MenuScreen.getElementById("main-btn1");
+    MenuBtn1 = MenuScreen.getElementById("sub-btn1");
+    MenuBtn2 = MenuScreen.getElementById("sub-btn2");
+    MenuBtn3 = MenuScreen.getElementById("sub-btn3");
 
+    MenuScreen.getElementById("main-label").text = "Group Fitness";
+    MenuScreen.getElementById("sub-label").text = "Timetable";
+    MenuBtnWorkout.text = "Workouts";
     MenuBtn1.text =
         `${DAYS_SHORT[date.getDay()]} ` +
         `${date.getDate()} ` +
@@ -76,8 +79,9 @@ function onMount() {
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     OnFileRecievedUpdateGui = false;
 
-    // initialize here.
     buildTimetable();
+
+    // initialize here.
     setTimetableDay(CurrentDayKey);
 
     // connect up add the events.

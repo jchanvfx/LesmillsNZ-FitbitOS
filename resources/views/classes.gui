@@ -1,21 +1,43 @@
 <svg viewport-fill="black">
     <!-- Main Wrapper -->
     <section y="50" height="100%-50">
-        <text
-            x="50%"
-            y="50%"
-            font-family="System-Regular"
-            fill="#4bfbc7"
-            font-size="30"
-            font-weight="bold"
-            text-anchor="middle">Test Text</text>
 
-        <use id="btn1" href="#square-button" fill="#1effce">
-            <set href="#text" attributeName="text-length" to="12" />
-            <set href="#text" attributeName="text-buffer" to="Test Button" />
+        <use id="side-menu-scroll" href="#scrollview">
+            <use href="#scrollview-item" height="62">
+                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#ef3340">
+                    <set href="#text" attributeName="text-length" to="12" />
+                    <set href="#text" attributeName="text-buffer" to="BODYPUMP" />
+                </use>
+            </use>
+            <use href="#scrollview-item" height="62">
+                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#ffb81c">
+                    <set href="#text" attributeName="text-length" to="12" />
+                    <set href="#text" attributeName="text-buffer" to="BODYATTACK" />
+                </use>
+            </use>
+            <use href="#scrollview-item" height="62">
+                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#787121">
+                    <set href="#text" attributeName="text-length" to="12" />
+                    <set href="#text" attributeName="text-buffer" to="BODYCOMBAT" />
+                </use>
+            </use>
+            <use href="#scrollview-item" height="62">
+                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#8246af">
+                    <set href="#text" attributeName="text-length" to="12" />
+                    <set href="#text" attributeName="text-buffer" to="TONE" />
+                </use>
+            </use>
+            <use href="#scrollview-item" height="62">
+                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#e35205">
+                    <set href="#text" attributeName="text-length" to="12" />
+                    <set href="#text" attributeName="text-buffer" to="CXWORX" />
+                </use>
+            </use>
         </use>
-    </section>
 
+    </section>
+    <!-- Side Menu -->
+    <use id="menu-screen" href="#side-menu" display="none" />
     <!-- Status Bar -->
     <use id="status-bar" href="#lm-status-bar" />
 

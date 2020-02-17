@@ -4,37 +4,32 @@
         <animate attributeName="x" begin="disable" from="0%" to="-100%" dur="0.3" easing="ease-in-out"/>
         <rect width="100%" height="100%" fill="black" />
         <use id="side-menu-scroll" href="#scrollview">
-            <!-- Workouts -->
-            <use href="#scrollview-item" height="25" class="side-menu-header">
-                <rect/>
-                <text>Group Fitness</text>
+            <!-- Main -->
+            <use id="main-itm-label" href="#scrollview-item" height="25" class="side-menu-header">
+                <rect/><text id="main-label" text-length="24" />
             </use>
-            <use href="#scrollview-item" height="68">
-                <use id="btn_classes" href="#square-button" y="2" height="62" fill="#56b6e9">
-                    <set href="#text" attributeName="text-buffer" to="Classes" />
+            <use id="main-itm1" href="#scrollview-item" height="68">
+                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#56b6e9">
+                    <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
-            <!-- Timetable -->
-            <use href="#scrollview-item" height="25" class="side-menu-header">
-                <rect/>
-                <text>Timetable</text>
+            <!-- Sub -->
+            <use id="sub-itm-label" href="#scrollview-item" height="25" class="side-menu-header">
+                <rect/><text id="sub-label" text-length="16" />
             </use>
-            <use href="#scrollview-item" height="62">
-                <use id="btn1" href="#square-button" y="2" height="62" fill="#1effce">
+            <use id="sub-itm1" href="#scrollview-item" height="62">
+                <use id="sub-btn1" href="#square-button" y="2" height="62" fill="#1effce">
                     <set href="#text" attributeName="text-length" to="12" />
-                    <set href="#text" attributeName="text-buffer" to="button1" />
                 </use>
             </use>
-            <use href="#scrollview-item" height="62">
-                <use id="btn2" href="#square-button" y="$" height="62" fill="#1effce">
+            <use id="sub-itm2" href="#scrollview-item" height="62">
+                <use id="sub-btn2" href="#square-button" y="$" height="62" fill="#1effce">
                     <set href="#text" attributeName="text-length" to="12" />
-                    <set href="#text" attributeName="text-buffer" to="button2" />
                 </use>
             </use>
-            <use href="#scrollview-item" height="62">
-                <use id="btn3" href="#square-button" y="$" height="62" fill="#1effce">
+            <use id="sub-itm3" href="#scrollview-item" height="62">
+                <use id="sub-btn3" href="#square-button" y="$" height="62" fill="#1effce">
                     <set href="#text" attributeName="text-length" to="12" />
-                    <set href="#text" attributeName="text-buffer" to="button3" />
                 </use>
             </use>
         </use>

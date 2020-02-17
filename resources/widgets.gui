@@ -35,7 +35,7 @@
         <text id="date1">(No Data)</text>
         <text id="date2">(No Data)</text>
         <text id="time">00:00am</text>
-        <image id="no-phone" href="./resources/images/no_phone.png" />
+        <image id="no-phone" href="./resources/images/no_phone.png" display="none" />
         <image id="jump-to" href="./resources/images/jump_to.png" />
         <rect id="click-l" pointer-events="all" />
         <rect id="click-r" pointer-events="all" />
