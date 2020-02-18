@@ -123,9 +123,7 @@ function onKeyPressEvent(evt) {
         if (MenuScreen.style.display === "inline") {
             MenuScreen.animate("disable");
             setTimeout(() => {MenuScreen.style.display = "none";}, 300);
-        } else {
-            me.exit();
-        }
+        } else {me.exit();}
     }
 }
 function onStatusBtnMenuClicked() {
@@ -198,7 +196,6 @@ function sendValue(key, data=null) {
         StatusBarPhone,
         messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
     );
-
 }
 
 // callback when file transfer has completed.

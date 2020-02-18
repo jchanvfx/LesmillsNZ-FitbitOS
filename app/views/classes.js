@@ -2,8 +2,14 @@ import clock from "clock";
 import document from "document";
 import * as messaging from "messaging";
 import { me } from "appbit";
-import { DAYS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
+import { display } from "display";
+import { inbox } from "file-transfer"
+import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
+import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
 import { debugLog } from "../utils"
+
+const LM_CLASSES_FILE = "LM_classes.cbor";
+let LM_CLASSES = [];
 
 let StatusBar;
 let StatusBtnMenu;
@@ -12,6 +18,8 @@ let MenuScreen;
 let MenuBtnTimetable;
 
 const date = new Date();
+
+let OnFileRecievedUpdateGui;
 
 // screen initialize.
 let views;
@@ -47,6 +55,10 @@ function onMount() {
 
 
     // initialize here.
+    let foo = document.getElementById("main-btn");
+    foo.addEventListener("activate", () => {
+        sendValue("lm-classes");
+    });
 
 
     // connect up add the events.
@@ -65,43 +77,100 @@ function onMount() {
         debugLog("App Socket Closed");
         displayElement(StatusBarPhone, true);
     };
+    // message recieved.
+    messaging.peerSocket.onmessage = onMessageRecieved;
+    // process incomming data transfers.
+    inbox.addEventListener("newfile", onDataRecieved);
     // button events.
-    document.addEventListener("keypress", evt => {
-        if (evt.key === "back") {
-            evt.preventDefault();
-            if (MenuScreen.style.display === "inline") {
-                MenuScreen.animate("disable");
-                setTimeout(() => {MenuScreen.style.display = "none";}, 300);
-            } else {
-                me.exit();
-            }
-        }
-    });
-    StatusBtnMenu.addEventListener("click", () => {
-        if (MenuScreen.style.display === "none") {
-            MenuScreen.style.display = "inline";
-            MenuScreen.animate("enable");
-        } else {
-            MenuScreen.animate("disable");
-            setTimeout(() => {MenuScreen.style.display = "none";}, 300);
-        }
-    });
+    document.addEventListener("keypress", onKeyPressEvent);
+    StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
     MenuBtnTimetable.addEventListener("activate", onMenuBtnTimetableClicked);
 }
+
+// BUTTON
+// ----------------------------------------------------------------------------
+
+function onKeyPressEvent(evt) {
+    if (evt.key === "back") {
+        evt.preventDefault();
+        if (MenuScreen.style.display === "inline") {
+            MenuScreen.animate("disable");
+            setTimeout(() => {MenuScreen.style.display = "none";}, 300);
+        } else {me.exit();}
+    }
+}
+function onStatusBtnMenuClicked() {
+    if (MenuScreen.style.display === "none") {
+        MenuScreen.style.display = "inline";
+        MenuScreen.animate("enable");
+    } else {
+        MenuScreen.animate("disable");
+        setTimeout(() => {MenuScreen.style.display = "none";}, 300);
+    }
+}
+function onMenuBtnTimetableClicked () {
+    clock.removeEventListener("tick", tickHandler);
+    MenuScreen.style.display = "none";
+    views.navigate("timetable");
+}
+
+// EVENTS
+// ----------------------------------------------------------------------------
 
 // clock update.
 function tickHandler(evt) {
     StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
 }
 
-// Buttons
-// ----------------------------------------------------------------------------
+// send data to companion via Messaging API
+function sendValue(key, data=null) {
+    if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+        if (data == null) {
+            messaging.peerSocket.send({key: key});
+        } else {
+            messaging.peerSocket.send({key: key, value: data});
+        }
+    }
+    displayElement(
+        StatusBarPhone,
+        messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
+    );
+}
 
-// Menu Screen.
-function onMenuBtnTimetableClicked () {
-    clock.removeEventListener("tick", tickHandler);
-    MenuScreen.style.display = "none";
-    views.navigate("timetable");
+// callback when file transfer has completed.
+function onDataRecieved() {
+    let fileName;
+    while (fileName = inbox.nextFile()) {
+        if (fileName === LM_CLASSES_FILE) {
+            debugLog(`File ${fileName} recieved!`);
+            break;
+        }
+    }
+    displayElement(
+        StatusBarPhone,
+        messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
+    );
+}
+// callback when a message is recieved.
+function onMessageRecieved(evt) {
+    switch (evt.data.key) {
+        case "lm-noClub":
+            debugLog("no club selected.");
+            break;
+        case "lm-classesReply":
+            if (evt.data.value) {
+                let clubName = evt.data.value;
+                debugLog(`${clubName} classes queued.`);
+            } else {
+                debugLog("classes reply");
+            }
+            break;
+        case "lm-noClasses":
+            debugLog("no classes.");
+            break;
+        default:
+            return;
+    }
 }
 
 // Gui

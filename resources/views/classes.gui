@@ -4,7 +4,7 @@
 
         <use id="side-menu-scroll" href="#scrollview">
             <use href="#scrollview-item" height="62">
-                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#ef3340">
+                <use id="main-btn" href="#square-button" y="2" height="62" fill="#ef3340">
                     <set href="#text" attributeName="text-length" to="12" />
                     <set href="#text" attributeName="text-buffer" to="BODYPUMP" />
                 </use>
