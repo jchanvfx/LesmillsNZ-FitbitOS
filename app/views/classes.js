@@ -53,8 +53,11 @@ function onMount() {
     displayElement(MenuScreen.getElementById("sub-itm2"), false);
     displayElement(MenuScreen.getElementById("sub-itm3"), false);
 
+    OnFileRecievedUpdateGui = false;
 
-    // initialize here.
+    // initialize.
+    // setCurrentFitnessClasses();
+  
     let foo = document.getElementById("main-btn");
     foo.addEventListener("activate", () => {
         sendValue("lm-classes");
