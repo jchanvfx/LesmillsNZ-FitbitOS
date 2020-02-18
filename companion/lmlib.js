@@ -56,3 +56,33 @@ export function fetchTimetableData(clubID, callbackFunc) {
             console.log(`Failure: ${err}`);
         });
 }
+
+// Fetch fitness classes from the LesMills database.
+export function fetchClasses(clubID, callbackFunc) {
+    let fetchData = {
+        method: "POST",
+        headers: new Headers({
+            "Content-type": "application/json; charset=UTF-8"
+        }),
+        body: JSON.stringify({Club: clubID}),
+    };
+    return fetch(urlAPI, fetchData)
+        .then(response => response.json())
+        .then(data => {
+            let fitnessClasses = [];
+            for (let i = 0; i < data.Classes.length; i++) {
+                let clsInfo = data.Classes[i];
+                let clsName = clsInfo.ClassName;
+                clsName = clsName.replace(/Virtual|virtual|30|45/g, "");
+                clsName = clsName.replace(/^\s+|\s+$/g, '');
+                if (fitnessClasses.includes(clsName)) {continue;}
+                fitnessClasses.push(clsName);
+            }
+            fitnessClasses.sort();
+            // execute callback.
+            callbackFunc(fitnessClasses);
+        })
+        .catch(err => {
+            console.log(`Failure: ${err}`);
+        });
+}
