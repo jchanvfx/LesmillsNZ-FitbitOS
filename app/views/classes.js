@@ -56,7 +56,7 @@ function onMount() {
     OnFileRecievedUpdateGui = false;
 
     // initialize.
-    // setCurrentFitnessClasses();
+    // updateFitnessClassesList();
   
     let foo = document.getElementById("main-btn");
     foo.addEventListener("activate", () => {
