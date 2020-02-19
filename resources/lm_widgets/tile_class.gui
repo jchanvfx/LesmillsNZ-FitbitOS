@@ -1,0 +1,37 @@
+<link rel="stylesheet" href="tile_class.css" />
+<symbol
+    id="lm-wrk_tile"
+    href="#tile-list-item"
+    focusable="false"
+    pointer-events="none"
+    system-events="all"
+    display="none" >
+
+    <rect id="background"/>
+    <!-- tl -->
+    <rect x="1%" y="3%" width="10" height="10" fill="black" />
+    <circle r="10" cx="1%+10" cy="3%+10" class="lm-tile-cnr" />
+    <!-- tr -->
+    <rect x="98%-7" y="3%" width="10" height="10" fill="black" />
+    <circle r="10" cx="98%-7" cy="3%+10" class="lm-tile-cnr" />
+    <!-- bl -->
+    <rect x="1%" y="96%-8" width="10" height="10" fill="black" />
+    <circle r="10" cx="1%+10" cy="96%-8" class="lm-tile-cnr" />
+    <!-- br -->
+    <rect x="98%-7" y="96%-8" width="10" height="10" fill="black" />
+    <circle r="10" cx="98%-7" cy="96%-8" class="lm-tile-cnr" />
+    <!-- class color -->
+    <rect id="color" x="8" y="57%" width="100%-16" height="2" fill="#545454"/>
+    <!-- info text -->
+    <text id="text" />
+    <!-- touch pointer -->
+    <rect
+        id="touch"
+        pointer-events="all"
+        x="0"
+        y="1"
+        width="100%"
+        height="100%-2"
+        opacity="0"
+    />
+</symbol>

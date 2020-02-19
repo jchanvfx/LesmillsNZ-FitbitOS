@@ -19,11 +19,11 @@ let LM_TIMETABLE = [];
 
 let TimetableList;
 let LoaderOverlay;
+let MessageOverlay;
 let StatusBar;
 let StatusBtnMenu;
 let StatusBtnRefresh;
 let StatusBarPhone;
-let MessageOverlay;
 let MenuScreen;
 let MenuBtnWorkout;
 let MenuBtn1;
@@ -43,53 +43,94 @@ export function init(_views) {
 
 // entry point when this view is mounted, setup elements and events.
 function onMount() {
+    clock.granularity = "minutes";
+
     TimetableList = document.getElementById("lm-class-list");
+    TimetableList.delegate = {
+        getTileInfo: index => {
+            let tileInfo = LM_TIMETABLE[index];
+            return {
+                index: index,
+                type: "lm-pool",
+                name: tileInfo.name,
+                instructor: tileInfo.instructor,
+                date: tileInfo.date,
+                desc: tileInfo.desc,
+                color: (tileInfo.color !== null) ? tileInfo.color : "#545454",
+            };
+        },
+        configureTile: (tile, info) => {
+            if (info.type == "lm-pool") {
+                let itmDate = new Date(info.date);
+                tile.getElementById("text-title").text = info.name.toUpperCase();
+                tile.getElementById("text-subtitle").text = info.instructor;
+                tile.getElementById("text-L").text = formatTo12hrTime(itmDate);
+                tile.getElementById("text-R").text = info.desc;
+                if (itmDate - date < 0) {
+                    tile.getElementById("text-title").style.fill = "#6e6e6e";
+                    tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
+                    tile.getElementById("text-L").style.fill = "#6e6e6e";
+                    tile.getElementById("text-R").style.fill = "#6e6e6e";
+                    tile.getElementById("color").style.fill = "#4f4f4f";
+                } else {
+                    tile.getElementById("text-title").style.fill = "white";
+                    tile.getElementById("text-subtitle").style.fill = "white";
+                    tile.getElementById("text-L").style.fill = "white";
+                    tile.getElementById("text-R").style.fill = "white";
+                    tile.getElementById("color").style.fill = info.color;
+                }
+            }
+        }
+    }
+    // TimetableList.length must be set AFTER TimetableList.delegate
+    TimetableList.length = LM_TIMETABLE.length;
+
     LoaderOverlay = document.getElementById("loading-screen");
+    MessageOverlay = document.getElementById("message-screen");
     StatusBar = document.getElementById("status-bar");
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
+    StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
+    StatusBar.getElementById("time").text = formatTo12hrTime(date);
     StatusBtnMenu = StatusBar.getElementById("click-l");
     StatusBtnRefresh = StatusBar.getElementById("click-r");
     StatusBarPhone = StatusBar.getElementById("no-phone");
-    MessageOverlay = document.getElementById("message-screen");
     MenuScreen = document.getElementById("menu-screen");
-    MenuBtnWorkout = MenuScreen.getElementById("main-btn1");
-    MenuBtn1 = MenuScreen.getElementById("sub-btn1");
-    MenuBtn2 = MenuScreen.getElementById("sub-btn2");
-    MenuBtn3 = MenuScreen.getElementById("sub-btn3");
-
     MenuScreen.getElementById("main-label").text = "Group Fitness";
     MenuScreen.getElementById("sub-label").text = "Timetable";
+    MenuBtnWorkout = MenuScreen.getElementById("main-btn1");
     MenuBtnWorkout.text = "Workouts";
+    MenuBtn1 = MenuScreen.getElementById("sub-btn1");
     MenuBtn1.text =
         `${DAYS_SHORT[date.getDay()]} ` +
         `${date.getDate()} ` +
         `${MONTHS_SHORT[date.getMonth()]}`;
+    MenuBtn2 = MenuScreen.getElementById("sub-btn2");
     MenuBtn2.text =
         `${DAYS_SHORT[date1.getDay()]} ` +
         `${date1.getDate()} ` +
         `${MONTHS_SHORT[date1.getMonth()]} `;
+    MenuBtn3 = MenuScreen.getElementById("sub-btn3");
     MenuBtn3.text =
         `${DAYS_SHORT[date2.getDay()]} ` +
         `${date2.getDate()} ` +
         `${MONTHS_SHORT[date2.getMonth()]}`;
 
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
-    StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
-    StatusBar.getElementById("time").text = formatTo12hrTime(date);
-
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     OnFileRecievedUpdateGui = false;
 
-    buildTimetable();
-
-    // initialize here.
     setTimetableDay(CurrentDayKey);
 
     // connect up add the events.
     // ----------------------------------------------------------------------------
+    clock.addEventListener("tick", onTickEvent);
+    document.addEventListener("keypress", onKeyPressEvent);
+    StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
+    StatusBtnRefresh.addEventListener("click", onStatusBtnRefreshClicked);
+    MenuBtnWorkout.addEventListener("activate", onMenuBtnWorkoutClicked);
+    MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
+    MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
+    MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
 
-    // register time callback.
-    clock.granularity = "minutes";
-    clock.addEventListener("tick", tickHandler);
     // message socket opens.
     messaging.peerSocket.onopen = () => {
         debugLog("App Socket Open");
@@ -104,21 +145,11 @@ function onMount() {
     messaging.peerSocket.onmessage = onMessageRecieved;
     // process incomming data transfers.
     inbox.addEventListener("newfile", onDataRecieved);
-    
-    document.addEventListener("unload", onUnloadEvent);
-    document.addEventListener("keypress", onKeyPressEvent);
-    StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
-    StatusBtnRefresh.addEventListener("click", onStatusBtnRefreshClicked);
-    MenuBtnWorkout.addEventListener("activate", onMenuBtnWorkoutClicked);
-    MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
-    MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
-    MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
 }
 
 // ----------------------------------------------------------------------------
-
-function onUnloadEvent() {
-    debugLog("unMounted!");
+function onTickEvent(evt) {
+    StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
 }
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
@@ -150,9 +181,10 @@ function onStatusBtnRefreshClicked() {
     TimetableList.value = currentIdx;
 }
 function onMenuBtnWorkoutClicked() {
-    // clear LM_TIMETABLE list or we'll run out of memory.
     LM_TIMETABLE.length = 0;
-    clock.removeEventListener("tick", tickHandler);
+    clock.removeEventListener("tick", onTickEvent);
+    inbox.removeEventListener("newfile", onDataRecieved);
+
     MenuScreen.style.display = "none";
     views.navigate("classes");
 }
@@ -179,11 +211,6 @@ function onMenuBtn3Clicked() {
 }
 
 // ----------------------------------------------------------------------------
-
-// clock update.
-function tickHandler(evt) {
-    StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
-}
 
 // send data to companion via Messaging API
 function sendValue(key, data=null) {
@@ -309,48 +336,6 @@ function displayLoader(display=true, text="", subText="") {
     LoaderOverlay.getElementById("sub-text").text = subText;
     LoaderOverlay.animate(display ? "enable" : "disable");
     displayElement(LoaderOverlay, display);
-}
-
-// initialize timetable list.
-function buildTimetable() {
-    TimetableList.delegate = {
-        getTileInfo: index => {
-            let tileInfo = LM_TIMETABLE[index];
-            return {
-                index: index,
-                type: "lm-pool",
-                name: tileInfo.name,
-                instructor: tileInfo.instructor,
-                date: tileInfo.date,
-                desc: tileInfo.desc,
-                color: (tileInfo.color !== null) ? tileInfo.color : "#545454",
-            };
-        },
-        configureTile: (tile, info) => {
-            if (info.type == "lm-pool") {
-                let itmDate = new Date(info.date);
-                tile.getElementById("text-title").text = info.name.toUpperCase();
-                tile.getElementById("text-subtitle").text = info.instructor;
-                tile.getElementById("text-L").text = formatTo12hrTime(itmDate);
-                tile.getElementById("text-R").text = info.desc;
-                if (itmDate - date < 0) {
-                    tile.getElementById("text-title").style.fill = "#6e6e6e";
-                    tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
-                    tile.getElementById("text-L").style.fill = "#6e6e6e";
-                    tile.getElementById("text-R").style.fill = "#6e6e6e";
-                    tile.getElementById("color").style.fill = "#4f4f4f";
-                } else {
-                    tile.getElementById("text-title").style.fill = "white";
-                    tile.getElementById("text-subtitle").style.fill = "white";
-                    tile.getElementById("text-L").style.fill = "white";
-                    tile.getElementById("text-R").style.fill = "white";
-                    tile.getElementById("color").style.fill = info.color;
-                }
-            }
-        }
-    }
-    // TimetableList.length must be set AFTER TimetableList.delegate
-    TimetableList.length = 0;
 }
 
 // populate timetable list with specified day.

@@ -1,0 +1,46 @@
+/* lm tile */
+#lm-tile {
+    height: 95;
+}
+#lm-tile text {
+    x: 50%;
+    text-anchor: middle;
+    font-family: System-Regular;
+    font-weight: regular;
+    fill: white;
+}
+#lm-tile text#text-title {
+    y: 30%;
+    font-size: 22;
+    font-family: System-Bold;
+    text-length: 32;
+}
+#lm-tile text#text-subtitle{
+    y: 50%;
+    font-size: 18;
+    text-length: 32;
+}
+#lm-tile text#text-L{
+    x: 7;
+    y: 85%;
+    font-size: 20;
+    text-anchor: start;
+    text-length: 8;
+}
+#lm-tile text#text-R{
+    x: 100%-7;
+    y: 85%;
+    font-size: 20;
+    text-anchor: end;
+    text-length: 32;
+}
+#lm-tile rect#background {
+    x: 3;
+    y: 2;
+    width: 100%-6;
+    height: 100%-4;
+    fill:#2a2d2e;
+}
+.lm-tile-cnr {
+    fill:#2a2d2e;
+}

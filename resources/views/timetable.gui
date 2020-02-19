@@ -1,5 +1,7 @@
 <svg viewport-fill="black">
-
+    <defs>
+        <link rel="import" href="./resources/lm_widgets/tile_item.gui" />
+    </defs>
     <!-- LesMills Virtual Tile -->
     <section y="50" height="100%-50">
         <use id="lm-class-list" href="#tile-list" display="none">

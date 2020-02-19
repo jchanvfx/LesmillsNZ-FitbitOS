@@ -16,19 +16,19 @@
                 </use>
             </use>
             <use href="#scrollview-item" height="62">
-                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#787121">
+                <use id="main-btn2" href="#square-button" y="2" height="62" fill="#787121">
                     <set href="#text" attributeName="text-length" to="12" />
                     <set href="#text" attributeName="text-buffer" to="BODYCOMBAT" />
                 </use>
             </use>
             <use href="#scrollview-item" height="62">
-                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#8246af">
+                <use id="main-btn3" href="#square-button" y="2" height="62" fill="#8246af">
                     <set href="#text" attributeName="text-length" to="12" />
                     <set href="#text" attributeName="text-buffer" to="TONE" />
                 </use>
             </use>
             <use href="#scrollview-item" height="62">
-                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#e35205">
+                <use id="main-btn4" href="#square-button" y="2" height="62" fill="#e35205">
                     <set href="#text" attributeName="text-length" to="12" />
                     <set href="#text" attributeName="text-buffer" to="CXWORX" />
                 </use>
@@ -36,6 +36,10 @@
         </use>
 
     </section>
+    <!-- Message Screen -->
+    <use id="message-screen" href="#message-overlay" display="none" />
+    <!-- Loading Screen -->
+    <use id="loading-screen" href="#loader-overlay" display="none" />
     <!-- Side Menu -->
     <use id="menu-screen" href="#side-menu" display="none" />
     <!-- Status Bar -->

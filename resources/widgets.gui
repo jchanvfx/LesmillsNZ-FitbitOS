@@ -52,9 +52,7 @@
             </use>
         </section>
     </symbol>
-    <!-- LM Tile Item -->
-    <link rel="import" href="lm_widgets/tile_item.gui" />
-    <!-- LM Menu -->
+    <!-- Side Menu -->
     <link rel="import" href="menu.gui" />
 
   </defs>

@@ -8,16 +8,18 @@ import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs"
 import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
 import { debugLog } from "../utils"
 
+const date = new Date();
+
 const LM_CLASSES_FILE = "LM_classes.cbor";
 let LM_CLASSES = [];
 
+let LoaderOverlay;
+let MessageOverlay;
 let StatusBar;
 let StatusBtnMenu;
 let StatusBarPhone;
 let MenuScreen;
 let MenuBtnTimetable;
-
-const date = new Date();
 
 let OnFileRecievedUpdateGui;
 
@@ -31,6 +33,10 @@ export function init(_views) {
 
 // entry point when this view is mounted, setup elements and events.
 function onMount() {
+    clock.granularity = "minutes";
+
+    LoaderOverlay = document.getElementById("loading-screen");
+    MessageOverlay = document.getElementById("message-screen");
     StatusBar = document.getElementById("status-bar");
     StatusBtnMenu = StatusBar.getElementById("click-l");
     StatusBarPhone = StatusBar.getElementById("no-phone");
@@ -57,19 +63,22 @@ function onMount() {
 
     // initialize.
     // updateFitnessClassesList();
-  
+
     let foo = document.getElementById("main-btn");
     foo.addEventListener("activate", () => {
         sendValue("lm-classes");
     });
+    let bar = document.getElementById("main-btn1");
+    bar.addEventListener("activate", updateFitnessClassesList);
 
 
     // connect up add the events.
     // ----------------------------------------------------------------------------
+    clock.addEventListener("tick", onTickEvent);
+    document.addEventListener("keypress", onKeyPressEvent);
+    StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
+    MenuBtnTimetable.addEventListener("activate", onMenuBtnTimetableClicked);
 
-    // register time callback.
-    clock.granularity = "minutes";
-    clock.addEventListener("tick", tickHandler);
     // message socket opens.
     messaging.peerSocket.onopen = () => {
         debugLog("App Socket Open");
@@ -84,15 +93,12 @@ function onMount() {
     messaging.peerSocket.onmessage = onMessageRecieved;
     // process incomming data transfers.
     inbox.addEventListener("newfile", onDataRecieved);
-    // button events.
-    document.addEventListener("keypress", onKeyPressEvent);
-    StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
-    MenuBtnTimetable.addEventListener("activate", onMenuBtnTimetableClicked);
 }
 
-// BUTTON
 // ----------------------------------------------------------------------------
-
+function onTickEvent(evt) {
+    StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
+}
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
         evt.preventDefault();
@@ -112,18 +118,14 @@ function onStatusBtnMenuClicked() {
     }
 }
 function onMenuBtnTimetableClicked () {
-    clock.removeEventListener("tick", tickHandler);
+    clock.removeEventListener("tick", onTickEvent);
+    inbox.removeEventListener("newfile", onDataRecieved);
+
     MenuScreen.style.display = "none";
     views.navigate("timetable");
 }
 
-// EVENTS
 // ----------------------------------------------------------------------------
-
-// clock update.
-function tickHandler(evt) {
-    StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
-}
 
 // send data to companion via Messaging API
 function sendValue(key, data=null) {
@@ -176,10 +178,27 @@ function onMessageRecieved(evt) {
     }
 }
 
-// Gui
+// CLASSES LIST
 // ----------------------------------------------------------------------------
 
 // toggle element visibility.
 function displayElement(element, display=true) {
     element.style.display = display ? "inline" : "none";
+}
+// toggle loading screen widget visibility.
+function displayLoader(display=true, text="", subText="") {
+    LoaderOverlay.getElementById("text").text = text;
+    LoaderOverlay.getElementById("sub-text").text = subText;
+    LoaderOverlay.animate(display ? "enable" : "disable");
+    displayElement(LoaderOverlay, display);
+}
+
+function updateFitnessClassesList() {
+    LM_CLASSES.length = 0;
+    if (existsSync("/private/data/" + LM_CLASSES_FILE)) {
+        LM_CLASSES = readFileSync(LM_CLASSES_FILE, "cbor");
+    }
+
+    debugLog(JSON.stringify(LM_CLASSES));
+
 }
