@@ -104,7 +104,8 @@ function onMount() {
     messaging.peerSocket.onmessage = onMessageRecieved;
     // process incomming data transfers.
     inbox.addEventListener("newfile", onDataRecieved);
-    // button events.
+    
+    document.addEventListener("unload", onUnloadEvent);
     document.addEventListener("keypress", onKeyPressEvent);
     StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
     StatusBtnRefresh.addEventListener("click", onStatusBtnRefreshClicked);
@@ -114,9 +115,11 @@ function onMount() {
     MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
 }
 
-// BUTTON
 // ----------------------------------------------------------------------------
 
+function onUnloadEvent() {
+    debugLog("unMounted!");
+}
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
         evt.preventDefault();
@@ -175,7 +178,6 @@ function onMenuBtn3Clicked() {
     setTimetableDay(CurrentDayKey);
 }
 
-// EVENTS
 // ----------------------------------------------------------------------------
 
 // clock update.
