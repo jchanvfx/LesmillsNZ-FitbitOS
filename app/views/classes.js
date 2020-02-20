@@ -216,6 +216,14 @@ function onMessageRecieved(evt) {
 function displayElement(element, display=true) {
     element.style.display = display ? "inline" : "none";
 }
+// toggle message screen widget visibility.
+function displayMessage(display=true, text="", title="") {
+    let mixedText = MessageOverlay.getElementById("#mixedtext");
+    let mixedTextBody = mixedText.getElementById("copy");
+    mixedText.text = display ? title : "";
+    mixedTextBody.text = display ? text : "";
+    displayElement(MessageOverlay, display);
+}
 // toggle loading screen widget visibility.
 function displayLoader(display=true, text="", subText="") {
     LoaderOverlay.getElementById("text").text = text;

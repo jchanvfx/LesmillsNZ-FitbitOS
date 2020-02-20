@@ -1,7 +1,5 @@
 /* defaults */
-text {
-    font-family:System-Regular;
-}
+text {font-family:System-Regular;}
 
 /* Status Bar */
 #lm-status-bar rect#background {
@@ -79,10 +77,20 @@ text {
     sweep-angle:60;
 }
 #loader-overlay arc#arc2{
+    width:90;
+    height:90;
+    x:50%-45;
+    y:50%-45;
+    fill:"fb-blue";
+    arc-width:2;
+    start-angle:0;
+    sweep-angle:360;
+}
+#loader-overlay arc#arc3{
     x:50%-50;
     y:50%-50;
     fill:#11435d;
-    arc-width:12;
+    arc-width:8;
     start-angle:0;
     sweep-angle:360;
 }
