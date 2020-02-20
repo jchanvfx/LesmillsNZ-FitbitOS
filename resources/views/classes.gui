@@ -1,40 +1,45 @@
 <svg viewport-fill="black">
+    <defs>
+        <symbol 
+            id="workout-tile-item" 
+            href="#tile-list-item" 
+            focusable="false"
+            pointer-events="none" 
+            system-events="all" 
+            display="none">
+            <text id="text" />
+            <rect id="divider" />
+            <rect 
+                id="click-pad" 
+                pointer-events="all" 
+                x="0" 
+                y="0" 
+                width="100%"
+                height="100%-2" 
+                opacity="0" />
+        </symbol>
+    </defs>
     <!-- Main Wrapper -->
     <section y="50" height="100%-50">
+        <use id="workouts-list" href="#tile-list">
+            <var id="virtual" value="1" />
+            <var id="reorder-enabled" value="0" />
+            <var id="peek-enabled" value="0" />
+            <var id="separator-height-bottom" value="2" />
 
-        <use id="side-menu-scroll" href="#scrollview">
-            <use href="#scrollview-item" height="62">
-                <use id="main-btn" href="#square-button" y="2" height="62" fill="#ef3340">
-                    <set href="#text" attributeName="text-length" to="12" />
-                    <set href="#text" attributeName="text-buffer" to="BODYPUMP" />
-                </use>
-            </use>
-            <use href="#scrollview-item" height="62">
-                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#ffb81c">
-                    <set href="#text" attributeName="text-length" to="12" />
-                    <set href="#text" attributeName="text-buffer" to="BODYATTACK" />
-                </use>
-            </use>
-            <use href="#scrollview-item" height="62">
-                <use id="main-btn2" href="#square-button" y="2" height="62" fill="#787121">
-                    <set href="#text" attributeName="text-length" to="12" />
-                    <set href="#text" attributeName="text-buffer" to="BODYCOMBAT" />
-                </use>
-            </use>
-            <use href="#scrollview-item" height="62">
-                <use id="main-btn3" href="#square-button" y="2" height="62" fill="#8246af">
-                    <set href="#text" attributeName="text-length" to="12" />
-                    <set href="#text" attributeName="text-buffer" to="TONE" />
-                </use>
-            </use>
-            <use href="#scrollview-item" height="62">
-                <use id="main-btn4" href="#square-button" y="2" height="62" fill="#e35205">
-                    <set href="#text" attributeName="text-length" to="12" />
-                    <set href="#text" attributeName="text-buffer" to="CXWORX" />
-                </use>
+            <use id="workouts-pool" href="#tile-list-pool">
+                <use id="workouts-pool[0]" href="#workout-tile-item" class="tile-list-item" />
+                <use id="workouts-pool[1]" href="#workout-tile-item" class="tile-list-item" />
+                <use id="workouts-pool[2]" href="#workout-tile-item" class="tile-list-item" />
+                <use id="workouts-pool[3]" href="#workout-tile-item" class="tile-list-item" />
+                <use id="workouts-pool[4]" href="#workout-tile-item" class="tile-list-item" />
+                <use id="workouts-pool[5]" href="#workout-tile-item" class="tile-list-item" />
+                <use id="workouts-pool[6]" href="#workout-tile-item" class="tile-list-item" />
+                <use id="workouts-pool[7]" href="#workout-tile-item" class="tile-list-item" />
+                <use id="workouts-pool[8]" href="#workout-tile-item" class="tile-list-item" />
+                <use id="workouts-pool[9]" href="#workout-tile-item" class="tile-list-item" />
             </use>
         </use>
-
     </section>
     <!-- Message Screen -->
     <use id="message-screen" href="#message-overlay" display="none" />
@@ -44,5 +49,4 @@
     <use id="menu-screen" href="#side-menu" display="none" />
     <!-- Status Bar -->
     <use id="status-bar" href="#lm-status-bar" />
-
 </svg>

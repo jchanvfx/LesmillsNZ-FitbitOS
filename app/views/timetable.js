@@ -37,7 +37,7 @@ let CurrentDayKey;
 let views;
 export function init(_views) {
     views = _views;
-    debugLog("timetable init()");
+    debugLog("timetable - init()");
     onMount();
 }
 
@@ -118,6 +118,7 @@ function onMount() {
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     OnFileRecievedUpdateGui = false;
 
+    // initialize list.
     setTimetableDay(CurrentDayKey);
 
     // connect up add the events.
@@ -383,9 +384,9 @@ function setTimetableDay(dKey, jumpToIndex=true) {
                 );
             }
 
-        }, 500);
+        }, 300);
 
-        display.poke()
+        display.poke();
         cleanUpFiles();
         return;
     }
@@ -411,6 +412,6 @@ function setTimetableDay(dKey, jumpToIndex=true) {
                 sendValue("lm-fetch");
             }
         }
-        display.poke()
+        display.poke();
     }, 6000);
 }

@@ -1,5 +1,6 @@
 import document from "document";
 import { me } from "appbit";
+import { debugLog } from "../utils";
 
 let views;
 
@@ -19,7 +20,7 @@ function onMount() {
 }
 
 function clickHandler(_evt) {
-    console.log("Button Clicked!");
+    debugLog("Button Clicked!");
     // views.navigate("");
 }
 

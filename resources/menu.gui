@@ -9,7 +9,7 @@
                 <rect/><text id="main-label" text-length="24" />
             </use>
             <use id="main-itm1" href="#scrollview-item" height="68">
-                <use id="main-btn1" href="#square-button" y="2" height="62" fill="#56b6e9">
+                <use id="main-btn1" href="#square-button" y="2" height="62" fill="fb-cyan">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
@@ -18,17 +18,17 @@
                 <rect/><text id="sub-label" text-length="16" />
             </use>
             <use id="sub-itm1" href="#scrollview-item" height="62">
-                <use id="sub-btn1" href="#square-button" y="2" height="62" fill="#1effce">
+                <use id="sub-btn1" href="#square-button" y="2" height="62" fill="fb-aqua">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
             <use id="sub-itm2" href="#scrollview-item" height="62">
-                <use id="sub-btn2" href="#square-button" y="$" height="62" fill="#1effce">
+                <use id="sub-btn2" href="#square-button" y="$" height="62" fill="fb-aqua">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
             <use id="sub-itm3" href="#scrollview-item" height="62">
-                <use id="sub-btn3" href="#square-button" y="$" height="62" fill="#1effce">
+                <use id="sub-btn3" href="#square-button" y="$" height="62" fill="fb-aqua">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>

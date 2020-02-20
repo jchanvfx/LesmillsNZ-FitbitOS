@@ -48,7 +48,7 @@ text {
     y: 3;
     width: 35;
     height: 40;
-    fill:#1effce;
+    fill:"fb-aqua";
 }
 #lm-status-bar image#no-phone {
     x:50%+10;
@@ -58,11 +58,11 @@ text {
     fill:#bf1c00;
 }
 #lm-status-bar image#jump-to {
-    x:100%-64;
+    x:100%-79;
     y: 26;
-    width: 54;
+    width: 69;
     height: 18;
-    fill:#1effce;
+    fill:"fb-aqua";
 }
 
 /* Loader Overlay */
@@ -125,4 +125,26 @@ text {
     fill: white;
     font-size: 20;
     font-family: System-Bold;
+}
+
+
+
+
+#workout-tile-item {
+    height: 80;
+}
+#workout-tile-item text#text{
+    x: 50%;
+    text-anchor: middle;
+    fill: "fb-peach";
+    font-size: 26;
+    font-family: System-Bold;
+    text-length: 16;
+}
+#workout-tile-item rect#divider{
+    x: 20;
+    y: 100%-2;
+    width: 100%-40;
+    height: 2;
+    fill: #A0A0A0;
 }

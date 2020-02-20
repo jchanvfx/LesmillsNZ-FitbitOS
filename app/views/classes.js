@@ -13,6 +13,7 @@ const date = new Date();
 const LM_CLASSES_FILE = "LM_classes.cbor";
 let LM_CLASSES = [];
 
+let WorkoutsList;
 let LoaderOverlay;
 let MessageOverlay;
 let StatusBar;
@@ -27,13 +28,31 @@ let OnFileRecievedUpdateGui;
 let views;
 export function init(_views) {
   views = _views;
-  debugLog("classes init()");
+  debugLog("workouts - init()");
   onMount();
 }
 
 // entry point when this view is mounted, setup elements and events.
 function onMount() {
     clock.granularity = "minutes";
+
+    WorkoutsList = document.getElementById("workouts-list");
+    WorkoutsList.delegate = {
+        getTileInfo: function(index) {
+            return {
+                type: "workouts-pool",
+                value: LM_CLASSES[index],
+                index: index
+            };
+        },
+        configureTile: function(tile, info) {
+            if (info.type == "workouts-pool") {
+                tile.getElementById("text").text = info.value.toUpperCase();
+            }
+        }
+    };
+    // WorkoutsList.length must be set AFTER WorkoutsList.delegate
+    WorkoutsList.length = LM_CLASSES.length;
 
     LoaderOverlay = document.getElementById("loading-screen");
     MessageOverlay = document.getElementById("message-screen");
@@ -45,7 +64,7 @@ function onMount() {
     displayElement(
         StatusBarPhone,
         messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
-        );
+    );
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
     StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
     StatusBar.getElementById("time").text = formatTo12hrTime(date);
@@ -61,16 +80,8 @@ function onMount() {
 
     OnFileRecievedUpdateGui = false;
 
-    // initialize.
-    // updateFitnessClassesList();
-
-    let foo = document.getElementById("main-btn");
-    foo.addEventListener("activate", () => {
-        sendValue("lm-classes");
-    });
-    let bar = document.getElementById("main-btn1");
-    bar.addEventListener("activate", updateFitnessClassesList);
-
+    // initialize list.
+    updateWorkoutsList();
 
     // connect up add the events.
     // ----------------------------------------------------------------------------
@@ -96,6 +107,7 @@ function onMount() {
 }
 
 // ----------------------------------------------------------------------------
+
 function onTickEvent(evt) {
     StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
 }
@@ -120,7 +132,6 @@ function onStatusBtnMenuClicked() {
 function onMenuBtnTimetableClicked () {
     clock.removeEventListener("tick", onTickEvent);
     inbox.removeEventListener("newfile", onDataRecieved);
-
     MenuScreen.style.display = "none";
     views.navigate("timetable");
 }
@@ -141,13 +152,21 @@ function sendValue(key, data=null) {
         messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
     );
 }
-
 // callback when file transfer has completed.
 function onDataRecieved() {
     let fileName;
     while (fileName = inbox.nextFile()) {
         if (fileName === LM_CLASSES_FILE) {
             debugLog(`File ${fileName} recieved!`);
+            // hide loader & message screen just incase.
+            displayLoader(false);
+            displayMessage(false);
+
+            if (OnFileRecievedUpdateGui) {
+                OnFileRecievedUpdateGui = false;
+                updateWorkoutsList();
+                display.poke();
+            }
             break;
         }
     }
@@ -162,10 +181,22 @@ function onMessageRecieved(evt) {
         case "lm-noClub":
             debugLog("no club selected.");
             break;
+        case "lm-clubChanged":
+            if (evt.data.value) {
+                display.poke();
+                OnFileRecievedUpdateGui = true;
+                let clubName = evt.data.value;
+                debugLog(`Club changed to: ${clubName}`);
+                displayLoader(true, "Changing Clubs...", clubName);
+            }
+            break;
         case "lm-classesReply":
             if (evt.data.value) {
-                let clubName = evt.data.value;
                 debugLog(`${clubName} classes queued.`);
+                if (OnFileRecievedUpdateGui) {
+                    let clubName = evt.data.value;
+                    displayLoader('Loading Classes...', clubName);
+                }
             } else {
                 debugLog("classes reply");
             }
@@ -192,13 +223,45 @@ function displayLoader(display=true, text="", subText="") {
     LoaderOverlay.animate(display ? "enable" : "disable");
     displayElement(LoaderOverlay, display);
 }
+// update list with avaliable workout classes.
+function updateWorkoutsList() {
+    displayElement(WorkoutsList, false);
+    displayLoader(true, "Loading Classes...", "www.lesmills.co.nz");
 
-function updateFitnessClassesList() {
     LM_CLASSES.length = 0;
     if (existsSync("/private/data/" + LM_CLASSES_FILE)) {
         LM_CLASSES = readFileSync(LM_CLASSES_FILE, "cbor");
     }
 
-    debugLog(JSON.stringify(LM_CLASSES));
+    if (LM_CLASSES.length != 0) {
+        debugLog(`Loading data file: ${LM_CLASSES_FILE}`);
 
+        // refresh to the list.
+        WorkoutsList.length = LM_CLASSES.length;
+        WorkoutsList.redraw();
+
+        displayElement(WorkoutsList, true);
+        displayLoader(false);
+
+        // request background update if the file modified is more than 5 days old.
+        let mTime = statSync(LM_CLASSES_FILE).mtime;
+        let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
+        if (timeDiff > 120) {
+            debugLog(`File ${LM_CLASSES_FILE} outdated by ${timeDiff}hrs`);
+            OnFileRecievedUpdateGui = false;
+            sendValue("lm-classes");
+        } else {
+            displayElement(
+                StatusBarPhone,
+                messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
+            );
+        }
+
+        return;
+    }
+
+    debugLog('Fetching Database...');
+    OnFileRecievedUpdateGui = true;
+    sendValue("lm-classes");
+    display.poke();
 }

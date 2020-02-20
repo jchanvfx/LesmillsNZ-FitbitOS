@@ -29,7 +29,7 @@
     <text id="text-subtitle" />
     <!-- touch pointer -->
     <rect
-        id="touch"
+        id="click-pad"
         pointer-events="all"
         x="0"
         y="1"
