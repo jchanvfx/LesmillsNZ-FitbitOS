@@ -1,0 +1,86 @@
+/* Class Tile */
+#lm-tile {
+    height: 95;
+}
+#lm-tile text {
+    x: 50%;
+    text-anchor: middle;
+    font-family: System-Regular;
+    font-weight: regular;
+    fill: white;
+}
+#lm-tile text#text-title {
+    y: 30%;
+    font-size: 22;
+    font-family: System-Bold;
+    text-length: 32;
+}
+#lm-tile text#text-subtitle{
+    y: 50%;
+    font-size: 18;
+    text-length: 32;
+}
+#lm-tile text#text-L{
+    x: 7;
+    y: 85%;
+    font-size: 20;
+    text-anchor: start;
+    text-length: 8;
+}
+#lm-tile text#text-R{
+    x: 100%-7;
+    y: 85%;
+    font-size: 20;
+    text-anchor: end;
+    text-length: 32;
+}
+#lm-tile rect#background {
+    x: 3;
+    y: 2;
+    width: 100%-6;
+    height: 100%-4;
+    fill:#2a2d2e;
+}
+.lm-tile-cnr {
+    fill:#2a2d2e;
+}
+
+/* Workout Tile */
+#workout-tile-item {
+    height: 80;
+}
+#workout-tile-item text#text{
+    x: 80;
+    /* text-anchor: middle; */
+    fill: "white";
+    font-size: 26;
+    font-family: System-Regular;
+    text-length: 16;
+}
+#workout-tile-item image#icon{
+    width: 30;
+    height: 30;
+    x:30;
+    y:50%-15;
+    fill: "white";
+}
+#workout-tile-item arc#ring{
+    width: 50;
+    height: 50;
+    x:20;
+    y:50%-25;
+    fill: "fb-yellow";
+    arc-width:3;
+    start-angle:0;
+    sweep-angle:360;
+}
+#workout-tile-item rect#background {
+    x: 3;
+    y: 2;
+    width: 100%-6;
+    height: 100%-4;
+    fill:#2a2d2e;
+}
+.wrk-tile-cnr {
+    fill:#2a2d2e;
+}
