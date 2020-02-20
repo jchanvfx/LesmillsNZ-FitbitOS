@@ -1,3 +1,3 @@
 # LesMills NZ - Fitbit
 
-Fitbit app for displaying the LesMills New Zealand timetable.
+Non official LesMills fitbit app for logging group fitness classes and displplay the group fitness timetable.
