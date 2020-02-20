@@ -34,6 +34,14 @@
     text-anchor: end;
     text-length: 32;
 }
+#lm-tile rect#overlay {
+    x: 4%;
+    y: 10%;
+    width: 92%;
+    height: 80%;
+    fill:"fb-yellow";
+    opacity: 0;
+}
 #lm-tile rect#background {
     x: 3;
     y: 2;
@@ -83,4 +91,12 @@
 }
 .wrk-tile-cnr {
     fill:#2a2d2e;
+}
+#workout-tile-item rect#overlay {
+    x: 5%;
+    y: 20%;
+    width: 90%;
+    height: 60%;
+    fill:"fb-yellow";
+    opacity: 0;
 }

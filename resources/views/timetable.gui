@@ -28,6 +28,10 @@
             <text id="text-title" />
             <text id="text-subtitle" />
             <!-- touch pointer -->
+            <rect id="overlay">
+                <animate attributeName="opacity" begin="enable"
+                         from="1" to="0" dur="0.3" final="restore" />
+            </rect>
             <rect
                 id="click-pad"
                 pointer-events="all"

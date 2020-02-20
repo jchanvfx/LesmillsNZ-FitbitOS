@@ -13,7 +13,7 @@ export function init(_views) {
 
 // entry point when this view is mounted, setup elements and events.
 function onMount() {
-    let btn = document.getElementById("btn1");
+    let btn = document.getElementById("btn-start");
 
     btn.addEventListener("click", clickHandler);
     document.addEventListener("keypress", keyHandler);

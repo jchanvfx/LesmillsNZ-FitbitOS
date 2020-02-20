@@ -40,10 +40,12 @@
         <image id="no-phone" href="./resources/images/no_phone.png" />
         <image id="jump-to" href="./resources/images/jump_to.png" />
         <circle id="click-l" pointer-events="all" r="70" cx="0" cy="0" fill="fb-yellow" opacity="0">
-            <animate attributeName="opacity" begin="click" from="1" to="0" dur="0.3" final="restore" />
+            <animate attributeName="opacity" begin="click"
+                     from="1" to="0" dur="0.3" final="restore" />
         </circle>
         <circle id="click-r" pointer-events="all" r="70" cx="100%" cy="0" fill="fb-yellow" opacity="0">
-            <animate attributeName="opacity" begin="click" from="1" to="0" dur="0.3" final="restore" />
+            <animate attributeName="opacity" begin="click"
+                     from="1" to="0" dur="0.3" final="restore" />
         </circle>
     </symbol>
     <!-- Message Overlay -->

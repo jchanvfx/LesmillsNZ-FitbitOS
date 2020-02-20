@@ -72,12 +72,20 @@ function onMount() {
                     tile.getElementById("text-L").style.fill = "#6e6e6e";
                     tile.getElementById("text-R").style.fill = "#6e6e6e";
                     tile.getElementById("color").style.fill = "#4f4f4f";
+                    let clickPad = tile.getElementById("click-pad");
+                    clickPad.onclick = evt => {}
                 } else {
                     tile.getElementById("text-title").style.fill = "white";
                     tile.getElementById("text-subtitle").style.fill = "white";
                     tile.getElementById("text-L").style.fill = "white";
                     tile.getElementById("text-R").style.fill = "white";
                     tile.getElementById("color").style.fill = info.color;
+
+                    let clickPad = tile.getElementById("click-pad");
+                    clickPad.onclick = evt => {
+                        tile.getElementById("overlay").animate("enable");
+                        // onTileClicked(info.name.toUpperCase());
+                    }
                 }
             }
         }
@@ -163,9 +171,13 @@ function onKeyPressEvent(evt) {
 }
 function onStatusBtnMenuClicked() {
     if (MenuScreen.style.display === "none") {
+        displayElement(StatusBtnRefresh, false);
+        displayElement(StatusBar.getElementById("jump-to"), false);
         MenuScreen.style.display = "inline";
         MenuScreen.animate("enable");
     } else {
+        displayElement(StatusBtnRefresh, true);
+        displayElement(StatusBar.getElementById("jump-to"), true);
         MenuScreen.animate("disable");
         setTimeout(() => {MenuScreen.style.display = "none";}, 300);
     }
@@ -209,6 +221,9 @@ function onMenuBtn3Clicked() {
     StatusBar.getElementById("date2").text = `${date2.getDate()} ${MONTHS[date2.getMonth()]}`;
     CurrentDayKey = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
     setTimetableDay(CurrentDayKey);
+}
+function onTileClicked(workout) {
+    debugLog(workout);
 }
 
 // ----------------------------------------------------------------------------

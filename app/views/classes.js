@@ -48,6 +48,11 @@ function onMount() {
         configureTile: function(tile, info) {
             if (info.type == "workouts-pool") {
                 tile.getElementById("text").text = info.value.toUpperCase();
+                let clickPad = tile.getElementById("click-pad");
+                clickPad.onclick = evt => {
+                    tile.getElementById("overlay").animate("enable");
+                    // onTileClicked(info.value.toUpperCase());
+                }
             }
         }
     };
@@ -129,12 +134,15 @@ function onStatusBtnMenuClicked() {
         setTimeout(() => {MenuScreen.style.display = "none";}, 300);
     }
 }
-function onMenuBtnTimetableClicked () {
+function onMenuBtnTimetableClicked() {
     clock.removeEventListener("tick", onTickEvent);
     inbox.removeEventListener("newfile", onDataRecieved);
     MenuScreen.style.display = "none";
     views.navigate("timetable");
 }
+function onTileClicked(workout) {
+    debugLog(workout);
+};
 
 // ----------------------------------------------------------------------------
 
