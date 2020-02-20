@@ -71,7 +71,7 @@ text {font-family:System-Regular;}
 #loader-overlay arc#arc1{
     x:-50;
     y:-50;
-    fill:#4ebeff;
+    fill:"fb-yellow";
     arc-width:5;
     start-angle:0;
     sweep-angle:60;
