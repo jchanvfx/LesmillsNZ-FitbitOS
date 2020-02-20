@@ -1,6 +1,7 @@
 <svg>
   <defs>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="tiles.css" />
     <link rel="import" href="/mnt/sysassets/widgets_common.gui" />
     <!-- Additional Imports -->
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
@@ -14,6 +15,7 @@
     <!-- Loader Widget -->
     <symbol id="loader-overlay" focusable="false">
         <gradientRect/>
+        <arc id="arc3" />
         <arc id="arc2" />
         <g id="animation" transform="translate(50%, 50%)">
             <animateTransform
@@ -37,8 +39,12 @@
         <text id="time">00:00am</text>
         <image id="no-phone" href="./resources/images/no_phone.png" />
         <image id="jump-to" href="./resources/images/jump_to.png" />
-        <rect id="click-l" pointer-events="all" />
-        <rect id="click-r" pointer-events="all" />
+        <circle id="click-l" pointer-events="all" r="70" cx="0" cy="0" fill="fb-yellow" opacity="0">
+            <animate attributeName="opacity" begin="click" from="1" to="0" dur="0.3" final="restore" />
+        </circle>
+        <circle id="click-r" pointer-events="all" r="70" cx="100%" cy="0" fill="fb-yellow" opacity="0">
+            <animate attributeName="opacity" begin="click" from="1" to="0" dur="0.3" final="restore" />
+        </circle>
     </symbol>
     <!-- Message Overlay -->
     <symbol id="message-overlay">
@@ -52,9 +58,7 @@
             </use>
         </section>
     </symbol>
-    <!-- LM Tile Item -->
-    <link rel="import" href="lm_widgets/tile_item.gui" />
-    <!-- LM Menu -->
+    <!-- Side Menu -->
     <link rel="import" href="menu.gui" />
 
   </defs>

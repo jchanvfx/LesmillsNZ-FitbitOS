@@ -1,7 +1,5 @@
 /* defaults */
-text {
-    font-family:System-Regular;
-}
+text {font-family:System-Regular;}
 
 /* Status Bar */
 #lm-status-bar rect#background {
@@ -48,7 +46,7 @@ text {
     y: 3;
     width: 35;
     height: 40;
-    fill:#1effce;
+    fill:"fb-aqua";
 }
 #lm-status-bar image#no-phone {
     x:50%+10;
@@ -58,11 +56,11 @@ text {
     fill:#bf1c00;
 }
 #lm-status-bar image#jump-to {
-    x:100%-64;
+    x:100%-79;
     y: 26;
-    width: 54;
+    width: 69;
     height: 18;
-    fill:#1effce;
+    fill:"fb-aqua";
 }
 
 /* Loader Overlay */
@@ -73,16 +71,26 @@ text {
 #loader-overlay arc#arc1{
     x:-50;
     y:-50;
-    fill:#4ebeff;
+    fill:"fb-yellow";
     arc-width:5;
     start-angle:0;
     sweep-angle:60;
 }
 #loader-overlay arc#arc2{
+    width:90;
+    height:90;
+    x:50%-45;
+    y:50%-45;
+    fill:"fb-blue";
+    arc-width:2;
+    start-angle:0;
+    sweep-angle:360;
+}
+#loader-overlay arc#arc3{
     x:50%-50;
     y:50%-50;
     fill:#11435d;
-    arc-width:12;
+    arc-width:8;
     start-angle:0;
     sweep-angle:360;
 }

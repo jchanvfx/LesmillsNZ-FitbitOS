@@ -5,6 +5,7 @@ import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
 
+const LM_CLASSES = "LM_classes";
 const LM_PREFIX = "LM_dat";
 const LM_EXT = ".cbor";
 
@@ -41,7 +42,7 @@ function sendData(key, data, filename, message=null) {
         });
     }
 }
-// fetch timetable callback send data to device
+// fetch timetable and send data to device
 function timetableCallback(data) {
     let clubSettings = settingsStorage.getItem("clubID");
     let selectedClub = JSON.parse(clubSettings).values[0];
@@ -64,30 +65,51 @@ function timetableCallback(data) {
         sendData("lm-dataQueued", data[dayKey.toString()], fileName, clubName);
     }
 }
+// fetch fitness classes and send data to device.
+function fitnessClassesCallback(data) {
+    sendData("lm-classesQueued", data, `${LM_CLASSES}${LM_EXT}`);
+}
+
 
 // ----------------------------------------------------------------------------
 
 // settings changed callback
-settingsStorage.onchange = function(evt) {
+settingsStorage.onchange = (evt) => {
     let selectedClub = JSON.parse(evt.newValue).values[0];
     let clubID = selectedClub.value;
     let clubName = selectedClub.name;
     sendValue("lm-clubChanged", clubName);
     lesMills.fetchTimetableData(clubID, timetableCallback);
+    lesMills.fetchClasses(clubID, fitnessClassesCallback);
 }
 // message is received
 messaging.peerSocket.onmessage = (evt) => {
-    if (evt.data.key === "lm-fetch") {
-        let clubSettings = settingsStorage.getItem("clubID");
-        if (clubSettings != null) {
-            let selectedClub = JSON.parse(clubSettings).values[0];
-            let clubID = selectedClub.value;
-            let clubName = selectedClub.name;
-            lesMills.fetchTimetableData(clubID, timetableCallback);
-            sendValue("lm-fetchReply", clubName);
-        } else {
-            sendValue("lm-noClub");
-        }
+    let clubSettings = settingsStorage.getItem("clubID");
+    switch (evt.data.key) {
+        case "lm-fetch":
+            if (clubSettings != null) {
+                let selectedClub = JSON.parse(clubSettings).values[0];
+                let clubID = selectedClub.value;
+                let clubName = selectedClub.name;
+                lesMills.fetchTimetableData(clubID, timetableCallback);
+                sendValue("lm-fetchReply", clubName);
+            } else {
+                sendValue("lm-noClub");
+            }
+            break;
+        case "lm-classes":
+            if (clubSettings != null) {
+                let selectedClub = JSON.parse(clubSettings).values[0];
+                let clubID = selectedClub.value;
+                let clubName = selectedClub.name;
+                lesMills.fetchClasses(clubID, fitnessClassesCallback);
+                sendValue("lm-classesReply", clubName);
+            } else {
+                sendValue("lm-noClasses");
+            }
+            break;
+        default:
+            return;
     }
 }
 // message socket opens
