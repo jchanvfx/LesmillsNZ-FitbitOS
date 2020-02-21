@@ -46,7 +46,7 @@ text {font-family:System-Regular;}
     y: 3;
     width: 35;
     height: 40;
-    fill:"fb-light-gray";
+    fill:"fb-aqua";
 }
 #lm-status-bar image#no-phone {
     x:50%+10;
@@ -56,9 +56,9 @@ text {font-family:System-Regular;}
     fill:"fb-red";
 }
 #lm-status-bar image#jump-to {
-    x:100%-79;
+    x:100%-83;
     y: 26;
-    width: 69;
+    width: 73;
     height: 18;
     fill:"fb-aqua";
 }

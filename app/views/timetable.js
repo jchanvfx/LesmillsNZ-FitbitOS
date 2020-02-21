@@ -203,6 +203,7 @@ function onMenuBtnWorkoutClicked() {
 }
 function onMenuBtn1Clicked() {
     MenuScreen.style.display = "none";
+    displayElement(StatusBtnRefresh, true);
     displayElement(StatusBar.getElementById("jump-to"), true);
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
     StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
@@ -211,6 +212,7 @@ function onMenuBtn1Clicked() {
 }
 function onMenuBtn2Clicked() {
     MenuScreen.style.display = "none";
+    displayElement(StatusBtnRefresh, true);
     displayElement(StatusBar.getElementById("jump-to"), true);
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]}`;
     StatusBar.getElementById("date2").text = `${date1.getDate()} ${MONTHS[date1.getMonth()]}`;
@@ -219,6 +221,7 @@ function onMenuBtn2Clicked() {
 }
 function onMenuBtn3Clicked() {
     MenuScreen.style.display = "none";
+    displayElement(StatusBtnRefresh, true);
     displayElement(StatusBar.getElementById("jump-to"), true);
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date2.getDay()]}`;
     StatusBar.getElementById("date2").text = `${date2.getDate()} ${MONTHS[date2.getMonth()]}`;
