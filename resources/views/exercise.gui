@@ -1,7 +1,2 @@
 <svg viewport-fill="black">
-    <text text-length="32">BodyPump</text>
-    <rect width="100%" height="50" fill="fb-dark-gray" >
-    <use id="btn-start" href="#square-button" y="2" height="62" fill="fb-yellow">
-        <set href="#text" attributeName="text-buffer" to="Start Workout" />
-    </use>
 </svg>

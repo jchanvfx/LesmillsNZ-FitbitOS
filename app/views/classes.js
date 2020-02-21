@@ -21,6 +21,10 @@ let StatusBtnMenu;
 let StatusBarPhone;
 let MenuScreen;
 let MenuBtnTimetable;
+let DlgExercise;
+let DlgBtnBookmarks;
+let DlgBtnCancel;
+let DlgBtnStart;
 
 let OnFileRecievedUpdateGui;
 
@@ -50,8 +54,7 @@ function onMount() {
                 tile.getElementById("text").text = info.value.toUpperCase();
                 let clickPad = tile.getElementById("click-pad");
                 clickPad.onclick = evt => {
-                    tile.getElementById("overlay").animate("enable");
-                    // onTileClicked(info.value.toUpperCase());
+                    onTileClicked(info.value.toUpperCase());
                 }
             }
         }
@@ -83,6 +86,11 @@ function onMount() {
     displayElement(MenuScreen.getElementById("sub-itm2"), false);
     displayElement(MenuScreen.getElementById("sub-itm3"), false);
 
+    DlgExercise = document.getElementById("exe-dialog");
+    DlgBtnBookmarks = DlgExercise.getElementById("btn-tl");
+    DlgBtnStart = DlgExercise.getElementById("btn-right");
+    DlgBtnCancel = DlgExercise.getElementById("btn-left");
+
     OnFileRecievedUpdateGui = false;
 
     // initialize list.
@@ -94,6 +102,9 @@ function onMount() {
     document.addEventListener("keypress", onKeyPressEvent);
     StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
     MenuBtnTimetable.addEventListener("activate", onMenuBtnTimetableClicked);
+    DlgBtnBookmarks.addEventListener("activate", onDlgBookmarkClicked);
+    DlgBtnStart.addEventListener("activate", onDlgStartClicked);
+    DlgBtnCancel.addEventListener("activate", onDlgCancelClicked);
 
     // message socket opens.
     messaging.peerSocket.onopen = () => {
@@ -141,8 +152,25 @@ function onMenuBtnTimetableClicked() {
     views.navigate("timetable");
 }
 function onTileClicked(workout) {
-    debugLog(workout);
+    debugLog(`${workout} tile clicked`);
+    DlgExercise.getElementById("mixedtext").text = workout;
+    setTimeout(displayElement(DlgExercise, true), 1000);
 };
+function onDlgBookmarkClicked() {
+    let workout = DlgExercise.getElementById("mixedtext").text;
+    debugLog(`Bookmarked ${workout}...`);
+}
+function onDlgStartClicked() {
+    debugLog("start dialog");
+    let workout = DlgExercise.getElementById("mixedtext").text;
+    // TODO: serialize setting to file.
+    // views.navigate("exercise");
+}
+function onDlgCancelClicked() {
+    debugLog("cancel dialog");
+    DlgExercise.getElementById("mixedtext").text = "Workout";
+    displayElement(DlgExercise, false);
+}
 
 // ----------------------------------------------------------------------------
 
