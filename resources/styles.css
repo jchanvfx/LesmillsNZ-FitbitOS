@@ -46,14 +46,14 @@ text {font-family:System-Regular;}
     y: 3;
     width: 35;
     height: 40;
-    fill:"fb-aqua";
+    fill:"fb-light-gray";
 }
 #lm-status-bar image#no-phone {
     x:50%+10;
     y: 12;
     width: 26;
     height: 26;
-    fill:#bf1c00;
+    fill:"fb-red";
 }
 #lm-status-bar image#jump-to {
     x:100%-79;
@@ -120,16 +120,33 @@ text {font-family:System-Regular;}
 }
 
 /* Side Menu */
-.side-menu-header rect {
-    x: 0;
+#main-itm-label.side-menu-header rect {
+    x: 12;
     y: 0;
-    width: 100%;
-    height: 100%;
-    fill: #1c2733;
+    width: 100%-24;
+    height: 100%-1;
+    fill: #3e4504;
+}
+#main-itm-label.side-menu-header circle {
+    r: 12;
+    cy: 12;
+    fill: #3e4504;
+}
+#sub-itm-label.side-menu-header rect {
+    x: 12;
+    y: 0;
+    width: 100%-24;
+    height: 100%-1;
+    fill: #0f4740;
+}
+#sub-itm-label.side-menu-header circle {
+    r: 12;
+    cy: 12;
+    fill: #0f4740;
 }
 .side-menu-header text {
-    x: 5;
-    y: 50%+8;
+    x: 15;
+    y: 50%+7;
     fill: white;
     font-size: 20;
     font-family: System-Bold;

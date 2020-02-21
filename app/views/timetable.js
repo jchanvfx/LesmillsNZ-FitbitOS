@@ -103,8 +103,8 @@ function onMount() {
     StatusBtnRefresh = StatusBar.getElementById("click-r");
     StatusBarPhone = StatusBar.getElementById("no-phone");
     MenuScreen = document.getElementById("menu-screen");
-    MenuScreen.getElementById("main-label").text = "Group Fitness";
-    MenuScreen.getElementById("sub-label").text = "Timetable";
+    MenuScreen.getElementById("main-label").text = "Switch View >>";
+    MenuScreen.getElementById("sub-label").text = "Timetable Schedule";
     MenuBtnWorkout = MenuScreen.getElementById("main-btn1");
     MenuBtnWorkout.text = "Workouts";
     MenuBtn1 = MenuScreen.getElementById("sub-btn1");
@@ -203,6 +203,7 @@ function onMenuBtnWorkoutClicked() {
 }
 function onMenuBtn1Clicked() {
     MenuScreen.style.display = "none";
+    displayElement(StatusBar.getElementById("jump-to"), true);
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
     StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
@@ -210,6 +211,7 @@ function onMenuBtn1Clicked() {
 }
 function onMenuBtn2Clicked() {
     MenuScreen.style.display = "none";
+    displayElement(StatusBar.getElementById("jump-to"), true);
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]}`;
     StatusBar.getElementById("date2").text = `${date1.getDate()} ${MONTHS[date1.getMonth()]}`;
     CurrentDayKey = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
@@ -217,6 +219,7 @@ function onMenuBtn2Clicked() {
 }
 function onMenuBtn3Clicked() {
     MenuScreen.style.display = "none";
+    displayElement(StatusBar.getElementById("jump-to"), true);
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date2.getDay()]}`;
     StatusBar.getElementById("date2").text = `${date2.getDate()} ${MONTHS[date2.getMonth()]}`;
     CurrentDayKey = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;

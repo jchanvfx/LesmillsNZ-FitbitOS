@@ -8,6 +8,7 @@ const views = init(
     [
         ["timetable", () => import("./views/timetable")],
         ["classes", () => import("./views/classes")],
+        ["exercise", () => import("./views/exercise")],
         // ["base-template", () => import("./views/_base_tmpl")],
     ],
     "./resources/views/"

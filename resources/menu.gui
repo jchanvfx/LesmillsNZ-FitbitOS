@@ -6,6 +6,8 @@
         <use id="side-menu-scroll" href="#scrollview">
             <!-- Main -->
             <use id="main-itm-label" href="#scrollview-item" height="25" class="side-menu-header">
+                <circle cx="14" />
+                <circle cx="100%-14" />
                 <rect/><text id="main-label" text-length="24" />
             </use>
             <use id="main-itm1" href="#scrollview-item" height="68">
@@ -15,7 +17,9 @@
             </use>
             <!-- Sub -->
             <use id="sub-itm-label" href="#scrollview-item" height="25" class="side-menu-header">
-                <rect/><text id="sub-label" text-length="16" />
+                <circle cx="14" />
+                <circle cx="100%-14" />
+                <rect/><text id="sub-label" text-length="24" />
             </use>
             <use id="sub-itm1" href="#scrollview-item" height="62">
                 <use id="sub-btn1" href="#square-button" y="2" height="62" fill="fb-aqua">

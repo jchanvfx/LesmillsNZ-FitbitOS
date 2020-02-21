@@ -77,8 +77,8 @@ function onMount() {
     MenuScreen = document.getElementById("menu-screen");
     MenuBtnTimetable = MenuScreen.getElementById("main-btn1");
     MenuBtnTimetable.text = "Timetable";
-    MenuScreen.getElementById("main-label").text = "Timetable Schedule";
-    displayElement(MenuScreen.getElementById("sub-itm-label"), false);
+    MenuScreen.getElementById("main-label").text = "Switch Views >>";
+    MenuScreen.getElementById("sub-label").text = "Shortcuts";
     displayElement(MenuScreen.getElementById("sub-itm1"), false);
     displayElement(MenuScreen.getElementById("sub-itm2"), false);
     displayElement(MenuScreen.getElementById("sub-itm3"), false);
