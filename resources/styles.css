@@ -124,7 +124,7 @@ text {font-family:System-Regular;}
     x: 12;
     y: 0;
     width: 100%-24;
-    height: 100%-1;
+    height: 100%;
     fill: #3e4504;
 }
 #main-itm-label.side-menu-header circle {
@@ -136,7 +136,7 @@ text {font-family:System-Regular;}
     x: 12;
     y: 0;
     width: 100%-24;
-    height: 100%-1;
+    height: 100%;
     fill: #0f4740;
 }
 #sub-itm-label.side-menu-header circle {
