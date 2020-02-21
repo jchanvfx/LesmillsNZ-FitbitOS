@@ -133,6 +133,8 @@ function onKeyPressEvent(evt) {
         if (MenuScreen.style.display === "inline") {
             MenuScreen.animate("disable");
             setTimeout(() => {MenuScreen.style.display = "none";}, 300);
+        } else if (DlgExercise.style.display === "inline") {
+            onDlgCancelClicked();
         } else {me.exit();}
     }
 }
