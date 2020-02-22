@@ -214,7 +214,7 @@ function onMenuBtn2Clicked() {
     MenuScreen.style.display = "none";
     displayElement(StatusBtnRefresh, true);
     displayElement(StatusBar.getElementById("jump-to"), true);
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]} (Tomorow)`;
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]} (Tomorrow)`;
     StatusBar.getElementById("date2").text = `${date1.getDate()} ${MONTHS[date1.getMonth()]}`;
     CurrentDayKey = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
     setTimetableDay(CurrentDayKey);

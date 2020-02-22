@@ -1,5 +1,8 @@
 /* defaults */
-text {font-family:System-Regular;}
+text {
+    font-family: System-Regular;
+    fill: "white";
+}
 
 /* Status Bar */
 #lm-status-bar rect#background {

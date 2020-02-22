@@ -1,4 +1,4 @@
-<svg viewport-fill="black">
+<svg id="view-timetable" viewport-fill="black">
     <defs>
         <symbol
             id="lm-tile"
