@@ -67,7 +67,11 @@ function timetableCallback(data) {
 }
 // fetch fitness classes and send data to device.
 function fitnessClassesCallback(data) {
-    sendData("lm-classesQueued", data, `${LM_CLASSES}${LM_EXT}`);
+    if (data.length !== 0) {
+        sendData("lm-classesQueued", data, `${LM_CLASSES}${LM_EXT}`);
+    } else {
+        sendValue("lm-noClasses");
+    }
 }
 
 
@@ -105,7 +109,7 @@ messaging.peerSocket.onmessage = (evt) => {
                 lesMills.fetchClasses(clubID, fitnessClassesCallback);
                 sendValue("lm-classesReply", clubName);
             } else {
-                sendValue("lm-noClasses");
+                sendValue("lm-noClub");
             }
             break;
         default:

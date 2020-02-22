@@ -39,7 +39,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
                         name: clsInfo.ClassName,
                         date: clsInfo.StartDateTime,
                         instructor: clsInfo.MainInstructor.Name,
-                        color: clsInfo.Colour,
+                        color: (clsInfo.Colour !== null) ? clsInfo.Colour : "black",
                         desc: `${clsInfo.Site.SiteName} (${clsInfo.Duration}mins)`,
                     };
                     timetable[clsKey.toString()].push(grpCls);
@@ -70,17 +70,33 @@ export function fetchClasses(clubID, callbackFunc) {
         .then(response => response.json())
         .then(data => {
             let fitnessClasses = [];
+            let fitnessColors = [];
             for (let i = 0; i < data.Classes.length; i++) {
                 let clsInfo = data.Classes[i];
+                let clsColor = clsInfo.Colour;
                 let clsName = clsInfo.ClassName;
                 clsName = clsName.replace(/Virtual|virtual|30|45/g, "");
                 clsName = clsName.replace(/^\s+|\s+$/g, '');
-                if (fitnessClasses.includes(clsName)) {continue;}
+                if (fitnessClasses.includes(clsName)) {
+                    let idx = fitnessClasses.indexOf(clsName);
+                    if (fitnessColors[idx] === null && clsColor !== null) {
+                        fitnessColors[idx] = clsColor;
+                    }
+                    continue;
+                }
                 fitnessClasses.push(clsName);
+                fitnessColors.push(clsColor);
             }
-            fitnessClasses.sort();
+
+            let classesData = [];
+            for (let i = 0; i < fitnessClasses.length; i++) {
+                let color = (fitnessColors[i] !== null) ? fitnessColors[i] : "black";
+                classesData.push({name:fitnessClasses[i], color:color});
+            }
+            classesData.sort((a, b) => (a.name > b.name) ? 1 : -1)
+
             // execute callback.
-            callbackFunc(fitnessClasses);
+            callbackFunc(classesData);
         })
         .catch(err => {
             console.log(`Failure: ${err}`);

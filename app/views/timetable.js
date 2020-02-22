@@ -56,7 +56,7 @@ function onMount() {
                 instructor: tileInfo.instructor,
                 date: tileInfo.date,
                 desc: tileInfo.desc,
-                color: (tileInfo.color !== null) ? tileInfo.color : "#545454",
+                color: tileInfo.color,
             };
         },
         configureTile: (tile, info) => {
@@ -214,7 +214,7 @@ function onMenuBtn2Clicked() {
     MenuScreen.style.display = "none";
     displayElement(StatusBtnRefresh, true);
     displayElement(StatusBar.getElementById("jump-to"), true);
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]}`;
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]} (Tomorow)`;
     StatusBar.getElementById("date2").text = `${date1.getDate()} ${MONTHS[date1.getMonth()]}`;
     CurrentDayKey = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
     setTimetableDay(CurrentDayKey);
@@ -281,7 +281,7 @@ function onMessageRecieved(evt) {
             displayLoader(false);
             displayMessage(
                 true,
-                "Please set a club location from the phone app settings.",
+                "Please select a club location from the phone app settings.",
                 "Club Not Set"
             );
             break;
@@ -373,7 +373,7 @@ function setTimetableDay(dKey, jumpToIndex=true) {
         LM_TIMETABLE = readFileSync(fileName, "cbor");
     }
 
-    if (LM_TIMETABLE.length != 0) {
+    if (LM_TIMETABLE.length !== 0) {
         debugLog(`Loading data file: ${fileName}`);
         setTimeout(() => {
             // refresh to the list.
@@ -400,7 +400,7 @@ function setTimetableDay(dKey, jumpToIndex=true) {
                     messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
                 );
             }
-        }, 300);
+        }, 200);
 
         display.poke();
         cleanUpFiles();

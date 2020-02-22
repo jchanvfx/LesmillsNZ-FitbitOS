@@ -43,15 +43,18 @@ function onMount() {
     WorkoutsList = document.getElementById("workouts-list");
     WorkoutsList.delegate = {
         getTileInfo: function(index) {
+            let clsData = LM_CLASSES[index];
             return {
+                index: index,
                 type: "workouts-pool",
-                value: LM_CLASSES[index],
-                index: index
+                value: clsData.name,
+                color: clsData.color
             };
         },
         configureTile: function(tile, info) {
             if (info.type == "workouts-pool") {
                 tile.getElementById("text").text = info.value.toUpperCase();
+                tile.getElementById("ring").style.fill = info.color;
                 let clickPad = tile.getElementById("click-pad");
                 clickPad.onclick = evt => {
                     onTileClicked(info.value.toUpperCase());
@@ -148,6 +151,7 @@ function onStatusBtnMenuClicked() {
     }
 }
 function onMenuBtnTimetableClicked() {
+    LM_CLASSES.length = 0;
     clock.removeEventListener("tick", onTickEvent);
     inbox.removeEventListener("newfile", onDataRecieved);
     MenuScreen.style.display = "none";
@@ -218,6 +222,12 @@ function onMessageRecieved(evt) {
     switch (evt.data.key) {
         case "lm-noClub":
             debugLog("no club selected.");
+            displayLoader(false);
+            displayMessage(
+                true,
+                "Please select a club location from the phone app settings.",
+                "Club Not Set"
+            );
             break;
         case "lm-clubChanged":
             if (evt.data.value) {
@@ -241,6 +251,12 @@ function onMessageRecieved(evt) {
             break;
         case "lm-noClasses":
             debugLog("no classes.");
+            displayLoader(false);
+            displayMessage(
+                true,
+                "Failed to retrive group fitness workouts from database.",
+                "No Classes"
+            );
             break;
         default:
             return;
