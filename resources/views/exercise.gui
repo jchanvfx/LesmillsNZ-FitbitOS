@@ -45,7 +45,7 @@
     <text id="bottom-text" x="5" y="95%" font-size="30" text-anchor="start" >paused</text>
 
     <!-- Essential Button -->
-    <use id="btnFinish" href="#combo-button-upper-right" fill="yellowgreen" display="inline">
+    <use id="btn-finish" href="#combo-button-upper-right" fill="yellowgreen" display="inline">
         <set href="combo-button-icon" attributeName="href"
              to="./resources/images/btn_combo_flag_p.png" />
         <set href="combo-button-icon-press" attributeName="href"
@@ -53,7 +53,7 @@
         <set href="combo-button-stroke" attributeName="display" to="none" />
     </use>
 
-    <use id="btnToggle" href="#combo-button-lower-right" fill="yellowgreen" display="inline">
+    <use id="btn-toggle" href="#combo-button-lower-right" fill="yellowgreen" display="inline">
         <set href="combo-button-icon" attributeName="href"
              to="./resources/images/btn_combo_pause_press_p.png" />
         <set href="combo-button-icon-press" attributeName="href"
@@ -61,6 +61,8 @@
         <set href="combo-button-stroke" attributeName="display" to="none" />
     </use>
 
+    <!-- Exercise Dialog -->
+    <use id="exe-dialog" href="#exercise-dlg" display="none"/>
     <!-- Finish Screen -->
     <!-- <use id="popup" href="#subview-popup" display="none" /> -->
 </svg>
