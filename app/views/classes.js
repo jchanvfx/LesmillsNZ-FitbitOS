@@ -5,7 +5,7 @@ import { me } from "appbit";
 import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
-import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
+import { DAYS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
 import { debugLog } from "../utils"
 
 const date = new Date();
@@ -22,7 +22,6 @@ let StatusBarPhone;
 let MenuScreen;
 let MenuBtnTimetable;
 let DlgExercise;
-let DlgBtnBookmarks;
 let DlgBtnCancel;
 let DlgBtnStart;
 
@@ -57,7 +56,7 @@ function onMount() {
                 tile.getElementById("ring").style.fill = info.color;
                 let clickPad = tile.getElementById("click-pad");
                 clickPad.onclick = evt => {
-                    onTileClicked(info.value.toUpperCase());
+                    onTileClicked(tile);
                 }
             }
         }
@@ -90,7 +89,6 @@ function onMount() {
     displayElement(MenuScreen.getElementById("sub-itm3"), false);
 
     DlgExercise = document.getElementById("exe-dialog");
-    DlgBtnBookmarks = DlgExercise.getElementById("btn-tl");
     DlgBtnStart = DlgExercise.getElementById("btn-right");
     DlgBtnCancel = DlgExercise.getElementById("btn-left");
 
@@ -105,7 +103,6 @@ function onMount() {
     document.addEventListener("keypress", onKeyPressEvent);
     StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
     MenuBtnTimetable.addEventListener("activate", onMenuBtnTimetableClicked);
-    DlgBtnBookmarks.addEventListener("activate", onDlgBookmarkClicked);
     DlgBtnStart.addEventListener("activate", onDlgStartClicked);
     DlgBtnCancel.addEventListener("activate", onDlgCancelClicked);
 
@@ -157,15 +154,13 @@ function onMenuBtnTimetableClicked() {
     MenuScreen.style.display = "none";
     views.navigate("timetable");
 }
-function onTileClicked(workout) {
-    debugLog(`${workout} tile clicked`);
+function onTileClicked(tile) {
+    let workout = tile.getElementById("text").text;
     DlgExercise.getElementById("mixedtext").text = workout;
-    setTimeout(displayElement(DlgExercise, true), 1000);
+    tile.animate("enable");
+    setTimeout(() => {DlgExercise.style.display = "inline";}, 300);
+    debugLog(`${workout} tile clicked`);
 };
-function onDlgBookmarkClicked() {
-    let workout = DlgExercise.getElementById("mixedtext").text;
-    debugLog(`Bookmarked ${workout}...`);
-}
 function onDlgStartClicked() {
     debugLog("start dialog");
     let workout = DlgExercise.getElementById("mixedtext").text;
@@ -199,7 +194,7 @@ function onDataRecieved() {
     let fileName;
     while (fileName = inbox.nextFile()) {
         if (fileName === LM_CLASSES_FILE) {
-            debugLog(`File ${fileName} recieved!`);
+            debugLog(`file ${fileName} recieved!`);
             // hide loader & message screen just incase.
             displayLoader(false);
             displayMessage(false);
@@ -234,7 +229,7 @@ function onMessageRecieved(evt) {
                 display.poke();
                 OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
-                debugLog(`Club changed to: ${clubName}`);
+                debugLog(`club changed to: ${clubName}`);
                 displayLoader(true, "Changing Clubs...", clubName);
             }
             break;

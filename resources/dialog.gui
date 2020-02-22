@@ -1,29 +1,12 @@
 <symbol id="exercise-dlg">
     <rect width="100%" height="100%" fill="black" />
-    <rect width="100%" height="60" fill="#2a2d2e" display="none" />
-    <text display="none"
-        id="text-tl"
-        x="60" y="35"
-        font-size="20"
-        text-length="24"
-        fill="fb-peach">Add to bookmarks</text>
-    <use id="btn-tl" href="#combo-button-upper-left" fill="fb-peach" display="none">
-        <set href="combo-button-icon" attributeName="href" to="./resources/images/star.png"/>
-        <set href="combo-button-icon-press" attributeName="href" to="./resources/images/star_filled.png"/>
-        <set href="combo-button-stroke" attributeName="display" to="none"/>
+    <use id="mixedtext" href="#mixed-text-center-mid" class="dialog-mixed-text" fill="fb-white">
+        <set href="#top-padding" attributeName="display" to="none" />
+        <set href="#header/text" attributeName="text-buffer" to="Workout" />
+        <set href="#header/text" attributeName="text-length" to="16" />
+        <set href="#header/text" attributeName="fill" to="fb-yellow"/>
+        <set href="#copy/text" attributeName="text-buffer" to="Start Workout?" />
     </use>
-
-    <section>
-    <!-- <section y="20" > -->
-        <use id="mixedtext" href="#mixed-text-center-mid" class="dialog-mixed-text" fill="fb-white">
-            <set href="#top-padding" attributeName="display" to="none" />
-            <set href="#header/text" attributeName="text-buffer" to="Workout" />
-            <set href="#header/text" attributeName="text-length" to="16" />
-            <set href="#header/text" attributeName="fill" to="fb-yellow"/>
-            <set href="#copy/text" attributeName="text-buffer" to="Start Workout?" />
-        </use>
-    </section>
-
     <use id="btn-left" class="dialog-half-button-left" href="#square-button" fill="fb-magenta">
         <set href="#text" attributeName="text-buffer" to="Cancel" />
         <set href="#text" attributeName="text-anchor" to="middle" />
