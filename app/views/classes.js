@@ -289,6 +289,7 @@ function updateWorkoutsList() {
     if (existsSync("/private/data/" + LM_CLASSES_FILE)) {
         LM_CLASSES = readFileSync(LM_CLASSES_FILE, "cbor");
     }
+    debugLog(`numer of classes ${LM_CLASSES.length}`);
 
     if (LM_CLASSES.length != 0) {
         debugLog(`Loading data file: ${LM_CLASSES_FILE}`);

@@ -39,7 +39,7 @@
     y: 10%;
     width: 92%;
     height: 80%;
-    fill:"fb-yellow";
+    fill:#404040;
     opacity: 0;
 }
 #lm-tile rect#background {
@@ -97,6 +97,6 @@
     y: 14%;
     width: 92%;
     height: 72%;
-    fill:"fb-yellow";
+    fill:#404040;
     opacity: 0;
 }
