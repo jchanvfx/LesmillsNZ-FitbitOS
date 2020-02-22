@@ -375,17 +375,13 @@ function setTimetableDay(dKey, jumpToIndex=true) {
 
     if (LM_TIMETABLE.length != 0) {
         debugLog(`Loading data file: ${fileName}`);
-
         setTimeout(() => {
-
             // refresh to the list.
             TimetableList.length = LM_TIMETABLE.length;
             TimetableList.redraw();
 
             // jump to latest tile.
-            if (jumpToIndex) {
-                onStatusBtnRefreshClicked();
-            }
+            if (jumpToIndex) {onStatusBtnRefreshClicked();}
 
             displayElement(TimetableList, true);
             displayLoader(false);
@@ -404,7 +400,6 @@ function setTimetableDay(dKey, jumpToIndex=true) {
                     messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
                 );
             }
-
         }, 300);
 
         display.poke();
