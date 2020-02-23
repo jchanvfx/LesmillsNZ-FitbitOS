@@ -68,20 +68,28 @@ function onMount() {
     // connect up add the events.
     // ----------------------------------------------------------------------------
     clock.addEventListener("tick", onTickEvent);
+    display.addEventListener("change", onChangeEvent);
     document.addEventListener("keypress", onKeyPressEvent);
     BtnFinish.addEventListener("activate", onBtnFinishClicked);
     BtnToggle.addEventListener("activate", onBtnToggleClicked);
     DlgBtnEnd.addEventListener("activate", onDlgBtnEnd)
     DlgBtnCancel.addEventListener("activate", onDlgBtnCancel);
 
-    display.poke();
-
     // START THE EXERCISE TRACKING.
     // ----------------------------------------------------------------------------
-    exercise.start(WorkoutName);
     setToggleBtnIcon(ICON_PAUSE);
+    exercise.start(WorkoutName);
+    onDisplayChangeEvent();
 }
-
+function onDisplayChangeEvent() {
+    if (display.on) {
+        BODY_SENSOR.start();
+        HRM_SENSOR.start();
+    } else {
+        BODY_SENSOR.stop();
+        HRM_SENSOR.stop();
+    }
+}
 function onTickEvent(evt) {
     LabelTime.text = formatTo12hrTime(evt.date);
     refresh();
@@ -100,6 +108,7 @@ function onDlgBtnEnd() {
     debugLog("dlg end");
     exercise.stop();
     clock.removeEventListener("tick", onTickEvent);
+    display.removeEventListener("change", onDisplayChangeEvent);
     // TODO prompt results dlg.
     me.exit();
 }
