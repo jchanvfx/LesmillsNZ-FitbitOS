@@ -86,11 +86,14 @@ function onDisplayChangeEvent() {
         BODY_SENSOR.start();
         HRM_SENSOR.start();
         refresh();
+        LabelTime.text = formatTo12hrTime(new Date());
+        clock.granularity = "seconds";
     } else {
         BODY_SENSOR.stop();
         HRM_SENSOR.stop();
-        LabelHRM.text = "--");
+        LabelHRM.text = "--";
         LabelCALS.text = "--";
+        clock.granularity = "off";
     }
 }
 function onTickEvent(evt) {
