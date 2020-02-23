@@ -10,16 +10,18 @@
   "fitbit": {
     "appUUID": "8f60152d-38d3-4fea-9a76-f0db013ec51b",
     "appType": "app",
-    "appDisplayName": "LM-NZ",
+    "appDisplayName": "Workouts",
     "iconFile": "resources/icon.png",
     "wipeColor": "#f83c40",
     "requestedPermissions": [
+      "access_activity",
+      "access_exercise",
+      "access_heart_rate",
       "access_internet",
+      "access_user_profile",
       "run_background"
     ],
     "buildTargets": [
-      "meson",
-      "gemini",
       "mira"
     ],
     "i18n": {},

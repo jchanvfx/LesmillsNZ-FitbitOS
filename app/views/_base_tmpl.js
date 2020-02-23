@@ -2,12 +2,11 @@ import document from "document";
 import { me } from "appbit";
 import { debugLog } from "../utils";
 
-let views;
-
 // screen initialize.
+let views;
 export function init(_views) {
   views = _views;
-  console.log("view-tmpl init()");
+  debugLog("view-tmpl init()");
   onMount();
 }
 

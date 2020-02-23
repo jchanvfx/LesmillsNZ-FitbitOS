@@ -1,22 +1,83 @@
-<svg viewport-fill="black">
-    <!-- Main Wrapper -->
-    <section y="50" height="100%-50">
-        <text
-            x="50%"
-            y="50%"
-            font-family="System-Regular"
-            fill="#4bfbc7"
-            font-size="30"
-            font-weight="bold"
-            text-anchor="middle">Test Text</text>
+<svg id="view-exercise" viewport-fill="black">
+    <text
+        id="time"
+        x="5" y="35"
+        font-size="30"
+        text-anchor="start"
+        text-length="7"
+        fill="grey">00:00pm</text>
+    <text
+        id="workout-title"
+        x="50%" y="30%"
+        font-size="26"
+        text-anchor="middle"
+        fill="teal"
+        text-length="24">WORKOUT</text>
+    <text
+        id="duration"
+        x="50%" y="50%"
+        font-size="65"
+        text-anchor="middle"
+        text-length="8">--:--:--</text>
 
-        <use id="btn1" href="#square-button" fill="#1effce">
-            <set href="#text" attributeName="text-length" to="12" />
-            <set href="#text" attributeName="text-buffer" to="Test Button" />
-        </use>
+    <rect x="10" y="55%" width="100%-20" height="2" fill="fb-dark-gray" />
+    <rect x="50%-1" y="55%" width="2" height="20" fill="fb-dark-gray" />
+
+    <section x="50%-80" y="50%+25">
+        <image id="hrm-icn" width="30" height="30" href="./resources/images/hrm.png" fill="fb-magenta" />
+        <text
+            id="hrm-text"
+            x="35" y="20"
+            font-size="20"
+            text-anchor="start"
+            text-length="3">---</text>
+    </section>
+    <section x="50%+10" y="50%+25">
+        <image id="cals-icn" width="30" height="30" href="./resources/images/cals.png" fill="fb-peach" />
+        <text
+            id="cals-text"
+            x="35" y="20"
+            font-size="20"
+            text-anchor="start"
+            text-length="3">---</text>
     </section>
 
-    <!-- Status Bar -->
-    <use id="status-bar" href="#lm-status-bar" />
+    <text
+        id="bottom-text"
+        x="5" y="95%"
+        font-size="30"
+        text-anchor="start"
+        opacity="0"
+        fill="fb-yellow">paused
+        <animate
+            id="anim"
+            attributeName="opacity"
+            begin="enable"
+            from="0" to="1"
+            dur="0.8"
+            final="restore"/>
+    </text>
 
+    <!-- Essential Button -->
+    <use id="btn-finish" href="#combo-button-upper-right" fill="yellowgreen" display="inline">
+        <set href="combo-button-icon" attributeName="href"
+             to="./resources/images/btn_combo_flag_p.png" />
+        <set href="combo-button-icon-press" attributeName="href"
+             to="./resources/images/btn_combo_flag_p.png" />
+        <set href="combo-button-stroke" attributeName="display" to="none" />
+    </use>
+
+    <use id="btn-toggle" href="#combo-button-lower-right" fill="yellowgreen" display="inline">
+        <set href="combo-button-icon" attributeName="href"
+             to="./resources/images/btn_combo_play_press_p.png" />
+        <set href="combo-button-icon-press" attributeName="href"
+             to="./resources/images/btn_combo_play_press_p.png" />
+        <set href="combo-button-stroke" attributeName="display" to="none" />
+    </use>
+
+    <!-- Exercise Dialog -->
+    <use id="exe-dialog" href="#exercise-dlg" display="none"/>
+    <!-- Finish Screen -->
+    <!-- <use id="popup" href="#subview-popup" display="none" /> -->
 </svg>
+

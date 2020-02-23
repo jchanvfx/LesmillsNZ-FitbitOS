@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
-import { debugLog } from "../utils"
+import { debugLog, displayElement, saveSettings } from "../utils"
 
 const date = new Date();
 const date1 = new Date();
@@ -29,6 +29,9 @@ let MenuBtnWorkout;
 let MenuBtn1;
 let MenuBtn2;
 let MenuBtn3;
+let DlgExercise;
+let DlgBtnCancel;
+let DlgBtnStart;
 
 let OnFileRecievedUpdateGui;
 let CurrentDayKey;
@@ -56,7 +59,7 @@ function onMount() {
                 instructor: tileInfo.instructor,
                 date: tileInfo.date,
                 desc: tileInfo.desc,
-                color: (tileInfo.color !== null) ? tileInfo.color : "#545454",
+                color: tileInfo.color,
             };
         },
         configureTile: (tile, info) => {
@@ -72,12 +75,17 @@ function onMount() {
                     tile.getElementById("text-L").style.fill = "#6e6e6e";
                     tile.getElementById("text-R").style.fill = "#6e6e6e";
                     tile.getElementById("color").style.fill = "#4f4f4f";
+                    let clickPad = tile.getElementById("click-pad");
+                    clickPad.onclick = evt => {}
                 } else {
                     tile.getElementById("text-title").style.fill = "white";
                     tile.getElementById("text-subtitle").style.fill = "white";
                     tile.getElementById("text-L").style.fill = "white";
                     tile.getElementById("text-R").style.fill = "white";
                     tile.getElementById("color").style.fill = info.color;
+
+                    let clickPad = tile.getElementById("click-pad");
+                    clickPad.onclick = evt => {onTileClicked(tile);}
                 }
             }
         }
@@ -95,8 +103,8 @@ function onMount() {
     StatusBtnRefresh = StatusBar.getElementById("click-r");
     StatusBarPhone = StatusBar.getElementById("no-phone");
     MenuScreen = document.getElementById("menu-screen");
-    MenuScreen.getElementById("main-label").text = "Group Fitness";
-    MenuScreen.getElementById("sub-label").text = "Timetable";
+    MenuScreen.getElementById("main-label").text = "Switch View >>";
+    MenuScreen.getElementById("sub-label").text = "Timetable Schedule";
     MenuBtnWorkout = MenuScreen.getElementById("main-btn1");
     MenuBtnWorkout.text = "Workouts";
     MenuBtn1 = MenuScreen.getElementById("sub-btn1");
@@ -115,6 +123,10 @@ function onMount() {
         `${date2.getDate()} ` +
         `${MONTHS_SHORT[date2.getMonth()]}`;
 
+    DlgExercise = document.getElementById("exe-dialog");
+    DlgBtnStart = DlgExercise.getElementById("btn-right");
+    DlgBtnCancel = DlgExercise.getElementById("btn-left");
+
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     OnFileRecievedUpdateGui = false;
 
@@ -131,6 +143,8 @@ function onMount() {
     MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
     MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
     MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
+    DlgBtnStart.addEventListener("activate", onDlgStartClicked);
+    DlgBtnCancel.addEventListener("activate", onDlgCancelClicked);
 
     // message socket opens.
     messaging.peerSocket.onopen = () => {
@@ -163,9 +177,13 @@ function onKeyPressEvent(evt) {
 }
 function onStatusBtnMenuClicked() {
     if (MenuScreen.style.display === "none") {
+        displayElement(StatusBtnRefresh, false);
+        displayElement(StatusBar.getElementById("jump-to"), false);
         MenuScreen.style.display = "inline";
         MenuScreen.animate("enable");
     } else {
+        displayElement(StatusBtnRefresh, true);
+        displayElement(StatusBar.getElementById("jump-to"), true);
         MenuScreen.animate("disable");
         setTimeout(() => {MenuScreen.style.display = "none";}, 300);
     }
@@ -191,6 +209,8 @@ function onMenuBtnWorkoutClicked() {
 }
 function onMenuBtn1Clicked() {
     MenuScreen.style.display = "none";
+    displayElement(StatusBtnRefresh, true);
+    displayElement(StatusBar.getElementById("jump-to"), true);
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
     StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
@@ -198,17 +218,44 @@ function onMenuBtn1Clicked() {
 }
 function onMenuBtn2Clicked() {
     MenuScreen.style.display = "none";
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]}`;
+    displayElement(StatusBtnRefresh, true);
+    displayElement(StatusBar.getElementById("jump-to"), true);
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]} (Tomorrow)`;
     StatusBar.getElementById("date2").text = `${date1.getDate()} ${MONTHS[date1.getMonth()]}`;
     CurrentDayKey = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
     setTimetableDay(CurrentDayKey);
 }
 function onMenuBtn3Clicked() {
     MenuScreen.style.display = "none";
+    displayElement(StatusBtnRefresh, true);
+    displayElement(StatusBar.getElementById("jump-to"), true);
     StatusBar.getElementById("date1").text = `${DAYS_SHORT[date2.getDay()]}`;
     StatusBar.getElementById("date2").text = `${date2.getDate()} ${MONTHS[date2.getMonth()]}`;
     CurrentDayKey = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
     setTimetableDay(CurrentDayKey);
+}
+function onTileClicked(tile) {
+    let workout = tile.getElementById("text-title").text;
+    DlgExercise.getElementById("mixedtext").text = workout;
+    tile.animate("enable");
+    tile.getElementById("overlay").animate("enable");
+    setTimeout(() => {DlgExercise.style.display = "inline";}, 300);
+    debugLog(`${workout} tile clicked`);
+}
+function onDlgStartClicked() {
+    debugLog("start dialog");
+    let workout = DlgExercise.getElementById("mixedtext").text;
+    saveSettings({workout: workout});
+
+    LM_TIMETABLE.length = 0;
+    clock.removeEventListener("tick", onTickEvent);
+    inbox.removeEventListener("newfile", onDataRecieved);
+    views.navigate("exercise");
+}
+function onDlgCancelClicked() {
+    debugLog("cancel dialog");
+    DlgExercise.getElementById("mixedtext").text = "Workout";
+    displayElement(DlgExercise, false);
 }
 
 // ----------------------------------------------------------------------------
@@ -260,7 +307,7 @@ function onMessageRecieved(evt) {
             displayLoader(false);
             displayMessage(
                 true,
-                "Please set a club location from the phone app settings.",
+                "Please select a club location from the phone app settings.",
                 "Club Not Set"
             );
             break;
@@ -319,10 +366,6 @@ function cleanUpFiles() {
 // TIMETABLE LIST
 // ----------------------------------------------------------------------------
 
-// toggle element visibility.
-function displayElement(element, display=true) {
-    element.style.display = display ? "inline" : "none";
-}
 // toggle message screen widget visibility.
 function displayMessage(display=true, text="", title="") {
     let mixedText = MessageOverlay.getElementById("#mixedtext");
@@ -352,19 +395,15 @@ function setTimetableDay(dKey, jumpToIndex=true) {
         LM_TIMETABLE = readFileSync(fileName, "cbor");
     }
 
-    if (LM_TIMETABLE.length != 0) {
+    if (LM_TIMETABLE.length !== 0) {
         debugLog(`Loading data file: ${fileName}`);
-
         setTimeout(() => {
-
             // refresh to the list.
             TimetableList.length = LM_TIMETABLE.length;
             TimetableList.redraw();
 
             // jump to latest tile.
-            if (jumpToIndex) {
-                onStatusBtnRefreshClicked();
-            }
+            if (jumpToIndex) {onStatusBtnRefreshClicked();}
 
             displayElement(TimetableList, true);
             displayLoader(false);
@@ -383,8 +422,7 @@ function setTimetableDay(dKey, jumpToIndex=true) {
                     messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
                 );
             }
-
-        }, 300);
+        }, 200);
 
         display.poke();
         cleanUpFiles();

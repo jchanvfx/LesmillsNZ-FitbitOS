@@ -1,4 +1,4 @@
-<svg viewport-fill="black">
+<svg id="view-workouts" viewport-fill="black">
     <defs>
         <symbol
             id="workout-tile-item"
@@ -23,6 +23,10 @@
             <arc id="ring" />
             <image id="icon" href="./resources/images/drop.png" />
             <text id="text" />
+            <rect id="overlay">
+                <animate attributeName="opacity" begin="enable"
+                         from="1" to="0" dur="0.3" final="restore" />
+            </rect>
             <rect
                 id="click-pad"
                 pointer-events="all"
@@ -63,4 +67,6 @@
     <use id="menu-screen" href="#side-menu" display="none" />
     <!-- Status Bar -->
     <use id="status-bar" href="#lm-status-bar" />
+    <!-- Exercise Dialog -->
+    <use id="exe-dialog" href="#exercise-dlg" display="none"/>
 </svg>

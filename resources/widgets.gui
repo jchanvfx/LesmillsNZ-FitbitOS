@@ -6,6 +6,7 @@
     <!-- Additional Imports -->
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui" />
+    <link rel="import" href="/mnt/sysassets/widgets/combo_button_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/square_button_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.gui" />
     <!-- Dynamic Textarea -->
@@ -39,11 +40,13 @@
         <text id="time">00:00am</text>
         <image id="no-phone" href="./resources/images/no_phone.png" />
         <image id="jump-to" href="./resources/images/jump_to.png" />
-        <circle id="click-l" pointer-events="all" r="70" cx="0" cy="0" fill="fb-yellow" opacity="0">
-            <animate attributeName="opacity" begin="click" from="1" to="0" dur="0.3" final="restore" />
+        <circle id="click-l" pointer-events="all" r="70" cx="5" cy="0" fill="fb-yellow" opacity="0">
+            <animate attributeName="opacity" begin="click"
+                     from="1" to="0" dur="0.3" final="restore" />
         </circle>
-        <circle id="click-r" pointer-events="all" r="70" cx="100%" cy="0" fill="fb-yellow" opacity="0">
-            <animate attributeName="opacity" begin="click" from="1" to="0" dur="0.3" final="restore" />
+        <circle id="click-r" pointer-events="all" r="70" cx="100%-5" cy="0" fill="fb-yellow" opacity="0">
+            <animate attributeName="opacity" begin="click"
+                     from="1" to="0" dur="0.3" final="restore" />
         </circle>
     </symbol>
     <!-- Message Overlay -->
@@ -60,6 +63,7 @@
     </symbol>
     <!-- Side Menu -->
     <link rel="import" href="menu.gui" />
-
+    <!-- Dialog -->
+    <link rel="import" href="dialog.gui" />
   </defs>
 </svg>

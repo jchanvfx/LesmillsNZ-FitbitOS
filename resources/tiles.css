@@ -34,6 +34,14 @@
     text-anchor: end;
     text-length: 32;
 }
+#lm-tile rect#overlay {
+    x: 4%;
+    y: 10%;
+    width: 92%;
+    height: 80%;
+    fill:#404040;
+    opacity: 0;
+}
 #lm-tile rect#background {
     x: 3;
     y: 2;
@@ -69,7 +77,7 @@
     height: 50;
     x:20;
     y:50%-25;
-    fill: "fb-yellow";
+    fill: "black";
     arc-width:3;
     start-angle:0;
     sweep-angle:360;
@@ -83,4 +91,12 @@
 }
 .wrk-tile-cnr {
     fill:#2a2d2e;
+}
+#workout-tile-item rect#overlay {
+    x: 4%;
+    y: 14%;
+    width: 92%;
+    height: 72%;
+    fill:#404040;
+    opacity: 0;
 }
