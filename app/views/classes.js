@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 import { DAYS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
-import { debugLog, displayElement } from "../utils"
+import { debugLog, displayElement, saveSettings } from "../utils"
 
 const date = new Date();
 
@@ -55,9 +55,7 @@ function onMount() {
                 tile.getElementById("text").text = info.value.toUpperCase();
                 tile.getElementById("ring").style.fill = info.color;
                 let clickPad = tile.getElementById("click-pad");
-                clickPad.onclick = evt => {
-                    onTileClicked(tile);
-                }
+                clickPad.onclick = evt => {onTileClicked(tile);}
             }
         }
     };
@@ -164,8 +162,12 @@ function onTileClicked(tile) {
 function onDlgStartClicked() {
     debugLog("start dialog");
     let workout = DlgExercise.getElementById("mixedtext").text;
-    // TODO: serialize setting to file.
-    // views.navigate("exercise");
+    saveSettings({workout: workout});
+
+    LM_CLASSES.length = 0;
+    clock.removeEventListener("tick", onTickEvent);
+    inbox.removeEventListener("newfile", onDataRecieved);
+    views.navigate("exercise");
 }
 function onDlgCancelClicked() {
     debugLog("cancel dialog");
@@ -285,7 +287,7 @@ function updateWorkoutsList() {
     if (existsSync("/private/data/" + LM_CLASSES_FILE)) {
         LM_CLASSES = readFileSync(LM_CLASSES_FILE, "cbor");
     }
-    debugLog(`numer of classes ${LM_CLASSES.length}`);
+    debugLog(`number of classes ${LM_CLASSES.length}`);
 
     if (LM_CLASSES.length != 0) {
         debugLog(`Loading data file: ${LM_CLASSES_FILE}`);

@@ -71,5 +71,6 @@
     <use id="menu-screen" href="#side-menu" display="none" />
     <!-- Status Bar -->
     <use id="status-bar" href="#lm-status-bar" />
-
+    <!-- Exercise Dialog -->
+    <use id="exe-dialog" href="#exercise-dlg" display="none"/>
 </svg>

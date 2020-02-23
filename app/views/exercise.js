@@ -5,7 +5,7 @@ import { BodyPresenceSensor } from "body-presence";
 import { HeartRateSensor } from "heart-rate";
 import { me } from "appbit";
 import { display } from "display";
-import { debugLog, displayElement, formatCalories, formatActiveTime } from "../utils";
+import { debugLog, displayElement, formatCalories, formatActiveTime, loadSettings } from "../utils";
 import { formatTo12hrTime } from "../datelib"
 
 const ICON_PLAY = "btn_combo_play_press_p.png";
@@ -44,8 +44,7 @@ function onMount() {
         debugLog("Denied Heart Rate or User Profile permissions");
     }
 
-    // TODO: need to implement read/write settings logic.
-    WorkoutName = "BODYPUMP";
+    WorkoutName = loadSettings().workout;
     document.getElementById("workout-title").text = WorkoutName;
 
     LabelTime = document.getElementById("time");
@@ -65,8 +64,6 @@ function onMount() {
     DlgBtnCancel = DlgExercise.getElementById("btn-left");
 
     displayElement(BtnFinish, false);
-    let icon = (exercise.state === "started") ? ICON_PAUSE : ICON_PLAY;
-    setToggleBtnIcon(icon);
 
     // connect up add the events.
     // ----------------------------------------------------------------------------
@@ -82,6 +79,7 @@ function onMount() {
     // START THE EXERCISE TRACKING.
     // ----------------------------------------------------------------------------
     exercise.start(WorkoutName);
+    setToggleBtnIcon(ICON_PAUSE);
 }
 
 function onTickEvent(evt) {

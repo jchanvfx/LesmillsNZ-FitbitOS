@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
-import { debugLog, displayElement } from "../utils"
+import { debugLog, displayElement, saveSettings } from "../utils"
 
 const date = new Date();
 const date1 = new Date();
@@ -29,6 +29,9 @@ let MenuBtnWorkout;
 let MenuBtn1;
 let MenuBtn2;
 let MenuBtn3;
+let DlgExercise;
+let DlgBtnCancel;
+let DlgBtnStart;
 
 let OnFileRecievedUpdateGui;
 let CurrentDayKey;
@@ -82,10 +85,7 @@ function onMount() {
                     tile.getElementById("color").style.fill = info.color;
 
                     let clickPad = tile.getElementById("click-pad");
-                    clickPad.onclick = evt => {
-                        tile.getElementById("overlay").animate("enable");
-                        // onTileClicked(info.name.toUpperCase());
-                    }
+                    clickPad.onclick = evt => {onTileClicked(tile);}
                 }
             }
         }
@@ -123,6 +123,10 @@ function onMount() {
         `${date2.getDate()} ` +
         `${MONTHS_SHORT[date2.getMonth()]}`;
 
+    DlgExercise = document.getElementById("exe-dialog");
+    DlgBtnStart = DlgExercise.getElementById("btn-right");
+    DlgBtnCancel = DlgExercise.getElementById("btn-left");
+
     CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     OnFileRecievedUpdateGui = false;
 
@@ -139,6 +143,8 @@ function onMount() {
     MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
     MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
     MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
+    DlgBtnStart.addEventListener("activate", onDlgStartClicked);
+    DlgBtnCancel.addEventListener("activate", onDlgCancelClicked);
 
     // message socket opens.
     messaging.peerSocket.onopen = () => {
@@ -228,8 +234,28 @@ function onMenuBtn3Clicked() {
     CurrentDayKey = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
     setTimetableDay(CurrentDayKey);
 }
-function onTileClicked(workout) {
-    debugLog(workout);
+function onTileClicked(tile) {
+    let workout = tile.getElementById("text-title").text;
+    DlgExercise.getElementById("mixedtext").text = workout;
+    tile.animate("enable");
+    tile.getElementById("overlay").animate("enable");
+    setTimeout(() => {DlgExercise.style.display = "inline";}, 300);
+    debugLog(`${workout} tile clicked`);
+}
+function onDlgStartClicked() {
+    debugLog("start dialog");
+    let workout = DlgExercise.getElementById("mixedtext").text;
+    saveSettings({workout: workout});
+
+    LM_TIMETABLE.length = 0;
+    clock.removeEventListener("tick", onTickEvent);
+    inbox.removeEventListener("newfile", onDataRecieved);
+    views.navigate("exercise");
+}
+function onDlgCancelClicked() {
+    debugLog("cancel dialog");
+    DlgExercise.getElementById("mixedtext").text = "Workout";
+    displayElement(DlgExercise, false);
 }
 
 // ----------------------------------------------------------------------------

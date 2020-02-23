@@ -1,3 +1,4 @@
+import { readFileSync, writeFileSync } from "fs";
 const DEBUG = true;
 
 export function debugLog(value) {
@@ -12,11 +13,19 @@ export function displayElement(element, display=true) {
     element.style.display = display ? "inline" : "none";
 }
 
+export function saveSettings(data) {
+    writeFileSync("LM_settings.cbor", data, "cbor");
+};
+export function loadSettings(data) {
+    return readFileSync("LM_settings.cbor", "cbor");
+}
+
 /** @description Formats the time spent in milliseconds into mm:ss or hh:mm:ss.
  * @param {number} activeTime The time in milliseconds.
  * @return {string}
  */
 export function formatActiveTime(activeTime) {
+    let millisecs = activeTime / 10;
     let seconds = (activeTime / 1000).toFixed(0);
     let minutes = Math.floor(seconds / 60);
     let hours;
@@ -29,9 +38,9 @@ export function formatActiveTime(activeTime) {
     seconds = Math.floor(seconds % 60);
     seconds = zeroPad(seconds);
     if (hours) {
-        return `${hours}:${minutes}.${seconds}`;
+        return `${hours}:${minutes}:${seconds}`;
     }
-    return `${minutes}.${seconds}`;
+    return `${minutes}:${seconds}`;
 }
 
 /** @description Formats calories with commas for 1,000.
