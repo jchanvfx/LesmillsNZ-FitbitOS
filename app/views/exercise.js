@@ -85,14 +85,17 @@ function onDisplayChangeEvent() {
     if (display.on) {
         BODY_SENSOR.start();
         HRM_SENSOR.start();
+        refresh();
     } else {
         BODY_SENSOR.stop();
         HRM_SENSOR.stop();
+        LabelHRM.text = "--");
+        LabelCALS.text = "--";
     }
 }
 function onTickEvent(evt) {
     LabelTime.text = formatTo12hrTime(evt.date);
-    refresh();
+    if (display.on) {refresh();}
 }
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
