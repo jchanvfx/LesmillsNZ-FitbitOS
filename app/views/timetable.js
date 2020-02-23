@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
-import { debugLog } from "../utils"
+import { debugLog, displayElement } from "../utils"
 
 const date = new Date();
 const date1 = new Date();
@@ -340,10 +340,6 @@ function cleanUpFiles() {
 // TIMETABLE LIST
 // ----------------------------------------------------------------------------
 
-// toggle element visibility.
-function displayElement(element, display=true) {
-    element.style.display = display ? "inline" : "none";
-}
 // toggle message screen widget visibility.
 function displayMessage(display=true, text="", title="") {
     let mixedText = MessageOverlay.getElementById("#mixedtext");

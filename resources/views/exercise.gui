@@ -18,7 +18,7 @@
         x="50%" y="50%"
         font-size="65"
         text-anchor="middle"
-        text-length="8">--:--.--</text>
+        text-length="8">--:--:--</text>
 
     <rect x="10" y="55%" width="100%-20" height="2" fill="fb-dark-gray" />
     <rect x="50%-1" y="55%" width="2" height="20" fill="fb-dark-gray" />
@@ -42,7 +42,21 @@
             text-length="3">---</text>
     </section>
 
-    <text id="bottom-text" x="5" y="95%" font-size="30" text-anchor="start" >paused</text>
+    <text
+        id="bottom-text"
+        x="5" y="95%"
+        font-size="30"
+        text-anchor="start"
+        opacity="0"
+        fill="fb-yellow">paused
+        <animate
+            attributeName="opacity"
+            begin="enable"
+            from="0" to="1"
+            dur="1"
+            final="restore"
+            repeatCount="indefinite"/>
+    </text>
 
     <!-- Essential Button -->
     <use id="btn-finish" href="#combo-button-upper-right" fill="yellowgreen" display="inline">
@@ -55,9 +69,9 @@
 
     <use id="btn-toggle" href="#combo-button-lower-right" fill="yellowgreen" display="inline">
         <set href="combo-button-icon" attributeName="href"
-             to="./resources/images/btn_combo_pause_press_p.png" />
+             to="./resources/images/btn_combo_play_press_p.png" />
         <set href="combo-button-icon-press" attributeName="href"
-             to="./resources/images/btn_combo_pause_press_p.png" />
+             to="./resources/images/btn_combo_play_press_p.png" />
         <set href="combo-button-stroke" attributeName="display" to="none" />
     </use>
 

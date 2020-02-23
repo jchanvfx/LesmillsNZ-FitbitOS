@@ -5,6 +5,7 @@
         <set href="#header/text" attributeName="text-buffer" to="Workout" />
         <set href="#header/text" attributeName="text-length" to="16" />
         <set href="#header/text" attributeName="fill" to="fb-yellow"/>
+        <set href="#copy/text" attributeName="text-length" to="18" />
         <set href="#copy/text" attributeName="text-buffer" to="Start Workout?" />
     </use>
     <use id="btn-left" class="dialog-half-button-left" href="#square-button" fill="fb-magenta">
