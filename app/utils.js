@@ -29,9 +29,9 @@ export function formatActiveTime(activeTime) {
     seconds = Math.floor(seconds % 60);
     seconds = zeroPad(seconds);
     if (hours) {
-        return `${hours}:${minutes}:${seconds}`;
+        return `${hours}:${minutes}.${seconds}`;
     }
-    return `${minutes}:${seconds}`;
+    return `${minutes}.${seconds}`;
 }
 
 /** @description Formats calories with commas for 1,000.

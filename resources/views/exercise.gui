@@ -50,12 +50,12 @@
         opacity="0"
         fill="fb-yellow">paused
         <animate
+            id="anim"
             attributeName="opacity"
             begin="enable"
             from="0" to="1"
-            dur="1"
-            final="restore"
-            repeatCount="indefinite"/>
+            dur="0.8"
+            final="restore"/>
     </text>
 
     <!-- Essential Button -->

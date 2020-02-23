@@ -129,14 +129,16 @@ function setToggleBtnIcon(icon) {
 }
 function pauseWorkout() {
     debugLog("paused workout");
+    BottomText.getElementById("anim").repeatCount = "indefinite";
     BottomText.animate("enable");
-    setToggleBtnIcon(ICON_PAUSE);
+    setToggleBtnIcon(ICON_PLAY);
     exercise.pause();
 }
 function resumeWorkout() {
     debugLog("resume workout");
+    BottomText.getElementById("anim").repeatCount = 1;
     BottomText.animate("disable");
-    setToggleBtnIcon(ICON_PLAY);
+    setToggleBtnIcon(ICON_PAUSE);
     exercise.resume();
 }
 function getBPM() {
