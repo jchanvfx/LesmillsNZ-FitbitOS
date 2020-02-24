@@ -121,10 +121,16 @@ function onDlgBtnEnd() {
     clock.removeEventListener("tick", onTickEvent);
     display.removeEventListener("change", onDisplayChangeEvent);
 
-    DlgPopup.getElementById("text1").text = `Duration: ${formatActiveTime(exercise.stats.activeTime)}`;
-    DlgPopup.getElementById("text2").text = `bpm avg: ${exercise.stats.heartRate.average}`;
-    DlgPopup.getElementById("text3").text = `bpm max: ${exercise.stats.heartRate.max}`;
-    DlgPopup.getElementById("text4").text = `calories: ${formatCalories(exercise.stats.calories)}`;
+    let workout = DlgPopup.getElementById("workout");
+    let itm1 = DlgPopup.getElementById("itm1");
+    let itm2 = DlgPopup.getElementById("itm2");
+    let itm3 = DlgPopup.getElementById("itm3");
+    let itm4 = DlgPopup.getElementById("itm4");
+    workout.getElementById("text").text = WorkoutName;
+    itm1.getElementById("text").text = `${formatActiveTime(exercise.stats.activeTime)}`;
+    itm2.getElementById("text").text = `${exercise.stats.heartRate.average} bpm avg`;
+    itm3.getElementById("text").text = `${exercise.stats.heartRate.max} bpm max`;
+    itm4.getElementById("text").text = `${formatCalories(exercise.stats.calories)} cals`;
     displayElement(DlgPopup, true);
 }
 function onBtnFinishClicked() {

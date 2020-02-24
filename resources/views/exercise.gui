@@ -1,13 +1,33 @@
 <svg id="view-exercise" viewport-fill="black">
     <defs>
+        <symbol id="exercise-popup-itm" height="32">
+            <image id="icon" x="0" y="-26" width="32" height="32"/>
+            <text id="text" x="40" y="0" font-size="26" text-length="24" />
+        </symbol>
         <symbol id="exercise-popup">
             <rect width="100%" height="100%" fill="black" />
-            <text x="5" y="45" font-size="45" fill="fb-peach">Nice Workout!</text>
-            <text id="text1" x="5" y="$" font-size="25" text-length="24" />
-            <text id="text2" x="5" y="$" font-size="25" text-length="24" />
-            <text id="text3" x="5" y="$" font-size="25" text-length="24" />
-            <text id="text4" x="5" y="$" font-size="25" text-length="24" />
-            <use id="btn-done" href="#square-button" y="100%-60" height="60" fill="fb-aqua">
+            <text x="5" y="45" font-size="45" fill="yellowgreen">Nice Workout!</text>
+            <use id="workout" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_drop_32px_p.png" />
+                <set href="#icon" attributeName="fill" to="white" />
+            </use>
+            <use id="itm1" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_duration_32px_p.png" />
+                <set href="#icon" attributeName="fill" to="fb-cyan" />
+            </use>
+            <use id="itm2" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_hr_avg_32px_p.png" />
+                <set href="#icon" attributeName="fill" to="fb-pink" />
+            </use>
+            <use id="itm3" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_hr_max_32px_p.png" />
+                <set href="#icon" attributeName="fill" to="fb-red" />
+            </use>
+            <use id="itm4" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_cals_open_32px.png" />
+                <set href="#icon" attributeName="fill" to="fb-peach" />
+            </use>
+            <use id="btn-done" href="#square-button" y="100%-60" height="60" fill="yellowgreen">
                 <set href="#text" attributeName="text-buffer" to="Done" />
                 <set href="#text" attributeName="text-length" to="4" />
             </use>
