@@ -1,4 +1,40 @@
 <svg id="view-exercise" viewport-fill="black">
+    <defs>
+        <symbol id="exercise-popup-itm" height="30">
+            <image id="icon" x="0" y="-26" width="30" height="30"/>
+            <text id="text" x="40" y="0" font-size="26" text-length="24" />
+        </symbol>
+        <symbol id="exercise-popup">
+            <rect width="100%" height="100%" fill="black" />
+            <text x="5" y="45" font-size="45" fill="yellowgreen">Nice Work!</text>
+            <use id="workout" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_drop_32px_p.png" />
+                <set href="#icon" attributeName="fill" to="white" />
+                <set href="#icon" attributeName="y" to="-24" />
+                <set href="#text" attributeName="font-size" to="24" />
+            </use>
+            <use id="itm1" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_duration_32px_p.png" />
+                <set href="#icon" attributeName="fill" to="fb-cyan" />
+            </use>
+            <use id="itm2" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_hr_avg_32px_p.png" />
+                <set href="#icon" attributeName="fill" to="fb-pink" />
+            </use>
+            <use id="itm3" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_hr_max_32px_p.png" />
+                <set href="#icon" attributeName="fill" to="fb-red" />
+            </use>
+            <use id="itm4" y="$" href="#exercise-popup-itm">
+                <set href="#icon" attributeName="href" to="./resources/images/stat_cals_open_32px.png" />
+                <set href="#icon" attributeName="fill" to="fb-peach" />
+            </use>
+            <use id="btn-done" href="#square-button" y="100%-60" height="60" fill="yellowgreen">
+                <set href="#text" attributeName="text-buffer" to="Done" />
+                <set href="#text" attributeName="text-length" to="4" />
+            </use>
+        </symbol>
+    </defs>
     <text
         id="time"
         x="5" y="35"
@@ -18,7 +54,7 @@
         x="50%" y="50%"
         font-size="65"
         text-anchor="middle"
-        text-length="8">--:--:--</text>
+        text-length="8">--</text>
 
     <rect x="10" y="55%" width="100%-20" height="2" fill="fb-dark-gray" />
     <rect x="50%-1" y="55%" width="2" height="20" fill="fb-dark-gray" />
@@ -45,7 +81,7 @@
     <text
         id="bottom-text"
         x="5" y="95%"
-        font-size="30"
+        font-size="45"
         text-anchor="start"
         opacity="0"
         fill="fb-yellow">paused
@@ -54,8 +90,10 @@
             attributeName="opacity"
             begin="enable"
             end="disable"
-            from="0" to="1"
+            from="0"
+            to="1"
             dur="0.8"
+            repeatCount="indefinite"
             final="restore"/>
     </text>
 
@@ -79,6 +117,6 @@
     <!-- Exercise Dialog -->
     <use id="exe-dialog" href="#exercise-dlg" display="none"/>
     <!-- Finish Screen -->
-    <!-- <use id="popup" href="#subview-popup" display="none" /> -->
+    <use id="exe-popup" href="#exercise-popup" display="none" />
 </svg>
 

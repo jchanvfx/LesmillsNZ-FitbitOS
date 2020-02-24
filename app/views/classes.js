@@ -4,9 +4,9 @@ import * as messaging from "messaging";
 import { me } from "appbit";
 import { display } from "display";
 import { inbox } from "file-transfer"
-import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
-import { DAYS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
-import { debugLog, displayElement, saveSettings } from "../utils"
+import { existsSync, readFileSync, statSync } from "fs";
+import { DAYS_SHORT, MONTHS, MONTHS_SHORT, formatTo12hrTime } from "../datelib"
+import { debugLog, displayElement, saveSettings, loadSettings } from "../utils"
 
 const date = new Date();
 
@@ -20,7 +20,10 @@ let StatusBar;
 let StatusBtnMenu;
 let StatusBarPhone;
 let MenuScreen;
-let MenuBtnTimetable;
+let MenuBtnWorkouts;
+let MenuBtn1;
+let MenuBtn2;
+let MenuBtn3;
 let DlgExercise;
 let DlgBtnCancel;
 let DlgBtnStart;
@@ -64,6 +67,8 @@ function onMount() {
 
     LoaderOverlay = document.getElementById("loading-screen");
     MessageOverlay = document.getElementById("message-screen");
+
+    // Status Bar.
     StatusBar = document.getElementById("status-bar");
     StatusBtnMenu = StatusBar.getElementById("click-l");
     StatusBarPhone = StatusBar.getElementById("no-phone");
@@ -73,18 +78,35 @@ function onMount() {
         StatusBarPhone,
         messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
     );
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]}`;
     StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
     StatusBar.getElementById("time").text = formatTo12hrTime(date);
 
+    // Side Menu.
     MenuScreen = document.getElementById("menu-screen");
-    MenuBtnTimetable = MenuScreen.getElementById("main-btn1");
-    MenuBtnTimetable.text = "Timetable";
-    MenuScreen.getElementById("main-label").text = "Switch Views >>";
-    MenuScreen.getElementById("sub-label").text = "Shortcuts";
-    displayElement(MenuScreen.getElementById("sub-itm1"), false);
-    displayElement(MenuScreen.getElementById("sub-itm2"), false);
-    displayElement(MenuScreen.getElementById("sub-itm3"), false);
+    MenuBtnWorkouts = MenuScreen.getElementById("main-btn1");
+    MenuScreen.getElementById("main-label").text = "Group Fitness";
+    MenuScreen.getElementById("sub-label").text = "Timetable Schedule";
+    MenuBtnWorkouts.text = "Workouts";
+    let date1 = new Date();
+    let date2 = new Date();
+    date1.setDate(date1.getDate() + 1);
+    date2.setDate(date2.getDate() + 2);
+    MenuBtn1 = MenuScreen.getElementById("sub-btn1");
+    MenuBtn2 = MenuScreen.getElementById("sub-btn2");
+    MenuBtn3 = MenuScreen.getElementById("sub-btn3");
+    MenuBtn1.text =
+        `${DAYS_SHORT[date.getDay()]} ` +
+        `${date.getDate()} ` +
+        `${MONTHS_SHORT[date.getMonth()]}`;
+    MenuBtn2.text =
+        `${DAYS_SHORT[date1.getDay()]} ` +
+        `${date1.getDate()} ` +
+        `${MONTHS_SHORT[date1.getMonth()]} `;
+    MenuBtn3.text =
+        `${DAYS_SHORT[date2.getDay()]} ` +
+        `${date2.getDate()} ` +
+        `${MONTHS_SHORT[date2.getMonth()]}`;
 
     DlgExercise = document.getElementById("exe-dialog");
     DlgBtnStart = DlgExercise.getElementById("btn-right");
@@ -100,7 +122,10 @@ function onMount() {
     clock.addEventListener("tick", onTickEvent);
     document.addEventListener("keypress", onKeyPressEvent);
     StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
-    MenuBtnTimetable.addEventListener("activate", onMenuBtnTimetableClicked);
+    MenuBtnWorkouts.addEventListener("activate", onMenuBtnWorkoutsClicked);
+    MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
+    MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
+    MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
     DlgBtnStart.addEventListener("activate", onDlgStartClicked);
     DlgBtnCancel.addEventListener("activate", onDlgCancelClicked);
 
@@ -145,12 +170,11 @@ function onStatusBtnMenuClicked() {
         setTimeout(() => {MenuScreen.style.display = "none";}, 300);
     }
 }
-function onMenuBtnTimetableClicked() {
+function onMenuBtnWorkoutsClicked() {
     LM_CLASSES.length = 0;
-    clock.removeEventListener("tick", onTickEvent);
-    inbox.removeEventListener("newfile", onDataRecieved);
-    MenuScreen.style.display = "none";
-    views.navigate("timetable");
+    MenuScreen.animate("disable");
+    setTimeout(() => {MenuScreen.style.display = "none";}, 300);
+    updateWorkoutsList();
 }
 function onTileClicked(tile) {
     let workout = tile.getElementById("text").text;
@@ -173,6 +197,27 @@ function onDlgCancelClicked() {
     debugLog("cancel dialog");
     DlgExercise.getElementById("mixedtext").text = "Workout";
     displayElement(DlgExercise, false);
+}
+function loadTimetable(date) {
+    LM_CLASSES.length = 0;
+    clock.removeEventListener("tick", onTickEvent);
+    inbox.removeEventListener("newfile", onDataRecieved);
+    MenuScreen.style.display = "none";
+    let settings = loadSettings();
+    settings.date = date.toISOString();
+    saveSettings(settings);
+    views.navigate("timetable");
+}
+function onMenuBtn1Clicked() {
+    loadTimetable(date);
+}
+function onMenuBtn2Clicked() {
+    let date = new Date(); date.setDate(date.getDate() + 1);
+    loadTimetable(date);
+}
+function onMenuBtn3Clicked() {
+    let date = new Date(); date.setDate(date.getDate() + 2);
+    loadTimetable(date);
 }
 
 // ----------------------------------------------------------------------------
@@ -237,9 +282,9 @@ function onMessageRecieved(evt) {
             break;
         case "lm-classesReply":
             if (evt.data.value) {
+                let clubName = evt.data.value;
                 debugLog(`${clubName} classes queued.`);
                 if (OnFileRecievedUpdateGui) {
-                    let clubName = evt.data.value;
                     displayLoader('Loading Classes...', clubName);
                 }
             } else {

@@ -21,7 +21,7 @@
             <rect x="98%-7" y="96%-8" width="10" height="10" fill="black" />
             <circle r="10" cx="98%-7" cy="96%-8" class="wrk-tile-cnr" />
             <arc id="ring" />
-            <image id="icon" href="./resources/images/drop.png" />
+            <image id="icon" href="./resources/images/exe_man_32px.png" />
             <text id="text" />
             <rect id="overlay">
                 <animate attributeName="opacity" begin="enable"

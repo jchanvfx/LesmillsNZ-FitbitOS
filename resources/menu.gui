@@ -36,6 +36,10 @@
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
+
+            <use href="#scrollview-item" height="25" class="side-menu-header">
+                <text id="footer-label" fill="fb-dark-gray" >LM Workouts - v0.0.3</text>
+            </use>
         </use>
     </section>
 </symbol>

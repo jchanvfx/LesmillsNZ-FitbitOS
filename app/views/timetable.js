@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
-import { debugLog, displayElement, saveSettings } from "../utils"
+import { debugLog, displayElement, saveSettings, loadSettings } from "../utils"
 
 const date = new Date();
 const date1 = new Date();
@@ -95,15 +95,23 @@ function onMount() {
 
     LoaderOverlay = document.getElementById("loading-screen");
     MessageOverlay = document.getElementById("message-screen");
+
+    let settings = loadSettings();
+    let currentDate = date;
+    if (settings.date !== undefined) {currentDate = new Date(settings.date);}
+
+    // Status Bar.
     StatusBar = document.getElementById("status-bar");
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
-    StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[currentDate.getDay()]}`;
+    StatusBar.getElementById("date2").text = `${currentDate.getDate()} ${MONTHS[currentDate.getMonth()]}`;
     StatusBar.getElementById("time").text = formatTo12hrTime(date);
     StatusBtnMenu = StatusBar.getElementById("click-l");
     StatusBtnRefresh = StatusBar.getElementById("click-r");
     StatusBarPhone = StatusBar.getElementById("no-phone");
+
+    // Side Menu.
     MenuScreen = document.getElementById("menu-screen");
-    MenuScreen.getElementById("main-label").text = "Switch View >>";
+    MenuScreen.getElementById("main-label").text = "Group Fitness";
     MenuScreen.getElementById("sub-label").text = "Timetable Schedule";
     MenuBtnWorkout = MenuScreen.getElementById("main-btn1");
     MenuBtnWorkout.text = "Workouts";
@@ -127,8 +135,8 @@ function onMount() {
     DlgBtnStart = DlgExercise.getElementById("btn-right");
     DlgBtnCancel = DlgExercise.getElementById("btn-left");
 
-    CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
     OnFileRecievedUpdateGui = false;
+    CurrentDayKey = `${currentDate.getDay()}${currentDate.getDate()}${currentDate.getMonth()}`;
 
     // initialize list.
     setTimetableDay(CurrentDayKey);
@@ -207,35 +215,23 @@ function onMenuBtnWorkoutClicked() {
     MenuScreen.style.display = "none";
     views.navigate("classes");
 }
-function onMenuBtn1Clicked() {
+function loadTimetable(curDate) {
     MenuScreen.style.display = "none";
     displayElement(StatusBtnRefresh, true);
     displayElement(StatusBar.getElementById("jump-to"), true);
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]} (Today)`;
-    StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
-    CurrentDayKey = `${date.getDay()}${date.getDate()}${date.getMonth()}`;
+    StatusBar.getElementById("date1").text = `${DAYS_SHORT[curDate.getDay()]}`;
+    StatusBar.getElementById("date2").text = `${curDate.getDate()} ${MONTHS[curDate.getMonth()]}`;
+    CurrentDayKey = `${curDate.getDay()}${curDate.getDate()}${curDate.getMonth()}`;
     setTimetableDay(CurrentDayKey);
-}
-function onMenuBtn2Clicked() {
-    MenuScreen.style.display = "none";
-    displayElement(StatusBtnRefresh, true);
-    displayElement(StatusBar.getElementById("jump-to"), true);
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date1.getDay()]} (Tomorrow)`;
-    StatusBar.getElementById("date2").text = `${date1.getDate()} ${MONTHS[date1.getMonth()]}`;
-    CurrentDayKey = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
-    setTimetableDay(CurrentDayKey);
-}
-function onMenuBtn3Clicked() {
-    MenuScreen.style.display = "none";
-    displayElement(StatusBtnRefresh, true);
-    displayElement(StatusBar.getElementById("jump-to"), true);
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date2.getDay()]}`;
-    StatusBar.getElementById("date2").text = `${date2.getDate()} ${MONTHS[date2.getMonth()]}`;
-    CurrentDayKey = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
-    setTimetableDay(CurrentDayKey);
-}
+};
+function onMenuBtn1Clicked() {loadTimetable(date);}
+function onMenuBtn2Clicked() {loadTimetable(date1);}
+function onMenuBtn3Clicked() {loadTimetable(date2);}
 function onTileClicked(tile) {
     let workout = tile.getElementById("text-title").text;
+    workout = workout.replace(/VIRTUAL|30|45/g, "");
+    workout = workout.replace(/^\s+|\s+$/g, '');
+
     DlgExercise.getElementById("mixedtext").text = workout;
     tile.animate("enable");
     tile.getElementById("overlay").animate("enable");

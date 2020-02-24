@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from "fs";
 const DEBUG = true;
 
 export function debugLog(value) {
@@ -17,7 +17,10 @@ export function saveSettings(data) {
     writeFileSync("LM_settings.cbor", data, "cbor");
 };
 export function loadSettings(data) {
-    return readFileSync("LM_settings.cbor", "cbor");
+    if (existsSync("/private/data/LM_settings.cbor")) {
+        return readFileSync("LM_settings.cbor", "cbor");
+    }
+    return {};
 }
 
 /** @description Formats the time spent in milliseconds into mm:ss or hh:mm:ss.

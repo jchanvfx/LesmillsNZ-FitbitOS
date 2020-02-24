@@ -24,6 +24,8 @@ let BtnToggle;
 let DlgExercise;
 let DlgBtnEnd;
 let DlgBtnCancel;
+let DlgPopup;
+let DlgPopupBtn;
 
 // screen initialize.
 let views;
@@ -54,6 +56,8 @@ function onMount() {
     BottomText = document.getElementById("bottom-text");
     BtnFinish = document.getElementById("btn-finish");
     BtnToggle = document.getElementById("btn-toggle");
+    DlgPopup = document.getElementById("exe-popup");
+    DlgPopupBtn = DlgPopup.getElementById("btn-done");
     DlgExercise = document.getElementById("exe-dialog");
     let mixedtext = DlgExercise.getElementById("mixedtext");
     let bodytext = mixedtext.getElementById("copy");
@@ -68,12 +72,13 @@ function onMount() {
     // connect up add the events.
     // ----------------------------------------------------------------------------
     clock.addEventListener("tick", onTickEvent);
-    display.addEventListener("change", onChangeEvent);
+    display.addEventListener("change", onDisplayChangeEvent);
     document.addEventListener("keypress", onKeyPressEvent);
     BtnFinish.addEventListener("activate", onBtnFinishClicked);
     BtnToggle.addEventListener("activate", onBtnToggleClicked);
     DlgBtnEnd.addEventListener("activate", onDlgBtnEnd)
     DlgBtnCancel.addEventListener("activate", onDlgBtnCancel);
+    DlgPopupBtn.addEventListener("activate", () => {me.exit();});
 
     // START THE EXERCISE TRACKING.
     // ----------------------------------------------------------------------------
@@ -115,8 +120,18 @@ function onDlgBtnEnd() {
     exercise.stop();
     clock.removeEventListener("tick", onTickEvent);
     display.removeEventListener("change", onDisplayChangeEvent);
-    // TODO prompt results dlg.
-    me.exit();
+
+    let workout = DlgPopup.getElementById("workout");
+    let itm1 = DlgPopup.getElementById("itm1");
+    let itm2 = DlgPopup.getElementById("itm2");
+    let itm3 = DlgPopup.getElementById("itm3");
+    let itm4 = DlgPopup.getElementById("itm4");
+    workout.getElementById("text").text = WorkoutName;
+    itm1.getElementById("text").text = `${formatActiveTime(exercise.stats.activeTime)}`;
+    itm2.getElementById("text").text = `${exercise.stats.heartRate.average} bpm avg`;
+    itm3.getElementById("text").text = `${exercise.stats.heartRate.max} bpm max`;
+    itm4.getElementById("text").text = `${formatCalories(exercise.stats.calories)} cals`;
+    displayElement(DlgPopup, true);
 }
 function onBtnFinishClicked() {
     debugLog("finished clicked");
@@ -142,14 +157,12 @@ function setToggleBtnIcon(icon) {
 }
 function pauseWorkout() {
     debugLog("paused workout");
-    // BottomText.getElementById("anim").repeatCount = "indefinite";
     BottomText.animate("enable");
     setToggleBtnIcon(ICON_PLAY);
     exercise.pause();
 }
 function resumeWorkout() {
     debugLog("resume workout");
-    // BottomText.getElementById("anim").repeatCount = 1;
     BottomText.animate("disable");
     setToggleBtnIcon(ICON_PAUSE);
     exercise.resume();

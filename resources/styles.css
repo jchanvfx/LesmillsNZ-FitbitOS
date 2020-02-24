@@ -128,24 +128,24 @@ text {
     y: 0;
     width: 100%-24;
     height: 100%;
-    fill: #3e4504;
+    fill: "fb-extra-dark-gray";
 }
 #main-itm-label.side-menu-header circle {
     r: 12;
     cy: 12;
-    fill: #3e4504;
+    fill: "fb-extra-dark-gray";
 }
 #sub-itm-label.side-menu-header rect {
     x: 12;
     y: 0;
     width: 100%-24;
     height: 100%;
-    fill: #0f4740;
+    fill: "fb-extra-dark-gray";
 }
 #sub-itm-label.side-menu-header circle {
     r: 12;
     cy: 12;
-    fill: #0f4740;
+    fill: "fb-extra-dark-gray";
 }
 .side-menu-header text {
     x: 15;
