@@ -108,7 +108,13 @@ function onTickEvent(evt) {
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
         evt.preventDefault();
-        onBtnFinishClicked()
+        if (exercise.state !== "paused") {pauseWorkout();}
+        if (DlgPopup.style.display === "inline") {
+            me.exit();}
+        else if (DlgExercise.style.display === "inline") {
+            onDlgBtnCancel();}
+        else {
+            onBtnFinishClicked();}
     }
 }
 function onDlgBtnCancel() {
@@ -135,18 +141,11 @@ function onDlgBtnEnd() {
 }
 function onBtnFinishClicked() {
     debugLog("finished clicked");
-    if (DlgExercise.style.display === "inline") {return;}
     displayElement(DlgExercise, true);
 }
 function onBtnToggleClicked() {
     debugLog("toggle clicked");
-    if (exercise.state === "started") {
-        displayElement(BtnFinish, true);
-        pauseWorkout();
-    } else {
-        displayElement(BtnFinish, false);
-        resumeWorkout();
-    }
+    (exercise.state === "started") ? pauseWorkout() : resumeWorkout();
 }
 
 // ----------------------------------------------------------------------------
@@ -160,12 +159,14 @@ function pauseWorkout() {
     debugLog("paused workout");
     BottomText.animate("enable");
     setToggleBtnIcon(ICON_PLAY);
+    displayElement(BtnFinish, true);
     exercise.pause();
 }
 function resumeWorkout() {
     debugLog("resume workout");
     BottomText.animate("disable");
     setToggleBtnIcon(ICON_PAUSE);
+    displayElement(BtnFinish, false);
     exercise.resume();
 }
 function getBPM() {
