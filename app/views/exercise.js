@@ -120,6 +120,9 @@ function onDlgBtnEnd() {
     exercise.stop();
     clock.removeEventListener("tick", onTickEvent);
     display.removeEventListener("change", onDisplayChangeEvent);
+  
+    let hrm_avg = exercise.stats.heartRate.average || "--";
+    let hrm_max = exercise.stats.heartRate.max || "--";
 
     let workout = DlgPopup.getElementById("workout");
     let itm1 = DlgPopup.getElementById("itm1");
@@ -128,8 +131,8 @@ function onDlgBtnEnd() {
     let itm4 = DlgPopup.getElementById("itm4");
     workout.getElementById("text").text = WorkoutName;
     itm1.getElementById("text").text = `${formatActiveTime(exercise.stats.activeTime)}`;
-    itm2.getElementById("text").text = `${exercise.stats.heartRate.average} bpm avg`;
-    itm3.getElementById("text").text = `${exercise.stats.heartRate.max} bpm max`;
+    itm2.getElementById("text").text = `${hrm_avg} bpm avg`;
+    itm3.getElementById("text").text = `${hrm_max} bpm max`;
     itm4.getElementById("text").text = `${formatCalories(exercise.stats.calories)} cals`;
     displayElement(DlgPopup, true);
 }
@@ -168,10 +171,9 @@ function resumeWorkout() {
     exercise.resume();
 }
 function getBPM() {
-    if (!BODY_SENSOR.present) {
-        return "--"; // off-wrist
-    }
-    return HRM_SENSOR.heartRate;
+    // off-wrist
+    if (!BODY_SENSOR.present) {return "--";}
+    return HRM_SENSOR.heartRate || "--";
 }
 function refresh() {
     if (exercise && exercise.stats) {
