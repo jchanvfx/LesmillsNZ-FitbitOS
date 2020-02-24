@@ -24,6 +24,8 @@ let BtnToggle;
 let DlgExercise;
 let DlgBtnEnd;
 let DlgBtnCancel;
+let DlgPopup;
+let DlgPopupBtn;
 
 // screen initialize.
 let views;
@@ -54,6 +56,8 @@ function onMount() {
     BottomText = document.getElementById("bottom-text");
     BtnFinish = document.getElementById("btn-finish");
     BtnToggle = document.getElementById("btn-toggle");
+    DlgPopup = document.getElementById("exe-popup");
+    DlgPopupBtn = DlgPopup.getElementById("btn-done");
     DlgExercise = document.getElementById("exe-dialog");
     let mixedtext = DlgExercise.getElementById("mixedtext");
     let bodytext = mixedtext.getElementById("copy");
@@ -74,6 +78,7 @@ function onMount() {
     BtnToggle.addEventListener("activate", onBtnToggleClicked);
     DlgBtnEnd.addEventListener("activate", onDlgBtnEnd)
     DlgBtnCancel.addEventListener("activate", onDlgBtnCancel);
+    DlgPopupBtn.addEventListener("activate", () => {me.exit();});
 
     // START THE EXERCISE TRACKING.
     // ----------------------------------------------------------------------------
@@ -116,16 +121,11 @@ function onDlgBtnEnd() {
     clock.removeEventListener("tick", onTickEvent);
     display.removeEventListener("change", onDisplayChangeEvent);
 
-    // TODO prompt results dlg. ==========================================================
-    debugLog("---------------------------");
-    debugLog(`Duration ${formatActiveTime(exercise.stats.activeTime)}`);
-    debugLog(`Cals: ${formatCalories(exercise.stats.calories)}`);
-    debugLog(`Bpm ${exercise.stats.heartRate.average}`);
-    debugLog(`Bpm Max ${exercise.stats.heartRate.max}`);
-    debugLog("---------------------------");
-
-
-    me.exit();
+    DlgPopup.getElementById("text1").text = `Duration: ${formatActiveTime(exercise.stats.activeTime)}`;
+    DlgPopup.getElementById("text2").text = `bpm avg: ${exercise.stats.heartRate.average}`;
+    DlgPopup.getElementById("text3").text = `bpm max: ${exercise.stats.heartRate.max}`;
+    DlgPopup.getElementById("text4").text = `calories: ${formatCalories(exercise.stats.calories)}`;
+    displayElement(DlgPopup, true);
 }
 function onBtnFinishClicked() {
     debugLog("finished clicked");

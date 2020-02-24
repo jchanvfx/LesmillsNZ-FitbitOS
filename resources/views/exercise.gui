@@ -1,4 +1,18 @@
 <svg id="view-exercise" viewport-fill="black">
+    <defs>
+        <symbol id="exercise-popup">
+            <rect width="100%" height="100%" fill="black" />
+            <text x="5" y="45" font-size="45" fill="fb-peach">Nice Workout!</text>
+            <text id="text1" x="5" y="$" font-size="25" text-length="24" />
+            <text id="text2" x="5" y="$" font-size="25" text-length="24" />
+            <text id="text3" x="5" y="$" font-size="25" text-length="24" />
+            <text id="text4" x="5" y="$" font-size="25" text-length="24" />
+            <use id="btn-done" href="#square-button" y="100%-60" height="60" fill="fb-aqua">
+                <set href="#text" attributeName="text-buffer" to="Done" />
+                <set href="#text" attributeName="text-length" to="4" />
+            </use>
+        </symbol>
+    </defs>
     <text
         id="time"
         x="5" y="35"
@@ -81,6 +95,6 @@
     <!-- Exercise Dialog -->
     <use id="exe-dialog" href="#exercise-dlg" display="none"/>
     <!-- Finish Screen -->
-    <!-- <use id="popup" href="#subview-popup" display="none" /> -->
+    <use id="exe-popup" href="#exercise-popup" display="none" />
 </svg>
 
