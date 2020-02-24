@@ -135,6 +135,7 @@ function onDlgBtnEnd() {
 }
 function onBtnFinishClicked() {
     debugLog("finished clicked");
+    if (DlgExercise.style.display === "inline") {return;}
     displayElement(DlgExercise, true);
 }
 function onBtnToggleClicked() {
