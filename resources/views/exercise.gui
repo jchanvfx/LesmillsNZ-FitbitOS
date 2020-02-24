@@ -18,7 +18,7 @@
         x="50%" y="50%"
         font-size="65"
         text-anchor="middle"
-        text-length="8">--:--:--</text>
+        text-length="8">--</text>
 
     <rect x="10" y="55%" width="100%-20" height="2" fill="fb-dark-gray" />
     <rect x="50%-1" y="55%" width="2" height="20" fill="fb-dark-gray" />
@@ -45,7 +45,7 @@
     <text
         id="bottom-text"
         x="5" y="95%"
-        font-size="30"
+        font-size="35"
         text-anchor="start"
         opacity="0"
         fill="fb-yellow">paused
@@ -54,8 +54,10 @@
             attributeName="opacity"
             begin="enable"
             end="disable"
-            from="0" to="1"
+            from="0"
+            to="1"
             dur="0.8"
+            repeatCount="indefinite"
             final="restore"/>
     </text>
 

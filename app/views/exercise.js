@@ -68,7 +68,7 @@ function onMount() {
     // connect up add the events.
     // ----------------------------------------------------------------------------
     clock.addEventListener("tick", onTickEvent);
-    display.addEventListener("change", onChangeEvent);
+    display.addEventListener("change", onDisplayChangeEvent);
     document.addEventListener("keypress", onKeyPressEvent);
     BtnFinish.addEventListener("activate", onBtnFinishClicked);
     BtnToggle.addEventListener("activate", onBtnToggleClicked);
@@ -115,7 +115,16 @@ function onDlgBtnEnd() {
     exercise.stop();
     clock.removeEventListener("tick", onTickEvent);
     display.removeEventListener("change", onDisplayChangeEvent);
-    // TODO prompt results dlg.
+
+    // TODO prompt results dlg. ==========================================================
+    debugLog("---------------------------");
+    debugLog(`Duration ${formatActiveTime(exercise.stats.activeTime)}`);
+    debugLog(`Cals: ${formatCalories(exercise.stats.calories)}`);
+    debugLog(`Bpm ${exercise.stats.heartRate.average}`);
+    debugLog(`Bpm Max ${exercise.stats.heartRate.max}`);
+    debugLog("---------------------------");
+
+
     me.exit();
 }
 function onBtnFinishClicked() {
@@ -142,14 +151,12 @@ function setToggleBtnIcon(icon) {
 }
 function pauseWorkout() {
     debugLog("paused workout");
-    // BottomText.getElementById("anim").repeatCount = "indefinite";
     BottomText.animate("enable");
     setToggleBtnIcon(ICON_PLAY);
     exercise.pause();
 }
 function resumeWorkout() {
     debugLog("resume workout");
-    // BottomText.getElementById("anim").repeatCount = 1;
     BottomText.animate("disable");
     setToggleBtnIcon(ICON_PAUSE);
     exercise.resume();
