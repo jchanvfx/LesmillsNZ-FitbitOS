@@ -59,7 +59,7 @@
     <text
         id="bottom-text"
         x="5" y="95%"
-        font-size="35"
+        font-size="45"
         text-anchor="start"
         opacity="0"
         fill="fb-yellow">paused
