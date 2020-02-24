@@ -53,6 +53,7 @@
             id="anim"
             attributeName="opacity"
             begin="enable"
+            end="disable"
             from="0" to="1"
             dur="0.8"
             final="restore"/>
