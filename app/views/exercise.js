@@ -38,7 +38,7 @@ export function init(_views) {
 
 // entry point when this view is mounted, setup elements and events.
 function onMount() {
-    clock.granularity = "seconds";
+    clock.granularity = "minutes";
 
     if (me.permissions.granted("access_heart_rate") && me.permissions.granted("access_activity")) {
         BODY_SENSOR = new BodyPresenceSensor();
@@ -51,6 +51,7 @@ function onMount() {
     document.getElementById("workout-title").text = WorkoutName;
 
     LabelTime = document.getElementById("time");
+    LabelTime.text = formatTo12hrTime(new Date());
     LabelDuration = document.getElementById("duration");
     LabelHRM = document.getElementById("hrm-text");
     LabelCALS = document.getElementById("cals-text");
@@ -83,29 +84,27 @@ function onMount() {
 
     // START THE EXERCISE TRACKING.
     // ----------------------------------------------------------------------------
-    vibration.start("nudge");
-    setToggleBtnIcon(ICON_PAUSE);
-    exercise.start(WorkoutName);
-    onDisplayChangeEvent();
+    startWorkout(WorkoutName);
 }
 function onDisplayChangeEvent() {
     if (display.on) {
+        clock.granularity = "minutes";
         BODY_SENSOR.start();
         HRM_SENSOR.start();
-        refresh();
-        LabelTime.text = formatTo12hrTime(new Date());
-        clock.granularity = "seconds";
+        msec = Math.floor(exercise.stats.activeTime / 100) % 10;
+        duration = formatActiveTime(exercise.stats.activeTime);
+        startMStimer();
     } else {
+        clock.granularity = "off";
+        stopMStimer();
         BODY_SENSOR.stop();
         HRM_SENSOR.stop();
         LabelHRM.text = "--";
         LabelCALS.text = "--";
-        clock.granularity = "off";
     }
 }
 function onTickEvent(evt) {
     LabelTime.text = formatTo12hrTime(evt.date);
-    if (display.on) {refresh();}
 }
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
@@ -125,6 +124,8 @@ function onDlgBtnCancel() {
 function onDlgBtnEnd() {
     debugLog("dlg end");
     exercise.stop();
+    stopMStimer();
+
     clock.removeEventListener("tick", onTickEvent);
     display.removeEventListener("change", onDisplayChangeEvent);
 
@@ -157,12 +158,60 @@ function setToggleBtnIcon(icon) {
     BtnToggle.getElementById("combo-button-icon").href = iconPath;
     BtnToggle.getElementById("combo-button-icon-press").href = iconPath;
 }
+
+function getBPM() {
+    // off-wrist
+    if (!BODY_SENSOR.present) {return "--";}
+    return HRM_SENSOR.heartRate || "--";
+}
+
+//  ----------------------------------------------------------------------------
+
+let duration;
+let msec = 0;
+function msecTimer() {
+    // msec trigger.
+    LabelDuration.text = `${duration}.${msec}`;
+    if (msec < 9) {msec+=1;}
+    else {
+        msec=0;
+        // seconds trigger.
+        duration = formatActiveTime(exercise.stats.activeTime);
+        LabelHRM.text = getBPM();
+        LabelCALS.text = formatCalories(exercise.stats.calories);
+    };
+}
+
+let msState = false;
+let msInterval;
+function startMStimer() {
+    debugLog("msec timer started");
+    if (!msState) {
+        msInterval = setInterval(msecTimer, 100); msState=true;
+    }
+}
+function stopMStimer() {
+    debugLog("msec timer stoped");
+    clearInterval(msInterval); msState=false;
+}
+
+function startWorkout(workout) {
+    BODY_SENSOR.start();
+    HRM_SENSOR.start();
+    setToggleBtnIcon(ICON_PAUSE);
+    exercise.start(workout);
+    msec = Math.floor(exercise.stats.activeTime / 100) % 10;
+    duration = formatActiveTime(exercise.stats.activeTime);
+    startMStimer();
+    vibration.start("nudge");
+}
 function pauseWorkout() {
     debugLog("paused workout");
     BottomText.animate("enable");
     setToggleBtnIcon(ICON_PLAY);
     displayElement(BtnFinish, true);
     exercise.pause();
+    stopMStimer();
     vibration.start("bump");
 }
 function resumeWorkout() {
@@ -171,17 +220,8 @@ function resumeWorkout() {
     setToggleBtnIcon(ICON_PAUSE);
     displayElement(BtnFinish, false);
     exercise.resume();
+    msec = Math.floor(exercise.stats.activeTime / 100) % 10;
+    duration = formatActiveTime(exercise.stats.activeTime);
+    startMStimer();
     vibration.start("bump");
-}
-function getBPM() {
-    // off-wrist
-    if (!BODY_SENSOR.present) {return "--";}
-    return HRM_SENSOR.heartRate || "--";
-}
-function refresh() {
-    if (exercise && exercise.stats) {
-        LabelDuration.text = formatActiveTime(exercise.stats.activeTime);
-        LabelHRM.text = getBPM();
-        LabelCALS.text = formatCalories(exercise.stats.calories);
-    }
 }

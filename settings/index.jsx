@@ -29,6 +29,16 @@ function settingsComponent(props) {
                 }
             />
 
+            {/* <Select
+                title="Default Startup Screen"
+                label={`Selection`}
+                settingsKey="startupScreen"
+                options={[
+                    {name:"Workouts"},
+                    {name:"Timetable"},
+                ]}
+            /> */}
+
         </Page>
     );
 }

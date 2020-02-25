@@ -48,13 +48,13 @@
         font-size="26"
         text-anchor="middle"
         fill="teal"
-        text-length="24">WORKOUT</text>
+        text-length="24" />
     <text
         id="duration"
         x="50%" y="50%"
         font-size="65"
         text-anchor="middle"
-        text-length="8">--</text>
+        text-length="8" />
 
     <rect x="10" y="55%" width="100%-20" height="2" fill="fb-dark-gray" />
     <rect x="50%-1" y="55%" width="2" height="20" fill="fb-dark-gray" />
