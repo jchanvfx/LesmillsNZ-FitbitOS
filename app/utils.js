@@ -28,7 +28,6 @@ export function loadSettings(data) {
  * @return {string}
  */
 export function formatActiveTime(activeTime) {
-    let millisecs = activeTime / 10;
     let seconds = (activeTime / 1000).toFixed(0);
     let minutes = Math.floor(seconds / 60);
     let hours;
