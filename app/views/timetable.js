@@ -230,7 +230,7 @@ function onMenuBtn3Clicked() {loadTimetable(date2);}
 function onTileClicked(tile) {
     let workout = tile.getElementById("text-title").text;
     workout = workout.replace(/VIRTUAL|30|45/g, "");
-    workout = workout.replace(/^\s+|\s+$/g, '');
+    workout = workout.replace(/^\s+|\s+$/g, "");
 
     DlgExercise.getElementById("mixedtext").text = workout;
     tile.animate("enable");
