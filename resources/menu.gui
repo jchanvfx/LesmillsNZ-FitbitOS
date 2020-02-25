@@ -38,7 +38,7 @@
             </use>
 
             <use href="#scrollview-item" height="25" class="side-menu-header">
-                <text id="footer-label" fill="fb-dark-gray" >LM Workouts - v0.0.3</text>
+                <text id="footer-label" fill="fb-dark-gray" >Version - 0.0.3</text>
             </use>
         </use>
     </section>

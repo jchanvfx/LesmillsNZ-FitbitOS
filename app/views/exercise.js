@@ -108,10 +108,9 @@ function onTickEvent(evt) {
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
         evt.preventDefault();
-        if (exercise.state !== "paused") {pauseWorkout();}
-        if (DlgPopup.style.display === "inline") {
-            me.exit();}
-        else if (DlgExercise.style.display === "inline") {
+        if (DlgPopup.style.display === "inline") {me.exit();}
+        if (exercise.state === "started") {pauseWorkout();}
+        if (DlgExercise.style.display === "inline") {
             onDlgBtnCancel();}
         else {
             onBtnFinishClicked();}
