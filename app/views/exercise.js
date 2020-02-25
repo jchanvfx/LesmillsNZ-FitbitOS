@@ -1,6 +1,7 @@
 import clock from "clock";
 import exercise from "exercise";
 import document from "document";
+import { vibration } from "haptics";
 import { BodyPresenceSensor } from "body-presence";
 import { HeartRateSensor } from "heart-rate";
 import { me } from "appbit";
@@ -82,6 +83,7 @@ function onMount() {
 
     // START THE EXERCISE TRACKING.
     // ----------------------------------------------------------------------------
+    vibration.start("nudge");
     setToggleBtnIcon(ICON_PAUSE);
     exercise.start(WorkoutName);
     onDisplayChangeEvent();
@@ -140,6 +142,7 @@ function onDlgBtnEnd() {
 }
 function onBtnFinishClicked() {
     debugLog("finished clicked");
+    vibration.start("nudge");
     displayElement(DlgExercise, true);
 }
 function onBtnToggleClicked() {
@@ -160,6 +163,7 @@ function pauseWorkout() {
     setToggleBtnIcon(ICON_PLAY);
     displayElement(BtnFinish, true);
     exercise.pause();
+    vibration.start("bump");
 }
 function resumeWorkout() {
     debugLog("resume workout");
@@ -167,6 +171,7 @@ function resumeWorkout() {
     setToggleBtnIcon(ICON_PAUSE);
     displayElement(BtnFinish, false);
     exercise.resume();
+    vibration.start("bump");
 }
 function getBPM() {
     // off-wrist

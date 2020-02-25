@@ -1,7 +1,7 @@
 function settingsComponent(props) {
     return (
         <Page>
-            <Section title={<Text bold align="center">Timetable Settings</Text>}/>
+            <Section title={<Text bold align="center">App Settings</Text>}/>
             <Select
                 title="Club Location"
                 label={`Selection`}
@@ -23,8 +23,8 @@ function settingsComponent(props) {
                 renderItem={
                     (option) =>
                     <TextImageRow
-                    label={option.name}
-                    sublabel={option.addr}
+                        label={option.name}
+                        sublabel={option.addr}
                     />
                 }
             />
