@@ -31,7 +31,7 @@
             <arc id="arc1" />
         </g>
         <text id="text" >loading...</text>
-        <text id="sub-text"></text>
+        <text id="sub-text" />
     </symbol>
     <!-- Status Bar -->
     <symbol id="lm-status-bar">
