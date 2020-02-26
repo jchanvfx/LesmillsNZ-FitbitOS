@@ -95,7 +95,7 @@ function onDisplayChangeEvent() {
         HRM_SENSOR.start();
         msec = Math.floor(exercise.stats.activeTime / 100) % 10;
         LabelDuration.text = `${formatActiveTime(exercise.stats.activeTime)}.`;
-        startMStimer();
+        if (exercise.state === "started") {startMStimer();}
     } else {
         clock.granularity = "off";
         stopMStimer();
@@ -127,7 +127,6 @@ function onDlgBtnEnd() {
     debugLog("dlg end");
     exercise.stop();
     stopMStimer();
-
     clock.removeEventListener("tick", onTickEvent);
     display.removeEventListener("change", onDisplayChangeEvent);
 

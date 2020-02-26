@@ -63,7 +63,14 @@
     fill: "white";
     font-size: 26;
     font-family: System-Regular;
-    text-length: 16;
+    text-length: 14;
+}
+#workout-tile-item #mixedtext{
+    x: 80;
+    width: 100%-80;
+    height:100%;
+    font-family: System-Regular;
+    text-length: 24;
 }
 #workout-tile-item image#icon{
     width: 30;
