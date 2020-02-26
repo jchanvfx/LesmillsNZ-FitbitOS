@@ -3,10 +3,10 @@
         x="50%"
         y="100%-46"
         font-family="System-Bold"
-        fill="#f83c40"
+        fill="fb-aqua"
         font-size="20"
         font-weight="bold"
-        text-anchor="middle">v0.0.4</text>
+        text-anchor="middle">v0.0.4-beta</text>
     <text
         x="50%"
         y="100%-23"
