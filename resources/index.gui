@@ -1,20 +1,12 @@
 <svg viewport-fill="black">
     <text
         x="50%"
-        y="40%+10"
-        font-family="System-Regular"
-        fill="slategray"
-        font-size="25"
-        font-weight="bold"
-        text-anchor="middle">Loading Workouts...</text>
-    <text
-        x="50%"
         y="100%-46"
         font-family="System-Bold"
         fill="fb-aqua"
         font-size="20"
         font-weight="bold"
-        text-anchor="middle">Version 0.0.4</text>
+        text-anchor="middle">v0.0.4-beta</text>
     <text
         x="50%"
         y="100%-23"

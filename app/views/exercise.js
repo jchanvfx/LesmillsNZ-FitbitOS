@@ -17,6 +17,7 @@ let HRM_SENSOR;
 let WorkoutName;
 let LabelTime;
 let LabelDuration;
+let LabelDurationMsec;
 let LabelHRM;
 let LabelCALS;
 let BottomText;
@@ -53,6 +54,7 @@ function onMount() {
     LabelTime = document.getElementById("time");
     LabelTime.text = formatTo12hrTime(new Date());
     LabelDuration = document.getElementById("duration");
+    LabelDurationMsec = document.getElementById("duration-msec");
     LabelHRM = document.getElementById("hrm-text");
     LabelCALS = document.getElementById("cals-text");
     BottomText = document.getElementById("bottom-text");
@@ -92,8 +94,8 @@ function onDisplayChangeEvent() {
         BODY_SENSOR.start();
         HRM_SENSOR.start();
         msec = Math.floor(exercise.stats.activeTime / 100) % 10;
-        duration = formatActiveTime(exercise.stats.activeTime);
-        startMStimer();
+        LabelDuration.text = `${formatActiveTime(exercise.stats.activeTime)}.`;
+        if (exercise.state === "started") {startMStimer();}
     } else {
         clock.granularity = "off";
         stopMStimer();
@@ -125,7 +127,6 @@ function onDlgBtnEnd() {
     debugLog("dlg end");
     exercise.stop();
     stopMStimer();
-
     clock.removeEventListener("tick", onTickEvent);
     display.removeEventListener("change", onDisplayChangeEvent);
 
@@ -167,18 +168,17 @@ function getBPM() {
 
 //  ----------------------------------------------------------------------------
 
-let duration;
 let msec = 0;
 function msecTimer() {
     // msec trigger.
-    LabelDuration.text = `${duration}.${msec}`;
+    LabelDurationMsec.text = `${msec}`;
     if (msec < 9) {msec+=1;}
     else {
         msec=0;
         // seconds trigger.
-        duration = formatActiveTime(exercise.stats.activeTime);
         LabelHRM.text = getBPM();
         LabelCALS.text = formatCalories(exercise.stats.calories);
+        LabelDuration.text = `${formatActiveTime(exercise.stats.activeTime)}.`;
     };
 }
 
@@ -201,7 +201,8 @@ function startWorkout(workout) {
     setToggleBtnIcon(ICON_PAUSE);
     exercise.start(workout);
     msec = Math.floor(exercise.stats.activeTime / 100) % 10;
-    duration = formatActiveTime(exercise.stats.activeTime);
+
+    LabelDuration.text = `${formatActiveTime(exercise.stats.activeTime)}.`;
     startMStimer();
     vibration.start("nudge");
 }
@@ -221,7 +222,7 @@ function resumeWorkout() {
     displayElement(BtnFinish, false);
     exercise.resume();
     msec = Math.floor(exercise.stats.activeTime / 100) % 10;
-    duration = formatActiveTime(exercise.stats.activeTime);
+    LabelDuration.text = `${formatActiveTime(exercise.stats.activeTime)}.`;
     startMStimer();
     vibration.start("bump");
 }

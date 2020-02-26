@@ -55,7 +55,20 @@ function onMount() {
         },
         configureTile: function(tile, info) {
             if (info.type == "workouts-pool") {
-                tile.getElementById("text").text = info.value.toUpperCase();
+                let workout = info.value.toUpperCase();
+                let mixedtext = tile.getElementById("mixedtext");
+                if (workout.length > 13) {
+                    mixedtext.getElementById("copy").text = workout;
+                    displayElement(mixedtext, true);
+                    tile.getElementById("text").text = "";
+                    displayElement(tile.getElementById("text"), false);
+                }
+                else {
+                    tile.getElementById("text").text = workout;
+                    displayElement(tile.getElementById("text"), true);
+                    mixedtext.getElementById("copy").text = "";
+                    displayElement(mixedtext, false);
+                }
                 tile.getElementById("ring").style.fill = info.color;
                 let clickPad = tile.getElementById("click-pad");
                 clickPad.onclick = evt => {onTileClicked(tile);}

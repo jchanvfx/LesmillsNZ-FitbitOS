@@ -23,6 +23,9 @@
             <arc id="ring" />
             <image id="icon" href="./resources/images/exe_man_32px.png" />
             <text id="text" />
+            <use id="mixedtext" href="#mixed-text-left-mid" >
+                <set href="#copy/text" attributeName="text-length" to="24"/>
+            </use>
             <rect id="overlay">
                 <animate attributeName="opacity" begin="enable"
                          from="1" to="0" dur="0.3" final="restore" />
