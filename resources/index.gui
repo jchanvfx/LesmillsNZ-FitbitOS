@@ -1,4 +1,20 @@
 <svg viewport-fill="black">
+
+    <image
+        x="50%-125"
+        y="50%-20"
+        width="250"
+        height="40"
+        href="./resources/images/lm_header.png" />
+    <text
+        x="50%"
+        y="$+18"
+        font-family="System-Regular"
+        fill="fb-light-gray"
+        font-size="18"
+        font-weight="bold"
+        text-anchor="middle">LOADING...</text>
+
     <text
         x="50%"
         y="100%-46"
