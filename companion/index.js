@@ -79,12 +79,22 @@ function fitnessClassesCallback(data) {
 
 // settings changed callback
 settingsStorage.onchange = (evt) => {
-    let selectedClub = JSON.parse(evt.newValue).values[0];
-    let clubID = selectedClub.value;
-    let clubName = selectedClub.name;
-    sendValue("lm-clubChanged", clubName);
-    lesMills.fetchTimetableData(clubID, timetableCallback);
-    lesMills.fetchClasses(clubID, fitnessClassesCallback);
+    switch (evt.key) {
+        case "clubID":
+            let selectedClub = JSON.parse(evt.newValue).values[0];
+            let clubID = selectedClub.value;
+            let clubName = selectedClub.name;
+            sendValue("lm-clubChanged", clubName);
+            lesMills.fetchTimetableData(clubID, timetableCallback);
+            lesMills.fetchClasses(clubID, fitnessClassesCallback);
+            break;
+        case "homeScreen":
+            let selectedScreen = JSON.parse(evt.newValue).values[0];
+            sendValue("lm-defaultHome", {value: selectedScreen.name});
+            break;
+        default:
+            return;
+    }
 }
 // message is received
 messaging.peerSocket.onmessage = (evt) => {

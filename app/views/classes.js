@@ -5,10 +5,8 @@ import { me } from "appbit";
 import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, readFileSync, statSync } from "fs";
-import { DAYS_SHORT, MONTHS, MONTHS_SHORT, formatTo12hrTime } from "../datelib"
+import { DAYS_SHORT, MONTHS, MONTHS_SHORT, formatTo12hrTime, date } from "../datelib"
 import { debugLog, displayElement, saveSettings, loadSettings } from "../utils"
-
-const date = new Date();
 
 const LM_CLASSES_FILE = "LM_classes.cbor";
 let LM_CLASSES = [];
@@ -312,6 +310,12 @@ function onMessageRecieved(evt) {
                 "Failed to retrive group fitness workouts from database.",
                 "No Classes"
             );
+            break;
+        case "lm-defaultHome":
+            let settings = loadSettings();
+            settings.homeScreen = evt.data.value;
+            saveSettings(settings);
+            debugLog(`default home screen: ${settings.homeScreen}`);
             break;
         default:
             return;

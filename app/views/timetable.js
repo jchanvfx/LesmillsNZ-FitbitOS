@@ -5,14 +5,11 @@ import { me } from "appbit";
 import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
-import { DAYS_SHORT, MONTHS_SHORT, MONTHS, formatTo12hrTime } from "../datelib"
 import { debugLog, displayElement, saveSettings, loadSettings } from "../utils"
-
-const date = new Date();
-const date1 = new Date();
-const date2 = new Date();
-date1.setDate(date1.getDate() + 1);
-date2.setDate(date2.getDate() + 2);
+import {
+    DAYS_SHORT, MONTHS_SHORT, MONTHS,
+    date, date1, date2, formatTo12hrTime
+} from "../datelib"
 
 const LM_PREFIX = "LM_dat";
 let LM_TIMETABLE = [];
@@ -331,6 +328,12 @@ function onMessageRecieved(evt) {
             if (LoaderOverlay.style.display === 'inline') {
                 displayLoader(true, "Waiting for Data...", clubName);
             }
+            break;
+        case "lm-defaultHome":
+            let settings = loadSettings();
+            settings.homeScreen = evt.data.value;
+            saveSettings(settings);
+            debugLog(`default home screen: ${settings.homeScreen}`);
             break;
         default:
             return;
