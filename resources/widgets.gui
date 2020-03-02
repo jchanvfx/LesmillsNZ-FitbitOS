@@ -13,8 +13,8 @@
     <link rel="stylesheet" href="/mnt/sysassets/widgets/dynamic_textarea.css"/>
     <link rel="import" href="/mnt/sysassets/widgets/dynamic_textarea.gui"/>
     <link rel="import" href="/mnt/sysassets/widgets/mixed_text_widget.gui"/>
-    <!-- Loader Widget -->
-    <symbol id="loader-overlay" focusable="false">
+    <!-- Loader Screen -->
+    <symbol id="loading-screen" focusable="false">
         <gradientRect/>
         <arc id="arc3" />
         <arc id="arc2" />
@@ -34,7 +34,7 @@
         <text id="sub-text" />
     </symbol>
     <!-- Status Bar -->
-    <symbol id="lm-status-bar">
+    <symbol id="status-bar">
         <rect id="background"/>
         <image id="menu-btn" href="./resources/images/menu_btn.png" />
         <text id="date1">(No Data)</text>
@@ -51,8 +51,8 @@
                      from="1" to="0" dur="0.3" final="restore" />
         </circle>
     </symbol>
-    <!-- Message Overlay -->
-    <symbol id="message-overlay">
+    <!-- Message Dialog -->
+    <symbol id="message-dialog">
         <section y="50" height="100%-50">
             <rect width="100%" height="100%" fill="black" />
             <use id="mixedtext" href="#mixed-text-center-mid" height="100%" fill="fb-yellow">
@@ -63,9 +63,9 @@
             </use>
         </section>
     </symbol>
-    <!-- Side Menu -->
-    <link rel="import" href="menu.gui" />
     <!-- Dialog -->
     <link rel="import" href="dialog.gui" />
+    <!-- Side Menu -->
+    <link rel="import" href="menu.gui" />
   </defs>
 </svg>

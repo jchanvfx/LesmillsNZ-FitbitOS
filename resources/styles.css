@@ -5,60 +5,60 @@ text {
 }
 
 /* Status Bar */
-#lm-status-bar rect#background {
+#status-bar rect#background {
     width:100%;
     height:50;
     fill:black;
 }
-#lm-status-bar rect#click-l {
+#status-bar rect#click-l {
     width: 40%;
     height: 60;
     opacity: 0;
 }
-#lm-status-bar rect#click-r {
+#status-bar rect#click-r {
     x: 60%;
     width: 40%;
     height: 60;
     opacity: 0;
 }
-#lm-status-bar text {
+#status-bar text {
     y: 20;
     font-size: 20;
     font-family: System-Bold;
     font-weight: regular;
     fill: #d6d6d6;
 }
-#lm-status-bar text#date1 {
+#status-bar text#date1 {
     x: 45;
     text-anchor: start;
     text-length: 16;
 }
-#lm-status-bar text#date2 {
+#status-bar text#date2 {
     x: 45;
     y: 43;
     text-anchor: start;
     text-length: 16;
 }
-#lm-status-bar text#time {
+#status-bar text#time {
     x: 100%-10;
     text-anchor: end;
     text-length: 7;
 }
-#lm-status-bar image#menu-btn {
+#status-bar image#menu-btn {
     x: 2;
     y: 3;
     width: 35;
     height: 40;
     fill:"fb-aqua";
 }
-#lm-status-bar image#no-phone {
+#status-bar image#no-phone {
     x:50%+10;
     y: 12;
     width: 26;
     height: 26;
     fill:"fb-red";
 }
-#lm-status-bar image#jump-to {
+#status-bar image#jump-to {
     x:100%-83;
     y: 26;
     width: 73;
@@ -67,11 +67,11 @@ text {
 }
 
 /* Loader Overlay */
-#loader-overlay arc {
+#loading-screen arc {
     width:100;
     height:100;
 }
-#loader-overlay arc#arc1{
+#loading-screen arc#arc1{
     x:-50;
     y:-50;
     fill:"fb-yellow";
@@ -79,7 +79,7 @@ text {
     start-angle:0;
     sweep-angle:60;
 }
-#loader-overlay arc#arc2{
+#loading-screen arc#arc2{
     width:90;
     height:90;
     x:50%-45;
@@ -89,7 +89,7 @@ text {
     start-angle:0;
     sweep-angle:360;
 }
-#loader-overlay arc#arc3{
+#loading-screen arc#arc3{
     x:50%-50;
     y:50%-50;
     fill:#11435d;
@@ -97,7 +97,7 @@ text {
     start-angle:0;
     sweep-angle:360;
 }
-#loader-overlay text {
+#loading-screen text {
     x:50%;
     y:80%;
     font-size:20;
@@ -105,12 +105,12 @@ text {
     fill:#4ebeff;
     text-length: 32;
 }
-#loader-overlay text#sub-text{
+#loading-screen text#sub-text{
     y:90%-8;
     font-size:16;
     font-family: System-Bold;
 }
-#loader-overlay gradientRect {
+#loading-screen gradientRect {
     width:100%;
     height:100%;
     gradient-type:radial;

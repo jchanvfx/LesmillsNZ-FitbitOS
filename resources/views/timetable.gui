@@ -63,14 +63,14 @@
             </use>
         </use>
     </section>
-    <!-- Message Screen -->
-    <use id="message-screen" href="#message-overlay" display="none" />
+    <!-- Message Dialog -->
+    <use id="message-dialog" href="#message-dialog" display="none" />
     <!-- Loading Screen -->
-    <use id="loading-screen" href="#loader-overlay" display="none" />
+    <use id="loading-screen" href="#loading-screen" display="none" />
     <!-- Side Menu -->
     <use id="menu-screen" href="#side-menu" display="none" />
     <!-- Status Bar -->
-    <use id="status-bar" href="#lm-status-bar" />
-    <!-- Exercise Dialog -->
-    <use id="exe-dialog" href="#exercise-dlg" display="none"/>
+    <use id="status-bar" href="#status-bar" />
+    <!-- Question Dialog -->
+    <use id="question-dialog" href="#question-dialog" display="none"/>
 </svg>

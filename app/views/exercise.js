@@ -64,7 +64,7 @@ function onMount() {
     BtnToggle = document.getElementById("btn-toggle");
     DlgPopup = document.getElementById("exe-popup");
     DlgPopupBtn = DlgPopup.getElementById("btn-done");
-    DlgExercise = document.getElementById("exe-dialog");
+    DlgExercise = document.getElementById("question-dialog");
     let mixedtext = DlgExercise.getElementById("mixedtext");
     let bodytext = mixedtext.getElementById("copy");
     mixedtext.text = WorkoutName;

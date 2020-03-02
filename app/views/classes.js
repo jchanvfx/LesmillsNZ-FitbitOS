@@ -39,8 +39,8 @@ export function init(_views) {
 
     WorkoutsList    = document.getElementById("workouts-list");
     LoadingScreen   = createLoadingScreenHelper(document.getElementById("loading-screen"));
-    MessageDialog   = createMessageDialogHelper(document.getElementById("message-screen"));
-    QuestionDialog  = createQuestionDialogHelper(document.getElementById("exe-dialog"));
+    MessageDialog   = createMessageDialogHelper(document.getElementById("message-dialog"));
+    QuestionDialog  = createQuestionDialogHelper(document.getElementById("question-dialog"));
     StatusBar       = createStatusBarHelper(document.getElementById("status-bar"));
     SideMenu        = createSideMenuHelper(document.getElementById("menu-screen"));
     AppSettings     = createSettingsHelper(SETTINGS_FILE);
