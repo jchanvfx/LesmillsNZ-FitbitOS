@@ -32,9 +32,11 @@ let DlgPopupBtn;
 // screen initialize.
 let views;
 export function init(_views) {
-  views = _views;
-  debugLog("view-exercise init()");
-  onMount();
+    views = _views;
+
+    onMount();
+    debugLog("Exercise :: initialize!");
+    return onUnMount;
 }
 
 // entry point when this view is mounted, setup elements and events.
@@ -88,6 +90,15 @@ function onMount() {
     // ----------------------------------------------------------------------------
     startWorkout(WorkoutName);
 }
+
+// Clean-up function executed before the view is unloaded.
+// No need to unsubscribe from DOM events, it's done automatically.
+function onUnMount() {
+    debugLog(">>> unMounted - Exercise");
+    clock.granularity = "off";
+    clock.ontick = undefined;
+}
+
 function onDisplayChangeEvent() {
     if (display.on) {
         clock.granularity = "minutes";
