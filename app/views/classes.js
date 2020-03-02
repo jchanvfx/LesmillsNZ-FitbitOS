@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, readFileSync, statSync } from "fs";
 
-import { CLASSES_FILE, SETTINGS_FILE } from "../config"
+import { CLASSES_FILE, SETTINGS_FILE, BUILD_VER } from "../config"
 import { debugLog } from "../utils"
 import { DAYS_SHORT, MONTHS_SHORT, date, date1, date2 } from "../datelib"
 import {
@@ -166,7 +166,7 @@ function onMount() {
 // Clean-up function executed before the view is unloaded.
 // No need to unsubscribe from DOM events, it's done automatically.
 function onUnMount() {
-    debugLog(">>> unMount - Workouts");
+    debugLog(">>> unMounted - Workouts");
     LM_CLASSES.length = 0;
     clock.granularity = "off";
     clock.ontick = undefined;

@@ -205,7 +205,7 @@ function onMount() {
 // Clean-up function executed before the view is unloaded.
 // No need to unsubscribe from DOM events, it's done automatically.
 function onUnMount() {
-    debugLog(">>> unMount - Timetable");
+    debugLog(">>> unMounted - Timetable");
     LM_TIMETABLE.length = 0;
     clock.granularity = "off";
     clock.ontick = undefined;
