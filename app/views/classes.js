@@ -5,42 +5,57 @@ import { me } from "appbit";
 import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, readFileSync, statSync } from "fs";
-import { DAYS_SHORT, MONTHS, MONTHS_SHORT, formatTo12hrTime, date } from "../datelib"
-import { debugLog, displayElement, saveSettings, loadSettings } from "../utils"
 
-const LM_CLASSES_FILE = "LM_classes.cbor";
-let LM_CLASSES = [];
+import { CLASSES_FILE, SETTINGS_FILE } from "../config"
+import { debugLog } from "../utils"
+import { DAYS_SHORT, MONTHS_SHORT, date, date1, date2 } from "../datelib"
+import {
+    show, hide,
+    createLoadingScreenHelper,
+    createMessageDialogHelper,
+    createQuestionDialogHelper,
+    createStatusBarHelper,
+    createSideMenuHelper,
+    createSettingsHelper
+} from "../helpers"
 
 let WorkoutsList;
-let LoaderOverlay;
-let MessageOverlay;
+let LoadingScreen;
+let MessageDialog;
+let QuestionDialog;
 let StatusBar;
-let StatusBtnMenu;
-let StatusBarPhone;
-let MenuScreen;
-let MenuBtnWorkouts;
-let MenuBtn1;
-let MenuBtn2;
-let MenuBtn3;
-let DlgExercise;
-let DlgBtnCancel;
-let DlgBtnStart;
+let SideMenu;
+let AppSettings;
 
 let OnFileRecievedUpdateGui;
 
-// screen initialize.
+let LM_CLASSES = [];
+
+
+// screen entry point.
 let views;
 export function init(_views) {
-  views = _views;
-  debugLog("workouts - init()");
-  onMount();
+    views = _views;
+
+    WorkoutsList    = document.getElementById("workouts-list");
+    LoadingScreen   = createLoadingScreenHelper(document.getElementById("loading-screen"));
+    MessageDialog   = createMessageDialogHelper(document.getElementById("message-screen"));
+    QuestionDialog  = createQuestionDialogHelper(document.getElementById("exe-dialog"));
+    StatusBar       = createStatusBarHelper(document.getElementById("status-bar"));
+    SideMenu        = createSideMenuHelper(document.getElementById("menu-screen"));
+    AppSettings     = createSettingsHelper(SETTINGS_FILE);
+
+    onMount();
+    debugLog("Workouts :: initialize!");
+    return onUnMount;
 }
 
 // entry point when this view is mounted, setup elements and events.
 function onMount() {
-    clock.granularity = "minutes";
 
-    WorkoutsList = document.getElementById("workouts-list");
+    OnFileRecievedUpdateGui = false;
+
+    // Configure WorkoutsList.
     WorkoutsList.delegate = {
         getTileInfo: function(index) {
             let clsData = LM_CLASSES[index];
@@ -57,15 +72,15 @@ function onMount() {
                 let mixedtext = tile.getElementById("mixedtext");
                 if (workout.length > 13) {
                     mixedtext.getElementById("copy").text = workout;
-                    displayElement(mixedtext, true);
+                    show(mixedtext);
                     tile.getElementById("text").text = "";
-                    displayElement(tile.getElementById("text"), false);
+                    hide(tile.getElementById("text"));
                 }
                 else {
                     tile.getElementById("text").text = workout;
-                    displayElement(tile.getElementById("text"), true);
+                    show(tile.getElementById("text"));
                     mixedtext.getElementById("copy").text = "";
-                    displayElement(mixedtext, false);
+                    hide(mixedtext);
                 }
                 tile.getElementById("ring").style.fill = info.color;
                 let clickPad = tile.getElementById("click-pad");
@@ -76,219 +91,113 @@ function onMount() {
     // WorkoutsList.length must be set AFTER WorkoutsList.delegate
     WorkoutsList.length = LM_CLASSES.length;
 
-    LoaderOverlay = document.getElementById("loading-screen");
-    MessageOverlay = document.getElementById("message-screen");
+    // Configure SideMenu button labels.
+    SideMenu.MainLabel.text  = "Group Fitness";
+    SideMenu.MainButton.text = "Workouts";
+    SideMenu.SubLabel.text   = "Timetable Schedule";
+    SideMenu.SubButton1.text = `${DAYS_SHORT[date.getDay()]} ` +
+                               `${date.getDate()} ` +
+                               `${MONTHS_SHORT[date.getMonth()]}`;
+    SideMenu.SubButton2.text = `${DAYS_SHORT[date1.getDay()]} ` +
+                               `${date1.getDate()} ` +
+                               `${MONTHS_SHORT[date1.getMonth()]}`;
+    SideMenu.SubButton3.text = `${DAYS_SHORT[date2.getDay()]} ` +
+                               `${date2.getDate()} ` +
+                               `${MONTHS_SHORT[date2.getMonth()]}`;
+    SideMenu.Footer.text     = BUILD_VER;
 
-    // Status Bar.
-    StatusBar = document.getElementById("status-bar");
-    StatusBtnMenu = StatusBar.getElementById("click-l");
-    StatusBarPhone = StatusBar.getElementById("no-phone");
-    displayElement(StatusBar.getElementById("click-r"), false);
-    displayElement(StatusBar.getElementById("jump-to"), false);
-    displayElement(
-        StatusBarPhone,
-        messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
-    );
-    StatusBar.getElementById("date1").text = `${DAYS_SHORT[date.getDay()]}`;
-    StatusBar.getElementById("date2").text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
-    StatusBar.getElementById("time").text = formatTo12hrTime(date);
+    // disable jumpTo button.
+    hide(StatusBar.JumpToButton);
+    hide(StatusBar.JumpToIcon);
 
-    // Side Menu.
-    MenuScreen = document.getElementById("menu-screen");
-    MenuBtnWorkouts = MenuScreen.getElementById("main-btn1");
-    MenuScreen.getElementById("main-label").text = "Group Fitness";
-    MenuScreen.getElementById("sub-label").text = "Timetable Schedule";
-    MenuBtnWorkouts.text = "Workouts";
-    let date1 = new Date();
-    let date2 = new Date();
-    date1.setDate(date1.getDate() + 1);
-    date2.setDate(date2.getDate() + 2);
-    MenuBtn1 = MenuScreen.getElementById("sub-btn1");
-    MenuBtn2 = MenuScreen.getElementById("sub-btn2");
-    MenuBtn3 = MenuScreen.getElementById("sub-btn3");
-    MenuBtn1.text =
-        `${DAYS_SHORT[date.getDay()]} ` +
-        `${date.getDate()} ` +
-        `${MONTHS_SHORT[date.getMonth()]}`;
-    MenuBtn2.text =
-        `${DAYS_SHORT[date1.getDay()]} ` +
-        `${date1.getDate()} ` +
-        `${MONTHS_SHORT[date1.getMonth()]} `;
-    MenuBtn3.text =
-        `${DAYS_SHORT[date2.getDay()]} ` +
-        `${date2.getDate()} ` +
-        `${MONTHS_SHORT[date2.getMonth()]}`;
+    // Configure StatusBar date.
+    let dateStr = AppSettings.load().currentDate;
+    let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
+    StatusBar.setDate(currentDate);
 
-    DlgExercise = document.getElementById("exe-dialog");
-    DlgBtnStart = DlgExercise.getElementById("btn-right");
-    DlgBtnCancel = DlgExercise.getElementById("btn-left");
+    // Update Workouts list.
+    loadWorkoutClasses();
 
-    OnFileRecievedUpdateGui = false;
+    // wire up events.
+    clock.granularity = "minutes";
+    clock.ontick = (evt) => {StatusBar.setTime(evt.date);}
 
-    // initialize list.
-    updateWorkoutsList();
-
-    // connect up add the events.
-    // ----------------------------------------------------------------------------
-    clock.addEventListener("tick", onTickEvent);
-    document.addEventListener("keypress", onKeyPressEvent);
-    StatusBtnMenu.addEventListener("click", onStatusBtnMenuClicked);
-    MenuBtnWorkouts.addEventListener("activate", onMenuBtnWorkoutsClicked);
-    MenuBtn1.addEventListener("activate", onMenuBtn1Clicked);
-    MenuBtn2.addEventListener("activate", onMenuBtn2Clicked);
-    MenuBtn3.addEventListener("activate", onMenuBtn3Clicked);
-    DlgBtnStart.addEventListener("activate", onDlgStartClicked);
-    DlgBtnCancel.addEventListener("activate", onDlgCancelClicked);
-
-    // message socket opens.
     messaging.peerSocket.onopen = () => {
-        debugLog("App Socket Open");
-        displayElement(StatusBarPhone, false);
-    };
-    // message socket closes
+        debugLog("App Socket Open"); hide(StatusBar.PhoneIcon);}
     messaging.peerSocket.onclose = () => {
-        debugLog("App Socket Closed");
-        displayElement(StatusBarPhone, true);
-    };
-    // message recieved.
+        debugLog("App Socket Closed"); show(StatusBar.PhoneIcon);}
     messaging.peerSocket.onmessage = onMessageRecieved;
-    // process incomming data transfers.
     inbox.addEventListener("newfile", onDataRecieved);
+    // key press.
+    document.addEventListener("keypress", onKeyPressEvent);
+    // status bar menu button.
+    StatusBar.MenuButton.addEventListener("click", () => {
+        SideMenu.isVisible() ? SideMenu.hide() : SideMenu.show();
+    });
+    // workout button.
+    SideMenu.MainButton.addEventListener("activate", () => {
+        views.navigate("classes");
+    });
+    // timetable schedule buttons.
+    SideMenu.SubButton1.addEventListener("activate", () => {
+        loadTimetable(date);
+    });
+    SideMenu.SubButton2.addEventListener("activate", () => {
+        loadTimetable(date1);
+    });
+    SideMenu.SubButton3.addEventListener("activate", () => {
+        loadTimetable(date2);
+    });
+
+    // question dialog buttons.
+    QuestionDialog.YesButton.addEventListener("activate", () => {
+        LM_CLASSES.length = 0;
+        let settings = AppSettings.load();
+        settings.workout = QuestionDialog.Header.text;
+        AppSettings.save(settings);
+        views.navigate("exercise");
+    });
+    QuestionDialog.NoButton.addEventListener("activate", () => {
+        QuestionDialog.Header.text = "";
+        QuestionDialog.hide();
+    });
+}
+
+// Clean-up function executed before the view is unloaded.
+// No need to unsubscribe from DOM events, it's done automatically.
+function onUnMount() {
+    debugLog(">>> unMount - Workouts");
+    LM_CLASSES.length = 0;
+    clock.granularity = "off";
+    clock.ontick = undefined;
+    messaging.peerSocket.onopen = undefined;
+    messaging.peerSocket.onclose = undefined;
+    messaging.peerSocket.onmessage = undefined;
+    inbox.removeEventListener("newfile", onDataRecieved);
 }
 
 // ----------------------------------------------------------------------------
 
-function onTickEvent(evt) {
-    StatusBar.getElementById("time").text = formatTo12hrTime(evt.date);
-}
-function onKeyPressEvent(evt) {
-    if (evt.key === "back") {
-        evt.preventDefault();
-        if (MenuScreen.style.display === "inline") {
-            MenuScreen.animate("disable");
-            setTimeout(() => {MenuScreen.style.display = "none";}, 300);
-        } else if (DlgExercise.style.display === "inline") {
-            onDlgCancelClicked();
-        } else {me.exit();}
-    }
-}
-function onStatusBtnMenuClicked() {
-    if (MenuScreen.style.display === "none") {
-        MenuScreen.style.display = "inline";
-        MenuScreen.animate("enable");
-    } else {
-        MenuScreen.animate("disable");
-        setTimeout(() => {MenuScreen.style.display = "none";}, 300);
-    }
-}
-function onMenuBtnWorkoutsClicked() {
-    LM_CLASSES.length = 0;
-    MenuScreen.animate("disable");
-    setTimeout(() => {MenuScreen.style.display = "none";}, 300);
-    updateWorkoutsList();
-}
-function onTileClicked(tile) {
-    let workout = tile.getElementById("text").text;
-    DlgExercise.getElementById("mixedtext").text = workout;
-    tile.animate("enable");
-    setTimeout(() => {DlgExercise.style.display = "inline";}, 300);
-    debugLog(`${workout} tile clicked`);
-};
-function onDlgStartClicked() {
-    debugLog("start dialog");
-    let workout = DlgExercise.getElementById("mixedtext").text;
-    saveSettings({workout: workout});
-
-    LM_CLASSES.length = 0;
-    clock.removeEventListener("tick", onTickEvent);
-    inbox.removeEventListener("newfile", onDataRecieved);
-    views.navigate("exercise");
-}
-function onDlgCancelClicked() {
-    debugLog("cancel dialog");
-    DlgExercise.getElementById("mixedtext").text = "Workout";
-    displayElement(DlgExercise, false);
-}
-function loadTimetable(date) {
-    LM_CLASSES.length = 0;
-    clock.removeEventListener("tick", onTickEvent);
-    inbox.removeEventListener("newfile", onDataRecieved);
-    MenuScreen.style.display = "none";
-    let settings = loadSettings();
-    settings.date = date.toISOString();
-    saveSettings(settings);
-    views.navigate("timetable");
-}
-function onMenuBtn1Clicked() {
-    loadTimetable(date);
-}
-function onMenuBtn2Clicked() {
-    let date = new Date(); date.setDate(date.getDate() + 1);
-    loadTimetable(date);
-}
-function onMenuBtn3Clicked() {
-    let date = new Date(); date.setDate(date.getDate() + 2);
-    loadTimetable(date);
-}
-
-// ----------------------------------------------------------------------------
-
-// send data to companion via Messaging API
-function sendValue(key, data=null) {
-    if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
-        if (data == null) {
-            messaging.peerSocket.send({key: key});
-        } else {
-            messaging.peerSocket.send({key: key, value: data});
-        }
-    }
-    displayElement(
-        StatusBarPhone,
-        messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
-    );
-}
-// callback when file transfer has completed.
-function onDataRecieved() {
-    let fileName;
-    while (fileName = inbox.nextFile()) {
-        if (fileName === LM_CLASSES_FILE) {
-            debugLog(`file ${fileName} recieved!`);
-            // hide loader & message screen just incase.
-            displayLoader(false);
-            displayMessage(false);
-
-            if (OnFileRecievedUpdateGui) {
-                OnFileRecievedUpdateGui = false;
-                updateWorkoutsList();
-                display.poke();
-            }
-            break;
-        }
-    }
-    displayElement(
-        StatusBarPhone,
-        messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
-    );
-}
 // callback when a message is recieved.
 function onMessageRecieved(evt) {
+    display.poke();
     switch (evt.data.key) {
         case "lm-noClub":
             debugLog("no club selected.");
-            displayLoader(false);
-            displayMessage(
-                true,
-                "Please select a club location from the phone app settings.",
-                "Club Not Set"
-            );
+            LoadingScreen.hide();
+            MessageDialog.Header.text = "Club Not Set";
+            MessageDialog.Message.text =
+                "Please select a club location from the phone app settings.";
+            MessageDialog.show();
             break;
         case "lm-clubChanged":
             if (evt.data.value) {
-                display.poke();
                 OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
-                debugLog(`club changed to: ${clubName}`);
-                displayLoader(true, "Changing Clubs...", clubName);
+                debugLog(`Club changed to: ${clubName}`);
+                LoadingScreen.Label.text = "Changing Clubs...";
+                LoadingScreen.SubLabel.text = clubName;
+                LoadingScreen.show();
             }
             break;
         case "lm-classesReply":
@@ -296,7 +205,9 @@ function onMessageRecieved(evt) {
                 let clubName = evt.data.value;
                 debugLog(`${clubName} classes queued.`);
                 if (OnFileRecievedUpdateGui) {
-                    displayLoader('Loading Classes...', clubName);
+                    LoadingScreen.Label.text = "Loading Workouts...";
+                    LoadingScreen.SubLabel.text = clubName;
+                    LoadingScreen.show();
                 }
             } else {
                 debugLog("classes reply");
@@ -304,17 +215,16 @@ function onMessageRecieved(evt) {
             break;
         case "lm-noClasses":
             debugLog("no classes.");
-            displayLoader(false);
-            displayMessage(
-                true,
-                "Failed to retrive group fitness workouts from database.",
-                "No Classes"
-            );
+            LoadingScreen.hide();
+            MessageDialog.Header.text = "No Classes";
+            MessageDialog.Message.text =
+                "Failed to retrive group fitness workouts from database.";
+            MessageDialog.show();
             break;
         case "lm-defaultHome":
-            let settings = loadSettings();
+            let settings = AppSettings.load();
             settings.homeScreen = evt.data.value;
-            saveSettings(settings);
+            AppSettings.save(settings);
             debugLog(`default home screen: ${settings.homeScreen}`);
             break;
         default:
@@ -322,59 +232,85 @@ function onMessageRecieved(evt) {
     }
 }
 
-// CLASSES LIST
+// callback when file transfer has completed.
+function onDataRecieved() {
+    let fileName;
+    while (fileName = inbox.nextFile()) {
+        if (fileName === CLASSES_FILE) {
+            debugLog(`file ${fileName} recieved!`);
+            // hide loading screen & message dialog just incase.
+            LoadingScreen.hide();
+            MessageDialog.hide();
+            // update timetable if specified.
+            if (OnFileRecievedUpdateGui) {
+                OnFileRecievedUpdateGui = false;
+                loadWorkoutClasses();
+                display.poke();
+            }
+            break;
+        }
+    }
+    (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
+        hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
+}
+
+// send data to companion.
+export function sendValue(key, data=null) {
+    if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
+        if (data == null) {
+            messaging.peerSocket.send({key: key});
+        } else {
+            messaging.peerSocket.send({key: key, value: data});
+        }
+        hide(StatusBar.PhoneIcon);
+    } else {
+        show(StatusBar.PhoneIcon);
+    }
+}
+
 // ----------------------------------------------------------------------------
 
-// toggle message screen widget visibility.
-function displayMessage(display=true, text="", title="") {
-    let mixedText = MessageOverlay.getElementById("#mixedtext");
-    let mixedTextBody = mixedText.getElementById("copy");
-    mixedText.text = display ? title : "";
-    mixedTextBody.text = display ? text : "";
-    displayElement(MessageOverlay, display);
+function loadTimetable(date) {
+    LM_CLASSES.length = 0;
+    let settings = AppSettings.load();
+    settings.currentDate = date.toISOString();
+    AppSettings.save(settings);
+    views.navigate("timetable");
 }
-// toggle loading screen widget visibility.
-function displayLoader(display=true, text="", subText="") {
-    LoaderOverlay.getElementById("text").text = text;
-    LoaderOverlay.getElementById("sub-text").text = subText;
-    LoaderOverlay.animate(display ? "enable" : "disable");
-    displayElement(LoaderOverlay, display);
-}
-// update list with avaliable workout classes.
-function updateWorkoutsList() {
-    displayElement(WorkoutsList, false);
-    displayLoader(true, "Loading Classes...", "www.lesmills.co.nz");
+
+function loadWorkoutClasses() {
+    hide(WorkoutsList);
+    LoadingScreen.Label.text = "Loading Workouts...";
+    LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
+    LoadingScreen.show();
 
     LM_CLASSES.length = 0;
-    if (existsSync("/private/data/" + LM_CLASSES_FILE)) {
-        LM_CLASSES = readFileSync(LM_CLASSES_FILE, "cbor");
+    if (existsSync(`/private/data/${CLASSES_FILE}`)) {
+        LM_CLASSES = readFileSync(CLASSES_FILE, "cbor");
     }
     debugLog(`number of classes ${LM_CLASSES.length}`);
 
     if (LM_CLASSES.length != 0) {
-        debugLog(`Loading data file: ${LM_CLASSES_FILE}`);
+        debugLog(`Loading data file: ${CLASSES_FILE}`);
 
         // refresh to the list.
         WorkoutsList.length = LM_CLASSES.length;
         WorkoutsList.redraw();
 
-        displayElement(WorkoutsList, true);
-        displayLoader(false);
+        show(WorkoutsList, true);
+        LoadingScreen.hide();
 
         // request background update if the file modified is more than 5 days old.
-        let mTime = statSync(LM_CLASSES_FILE).mtime;
+        let mTime = statSync(CLASSES_FILE).mtime;
         let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
         if (timeDiff > 120) {
-            debugLog(`File ${LM_CLASSES_FILE} outdated by ${timeDiff}hrs`);
+            debugLog(`File ${CLASSES_FILE} outdated by ${timeDiff}hrs`);
             OnFileRecievedUpdateGui = false;
             sendValue("lm-classes");
         } else {
-            displayElement(
-                StatusBarPhone,
-                messaging.peerSocket.readyState === messaging.peerSocket.CLOSED
-            );
+            (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
+                hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
         }
-
         return;
     }
 
@@ -382,4 +318,25 @@ function updateWorkoutsList() {
     OnFileRecievedUpdateGui = true;
     sendValue("lm-classes");
     display.poke();
+}
+
+function onTileClicked(tile) {
+    let workout = tile.getElementById("text").text;
+    QuestionDialog.Header.text = workout;
+    QuestionDialog.Message.text = "Start Workout?"
+    tile.getElementById("overlay").animate("enable");
+    setTimeout(() => {QuestionDialog.show();}, 300);
+    debugLog(`${workout} tile clicked`);
+};
+
+function onKeyPressEvent(evt) {
+    if (evt.key === "back") {
+        evt.preventDefault();
+        if (SideMenu.isVisible()) {StatusBar.hideMenu();}
+        else if (QuestionDialog.isVisible()) {
+            QuestionDialog.Header.text = "";
+            QuestionDialog.hide();
+        }
+        else {me.exit();}
+    }
 }

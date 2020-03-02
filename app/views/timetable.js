@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 
-import { DATA_FILE_PREFIX, SETTINGS_FILE } from "../config"
+import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../config"
 import { debugLog } from "../utils"
 import {
     DAYS_SHORT, MONTHS_SHORT,
@@ -114,6 +114,7 @@ function onMount() {
     SideMenu.SubButton3.text = `${DAYS_SHORT[date2.getDay()]} ` +
                                `${date2.getDate()} ` +
                                `${MONTHS_SHORT[date2.getMonth()]}`;
+    SideMenu.Footer.text     = BUILD_VER;
 
     // Configure StatusBar date.
     let dateStr = AppSettings.load().currentDate;
@@ -156,7 +157,7 @@ function onMount() {
     SideMenu.MainButton.addEventListener("activate", () => {
         views.navigate("classes");
     });
-    // timetable schdule buttons.
+    // timetable schedule buttons.
     SideMenu.SubButton1.addEventListener("activate", () => {
         StatusBar.setDate(date);
         show(StatusBar.JumpToButton);
@@ -204,7 +205,7 @@ function onMount() {
 // Clean-up function executed before the view is unloaded.
 // No need to unsubscribe from DOM events, it's done automatically.
 function onUnMount() {
-    debugLog("unMount - Timetable");
+    debugLog(">>> unMount - Timetable");
     LM_TIMETABLE.length = 0;
     clock.granularity = "off";
     clock.ontick = undefined;
@@ -218,15 +219,15 @@ function onUnMount() {
 
 // callback when a message is recieved.
 function onMessageRecieved(evt) {
+    display.poke();
     switch (evt.data.key) {
         case "lm-noClub":
             debugLog("no club selected.");
             LoadingScreen.hide();
             MessageDialog.Header.text = "Club Not Set";
             MessageDialog.Message.text =
-            "Please select a club location from the phone app settings.";
+                "Please select a club location from the phone app settings.";
             MessageDialog.show();
-            display.poke();
             break;
         case "lm-clubChanged":
             if (evt.data.value) {
@@ -236,7 +237,6 @@ function onMessageRecieved(evt) {
                 LoadingScreen.Label.text = "Changing Clubs...";
                 LoadingScreen.SubLabel.text = clubName;
                 LoadingScreen.show();
-                display.poke();
             }
             break;
         case "lm-fetchReply":
@@ -245,7 +245,6 @@ function onMessageRecieved(evt) {
                 LoadingScreen.Label.text = "Retrieving Timetable...";
                 LoadingScreen.SubLabel.text = clubName;
                 LoadingScreen.show();
-                display.poke();
             }
             break;
         case "lm-dataQueued":
@@ -255,6 +254,12 @@ function onMessageRecieved(evt) {
                 LoadingScreen.Label.text = "Waiting for Data...";
                 LoadingScreen.SubLabel.text = clubName;
             }
+            break;
+        case "lm-defaultHome":
+            let settings = AppSettings.load();
+            settings.homeScreen = evt.data.value;
+            AppSettings.save(settings);
+            debugLog(`default home screen: ${settings.homeScreen}`);
             break;
         default:
             return;
@@ -276,6 +281,7 @@ function onDataRecieved() {
                 loadTimetableFile(fileName);
                 display.poke();
             }
+            break;
         }
     }
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
