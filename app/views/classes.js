@@ -105,6 +105,7 @@ function onMount() {
                                `${date2.getDate()} ` +
                                `${MONTHS_SHORT[date2.getMonth()]}`;
     SideMenu.Footer.text     = BUILD_VER;
+    hide(SideMenu.Element);
 
     // disable jumpTo button.
     hide(StatusBar.JumpToButton);
@@ -332,7 +333,9 @@ function onTileClicked(tile) {
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
         evt.preventDefault();
-        if (SideMenu.isVisible()) {StatusBar.hideMenu();}
+        if (SideMenu.isVisible()) {
+            SideMenu.hide();
+        }
         else if (QuestionDialog.isVisible()) {
             QuestionDialog.Header.text = "";
             QuestionDialog.hide();

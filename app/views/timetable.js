@@ -115,6 +115,7 @@ function onMount() {
                                `${date2.getDate()} ` +
                                `${MONTHS_SHORT[date2.getMonth()]}`;
     SideMenu.Footer.text     = BUILD_VER;
+    hide(SideMenu.Element);
 
     // Configure StatusBar date.
     let dateStr = AppSettings.load().currentDate;
@@ -424,7 +425,11 @@ function onTileClicked(tile) {
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
         evt.preventDefault();
-        if (SideMenu.isVisible()) {StatusBar.hideMenu();}
+        if (SideMenu.isVisible()) {
+            show(StatusBar.JumpToButton);
+            show(StatusBar.JumpToIcon);
+            SideMenu.hide();
+        }
         else if (QuestionDialog.isVisible()) {
             QuestionDialog.Header.text = "";
             QuestionDialog.hide();
