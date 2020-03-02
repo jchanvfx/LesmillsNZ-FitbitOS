@@ -1,13 +1,8 @@
+import { DEBUG_MODE } from "./config"
 import { readFileSync, writeFileSync, existsSync } from "fs";
-const DEBUG = true;
 
-export function debugLog(value) {
-    if (DEBUG) {console.log(value);}
-}
-
-export function zeroPad(i) {
-    if (i < 10) {i = "0" + i;} return i;
-}
+export function debugLog(value) {if (DEBUG_MODE) {console.log(value);}}
+export function zeroPad(i) {if (i < 10) {i = "0" + i;} return i;}
 
 export function displayElement(element, display=true) {
     element.style.display = display ? "inline" : "none";
