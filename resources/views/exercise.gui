@@ -45,7 +45,7 @@
         x="50%" y="35%"
         font-size="26"
         text-anchor="middle"
-        fill="#4169E1"
+        fill="#00BFFF"
         text-length="24" />
 
     <!-- Timecode -->

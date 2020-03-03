@@ -7,7 +7,7 @@
         fill="fb-light-gray"
         font-size="24"
         font-weight="bold"
-        text-anchor="middle">LOADING...</text>
+        text-anchor="middle">#LesMillsNZ</text>
     <!-- <image
         x="50%-20"
         y="100%-110"
@@ -22,7 +22,7 @@
         fill="fb-aqua"
         font-size="20"
         font-weight="bold"
-        text-anchor="middle">#LesMillsNZ</text>
+        text-anchor="middle">Loading...</text>
     <text
         x="50%"
         y="100%-23"
@@ -30,5 +30,5 @@
         fill="fb-light-gray"
         font-size="18"
         font-weight="bold"
-        text-anchor="middle">2020 - @thechantastic</text>
+        text-anchor="middle">@theChantastic</text>
 </svg>
