@@ -112,9 +112,7 @@ function onMount() {
     hide(StatusBar.JumpToIcon);
 
     // Configure StatusBar date.
-    let dateStr = AppSettings.load().currentDate;
-    let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
-    StatusBar.setDate(currentDate);
+    StatusBar.setDate(date);
 
     // Update Workouts list.
     loadWorkoutClasses();
