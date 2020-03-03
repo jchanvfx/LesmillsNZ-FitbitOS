@@ -12,7 +12,7 @@
     "appType": "app",
     "appDisplayName": "Workouts",
     "iconFile": "resources/icon.png",
-    "wipeColor": "#f83c40",
+    "wipeColor": "#38f8df",
     "requestedPermissions": [
       "access_activity",
       "access_exercise",

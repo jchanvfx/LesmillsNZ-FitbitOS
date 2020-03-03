@@ -6,184 +6,216 @@ import { BodyPresenceSensor } from "body-presence";
 import { HeartRateSensor } from "heart-rate";
 import { me } from "appbit";
 import { display } from "display";
-import { debugLog, displayElement, formatCalories, formatActiveTime, loadSettings } from "../utils";
-import { formatTo12hrTime } from "../datelib"
 
-const ICON_PLAY = "btn_combo_play_press_p.png";
-const ICON_PAUSE = "btn_combo_pause_press_p.png";
-let BODY_SENSOR;
-let HRM_SENSOR;
+import { SETTINGS_FILE } from "../config"
+import { debugLog, zeroPad } from "../utils";
+import { date, formatTo12hrTime } from "../datelib"
+import {
+    show, hide, isVisible,
+    createSettingsHelper,
+    createQuestionDialogHelper
+} from "../helpers"
 
+let Sensors;
+let AppSettings;
 let WorkoutName;
-let LabelTime;
-let LabelDuration;
-let LabelDurationMsec;
+let EndDialog;
+let ResultsDialog;
+let TimeDisplay;
+let ActiveTimeDisplay;
+let BtnToggle;
+let BtnFinish;
+let LabelBottom;
 let LabelHRM;
 let LabelCALS;
-let BottomText;
-let BtnFinish;
-let BtnToggle;
-let DlgExercise;
-let DlgBtnEnd;
-let DlgBtnCancel;
-let DlgPopup;
-let DlgPopupBtn;
 
-// screen initialize.
+// screen entry point.
 let views;
 export function init(_views) {
-  views = _views;
-  debugLog("view-exercise init()");
-  onMount();
+    views = _views;
+
+    if (me.permissions.granted("access_heart_rate") &&
+        me.permissions.granted("access_activity")) {
+        Sensors = {
+            Body    : new BodyPresenceSensor(),
+            HRM     : new HeartRateSensor(),
+            start() {this.Body.start(); this.HRM.start();},
+            stop()  {this.Body.stop();  this.HRM.stop();},
+            bpm() {
+                // off-wrist
+                if (!this.Body.present) {return "--";}
+                return this.HRM.heartRate || "--";
+            },
+        };
+    } else {
+        debugLog("Denied Heart Rate or User Profile permissions");
+        return;
+    }
+
+    AppSettings  = createSettingsHelper(SETTINGS_FILE);
+    WorkoutName  = AppSettings.load().workout;
+    EndDialog = createQuestionDialogHelper(
+        document.getElementById("question-dialog")
+    );
+    ResultsDialog = {
+        Element     : document.getElementById("exe-popup"),
+        DoneButton  : document.getElementById("exe-popup").getElementById("btn-done"),
+        isVisible() {return isVisible(this.Element);},
+        setLabel(elemId, text) {
+            let itm = this.Element.getElementById(elemId);
+            itm.getElementById("text").text = text;
+        },
+    };
+    TimeDisplay = document.getElementById("time");
+    ActiveTimeDisplay = {
+        DurationText : document.getElementById("duration"),
+        MsecText     : document.getElementById("duration-msec"),
+        setActiveTime(activeTime) {
+            this.DurationText.text = `${formatActiveTime(activeTime)}.`;
+        },
+    };
+    BtnToggle = {
+        Element: document.getElementById("btn-toggle"),
+        play() {
+            let iconPath = "./resources/images/btn_combo_pause_press_p.png";
+            this.Element.getElementById("combo-button-icon").href = iconPath;
+            this.Element.getElementById("combo-button-icon-press").href = iconPath;
+        },
+        pause() {
+            let iconPath = "./resources/images/btn_combo_play_press_p.png";
+            this.Element.getElementById("combo-button-icon").href = iconPath;
+            this.Element.getElementById("combo-button-icon-press").href = iconPath;
+        },
+    };
+    BtnFinish   = document.getElementById("btn-finish");
+    LabelHRM    = document.getElementById("hrm-text");
+    LabelCALS   = document.getElementById("cals-text");
+    LabelBottom = document.getElementById("bottom-text");
+
+    onMount();
+    debugLog("Exercise :: initialize!");
+    return onUnMount;
 }
 
 // entry point when this view is mounted, setup elements and events.
 function onMount() {
-    clock.granularity = "minutes";
 
-    if (me.permissions.granted("access_heart_rate") && me.permissions.granted("access_activity")) {
-        BODY_SENSOR = new BodyPresenceSensor();
-        HRM_SENSOR = new HeartRateSensor();
-    } else {
-        debugLog("Denied Heart Rate or User Profile permissions");
-    }
-
-    WorkoutName = loadSettings().workout;
     document.getElementById("workout-title").text = WorkoutName;
 
-    LabelTime = document.getElementById("time");
-    LabelTime.text = formatTo12hrTime(new Date());
-    LabelDuration = document.getElementById("duration");
-    LabelDurationMsec = document.getElementById("duration-msec");
-    LabelHRM = document.getElementById("hrm-text");
-    LabelCALS = document.getElementById("cals-text");
-    BottomText = document.getElementById("bottom-text");
-    BtnFinish = document.getElementById("btn-finish");
-    BtnToggle = document.getElementById("btn-toggle");
-    DlgPopup = document.getElementById("exe-popup");
-    DlgPopupBtn = DlgPopup.getElementById("btn-done");
-    DlgExercise = document.getElementById("exe-dialog");
-    let mixedtext = DlgExercise.getElementById("mixedtext");
-    let bodytext = mixedtext.getElementById("copy");
-    mixedtext.text = WorkoutName;
-    bodytext.text = "End this workout?";
-    DlgBtnEnd = DlgExercise.getElementById("btn-right");
-    DlgBtnEnd.text = "End";
-    DlgBtnCancel = DlgExercise.getElementById("btn-left");
+    // Configure Finish Dialog.
+    EndDialog.Header.text      = WorkoutName;
+    EndDialog.Message.text     = "End this workout?";
+    EndDialog.YesButton.text   = "Yes";
+    EndDialog.NoButton.text    = "No";
+    EndDialog.hide();
 
-    displayElement(BtnFinish, false);
+    // Configure Results Dialog.
+    ResultsDialog.setLabel("workout", WorkoutName);
+    hide(ResultsDialog.Element);
 
-    // connect up add the events.
-    // ----------------------------------------------------------------------------
-    clock.addEventListener("tick", onTickEvent);
+    TimeDisplay.text = formatTo12hrTime(date);
+    hide(BtnFinish);
+
+    // wire up events.
+    clock.granularity = "minutes";
+    clock.ontick = (evt) => {TimeDisplay.text = formatTo12hrTime(evt.date);};
     display.addEventListener("change", onDisplayChangeEvent);
     document.addEventListener("keypress", onKeyPressEvent);
-    BtnFinish.addEventListener("activate", onBtnFinishClicked);
-    BtnToggle.addEventListener("activate", onBtnToggleClicked);
-    DlgBtnEnd.addEventListener("activate", onDlgBtnEnd)
-    DlgBtnCancel.addEventListener("activate", onDlgBtnCancel);
-    DlgPopupBtn.addEventListener("activate", () => {me.exit();});
 
-    // START THE EXERCISE TRACKING.
-    // ----------------------------------------------------------------------------
+    BtnFinish.addEventListener("activate", onBtnFinishClicked);
+    BtnToggle.Element.addEventListener("activate", () => {
+        (exercise.state === "started") ? pauseWorkout() : resumeWorkout();
+    });
+    EndDialog.YesButton.addEventListener("activate", endWorkout);
+    EndDialog.NoButton.addEventListener("activate", () => {
+        EndDialog.hide();
+    });
+    ResultsDialog.DoneButton.addEventListener("activate", () => {
+        me.exit();
+    });
+
+    // Start exercise tracking.
     startWorkout(WorkoutName);
 }
+
+// Clean-up function executed before the view is unloaded.
+// No need to unsubscribe from DOM events, it's done automatically.
+function onUnMount() {
+    debugLog(">>> unMounted - Exercise");
+    clock.granularity = "off";
+    clock.ontick = undefined;
+}
+
 function onDisplayChangeEvent() {
     if (display.on) {
         clock.granularity = "minutes";
-        BODY_SENSOR.start();
-        HRM_SENSOR.start();
+        Sensors.start();
         msec = Math.floor(exercise.stats.activeTime / 100) % 10;
-        LabelDuration.text = `${formatActiveTime(exercise.stats.activeTime)}.`;
+        ActiveTimeDisplay.setActiveTime(exercise.stats.activeTime);
         if (exercise.state === "started") {startMStimer();}
     } else {
         clock.granularity = "off";
         stopMStimer();
-        BODY_SENSOR.stop();
-        HRM_SENSOR.stop();
-        LabelHRM.text = "--";
-        LabelCALS.text = "--";
+        Sensors.stop();
     }
-}
-function onTickEvent(evt) {
-    LabelTime.text = formatTo12hrTime(evt.date);
 }
 function onKeyPressEvent(evt) {
     if (evt.key === "back") {
         evt.preventDefault();
-        if (DlgPopup.style.display === "inline") {me.exit();}
+        if (ResultsDialog.isVisible()) {me.exit();}
         if (exercise.state === "started") {pauseWorkout();}
-        if (DlgExercise.style.display === "inline") {
-            onDlgBtnCancel();}
+        if (EndDialog.isVisible()) {
+            EndDialog.hide();}
         else {
             onBtnFinishClicked();}
     }
 }
-function onDlgBtnCancel() {
-    debugLog("dlg cancel");
-    displayElement(DlgExercise, false);
-}
-function onDlgBtnEnd() {
-    debugLog("dlg end");
-    exercise.stop();
-    stopMStimer();
-    clock.removeEventListener("tick", onTickEvent);
-    display.removeEventListener("change", onDisplayChangeEvent);
-
-    let workout = DlgPopup.getElementById("workout");
-    let itm1 = DlgPopup.getElementById("itm1");
-    let itm2 = DlgPopup.getElementById("itm2");
-    let itm3 = DlgPopup.getElementById("itm3");
-    let itm4 = DlgPopup.getElementById("itm4");
-    workout.getElementById("text").text = WorkoutName;
-    itm1.getElementById("text").text = `${formatActiveTime(exercise.stats.activeTime || 0)}`;
-    itm2.getElementById("text").text = `${exercise.stats.heartRate.average || 0} bpm avg`;
-    itm3.getElementById("text").text = `${exercise.stats.heartRate.max || 0} bpm max`;
-    itm4.getElementById("text").text = `${formatCalories(exercise.stats.calories || 0)} cals`;
-    displayElement(DlgPopup, true);
-}
 function onBtnFinishClicked() {
     debugLog("finished clicked");
     vibration.start("nudge");
-    displayElement(DlgExercise, true);
-}
-function onBtnToggleClicked() {
-    debugLog("toggle clicked");
-    (exercise.state === "started") ? pauseWorkout() : resumeWorkout();
+    EndDialog.show();
 }
 
 // ----------------------------------------------------------------------------
 
-function setToggleBtnIcon(icon) {
-    let iconPath = "./resources/images/" + icon;
-    BtnToggle.getElementById("combo-button-icon").href = iconPath;
-    BtnToggle.getElementById("combo-button-icon-press").href = iconPath;
+function formatCalories(calories) {
+    return calories.toLocaleString();
 }
-
-function getBPM() {
-    // off-wrist
-    if (!BODY_SENSOR.present) {return "--";}
-    return HRM_SENSOR.heartRate || "--";
+function formatActiveTime(activeTime) {
+    let seconds = (activeTime / 1000).toFixed(0);
+    let minutes = Math.floor(seconds / 60);
+    let hours;
+    if (minutes > 59) {
+        hours = Math.floor(minutes / 60);
+        hours = zeroPad(hours);
+        minutes = minutes - hours * 60;
+        minutes = zeroPad(minutes);
+    }
+    seconds = Math.floor(seconds % 60);
+    seconds = zeroPad(seconds);
+    if (hours) {
+        return `${hours}:${minutes}:${seconds}`;
+    }
+    return `${minutes}:${seconds}`;
 }
 
 //  ----------------------------------------------------------------------------
 
 let msec = 0;
+let msState = false;
+let msInterval;
 function msecTimer() {
     // msec trigger.
-    LabelDurationMsec.text = `${msec}`;
+    ActiveTimeDisplay.MsecText.text = `${msec}`;
     if (msec < 9) {msec+=1;}
     else {
         msec=0;
         // seconds trigger.
-        LabelHRM.text = getBPM();
+        LabelHRM.text = Sensors.bpm();
         LabelCALS.text = formatCalories(exercise.stats.calories);
-        LabelDuration.text = `${formatActiveTime(exercise.stats.activeTime)}.`;
+        ActiveTimeDisplay.setActiveTime(exercise.stats.activeTime);
     };
 }
-
-let msState = false;
-let msInterval;
 function startMStimer() {
     debugLog("msec timer started");
     if (!msState) {
@@ -195,34 +227,47 @@ function stopMStimer() {
     clearInterval(msInterval); msState=false;
 }
 
+//  ----------------------------------------------------------------------------
+
 function startWorkout(workout) {
-    BODY_SENSOR.start();
-    HRM_SENSOR.start();
-    setToggleBtnIcon(ICON_PAUSE);
+    debugLog("started workout");
+    Sensors.start();
+    BtnToggle.play();
     exercise.start(workout);
     msec = Math.floor(exercise.stats.activeTime / 100) % 10;
-
-    LabelDuration.text = `${formatActiveTime(exercise.stats.activeTime)}.`;
+    ActiveTimeDisplay.setActiveTime(exercise.stats.activeTime);
     startMStimer();
     vibration.start("nudge");
 }
 function pauseWorkout() {
     debugLog("paused workout");
-    BottomText.animate("enable");
-    setToggleBtnIcon(ICON_PLAY);
-    displayElement(BtnFinish, true);
+    LabelBottom.animate("enable");
+    BtnToggle.pause();
+    show(BtnFinish);
     exercise.pause();
     stopMStimer();
     vibration.start("bump");
 }
 function resumeWorkout() {
     debugLog("resume workout");
-    BottomText.animate("disable");
-    setToggleBtnIcon(ICON_PAUSE);
-    displayElement(BtnFinish, false);
+    LabelBottom.animate("disable");
+    BtnToggle.play();
+    hide(BtnFinish);
     exercise.resume();
+
     msec = Math.floor(exercise.stats.activeTime / 100) % 10;
-    LabelDuration.text = `${formatActiveTime(exercise.stats.activeTime)}.`;
+    ActiveTimeDisplay.setActiveTime(exercise.stats.activeTime);
     startMStimer();
     vibration.start("bump");
+}
+function endWorkout() {
+    debugLog("dlg end");
+    display.removeEventListener("change", onDisplayChangeEvent);
+    exercise.stop();
+    stopMStimer();
+    ResultsDialog.setLabel("itm1", `${formatActiveTime(exercise.stats.activeTime || 0)}`);
+    ResultsDialog.setLabel("itm2", `${exercise.stats.heartRate.average || 0} bpm avg`);
+    ResultsDialog.setLabel("itm3", `${exercise.stats.heartRate.max || 0} bpm max`);
+    ResultsDialog.setLabel("itm4", `${formatCalories(exercise.stats.calories || 0)} cals`);
+    show(ResultsDialog.Element);
 }

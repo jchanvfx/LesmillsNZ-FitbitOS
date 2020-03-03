@@ -76,7 +76,7 @@ export function fetchClasses(clubID, callbackFunc) {
                 let clsColor = clsInfo.Colour;
                 let clsName = clsInfo.ClassName;
                 clsName = clsName.replace(/Virtual|virtual|30|45/g, "");
-                clsName = clsName.replace(/^\s+|\s+$/g, '');
+                clsName = clsName.replace(/^\s+|\s+$/g, "");
                 if (fitnessClasses.includes(clsName)) {
                     let idx = fitnessClasses.indexOf(clsName);
                     if (fitnessColors[idx] === null && clsColor !== null) {

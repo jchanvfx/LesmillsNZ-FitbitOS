@@ -1,4 +1,4 @@
-<symbol id="exercise-dlg">
+<symbol id="question-dialog">
     <rect width="100%" height="100%" fill="black" />
     <use id="mixedtext" href="#mixed-text-center-mid" class="dialog-mixed-text" fill="fb-white">
         <set href="#top-padding" attributeName="display" to="none" />
@@ -16,4 +16,16 @@
         <set href="#text" attributeName="text-buffer" to="Start" />
         <set href="#text" attributeName="text-anchor" to="middle" />
     </use>
+</symbol>
+
+<symbol id="message-dialog">
+    <section y="50" height="100%-50">
+        <rect width="100%" height="100%" fill="black" />
+        <use id="mixedtext" href="#mixed-text-center-mid" height="100%" fill="fb-yellow">
+            <set href="#header/text" attributeName="text-buffer" to="{no data}"/>
+            <set href="#header/text" attributeName="text-length" to="16" />
+            <set href="#copy/text" attributeName="text-buffer" to="{no data}"/>
+            <set href="#copy/text" attributeName="text-length" to="128" />
+        </use>
+    </section>
 </symbol>

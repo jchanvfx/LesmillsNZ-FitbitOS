@@ -45,7 +45,7 @@
         x="50%" y="35%"
         font-size="26"
         text-anchor="middle"
-        fill="#4169E1"
+        fill="#00BFFF"
         text-length="24" />
 
     <!-- Timecode -->
@@ -122,7 +122,7 @@
     </use>
 
     <!-- Exercise Dialog -->
-    <use id="exe-dialog" href="#exercise-dlg" display="none"/>
+    <use id="question-dialog" href="#question-dialog" display="none"/>
     <!-- Finish Screen -->
     <use id="exe-popup" href="#exercise-popup" display="none" />
 </svg>

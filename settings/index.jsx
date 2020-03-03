@@ -30,9 +30,9 @@ function settingsComponent(props) {
             />
 
             {/* <Select
-                title="Default Startup Screen"
+                title="Default Home Screen"
                 label={`Selection`}
-                settingsKey="startupScreen"
+                settingsKey="homeScreen"
                 options={[
                     {name:"Workouts"},
                     {name:"Timetable"},

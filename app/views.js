@@ -14,6 +14,7 @@ export function init(_views, _prefix) {
     let viewsPrefix = _prefix;
     const viewsSuffix = ".gui";
     let viewSelected;
+    let viewReturn;
 
     /**
      * Select a specific view by its index. The view's associated JavaScript is
@@ -26,7 +27,7 @@ export function init(_views, _prefix) {
         viewJSLoader()
             .then(({ init }) => {
                 document.replaceSync(`${viewsPrefix}${viewGUI}${viewsSuffix}`);
-                init({ navigate });
+                viewReturn = init({ navigate });
             })
             .catch((err) => {
                 console.error(`Failed to load view JS:\n  ${viewGUI}:${err}`);
@@ -39,6 +40,9 @@ export function init(_views, _prefix) {
      * file extension.
      */
     const navigate = _viewName => {
+        if (typeof viewReturn === "function") {
+            viewReturn();
+        };
         const index = views.indexOf(views.filter(el => el[0] == _viewName)[0]);
         select(index);
     };
