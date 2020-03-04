@@ -21,8 +21,9 @@ let PhoneIcon;
 let DateLabel;
 let TimeLabel;
 let BottomLabel;
-let TimetableTile;
 let WorkoutsTile;
+let TimetableTile;
+let TimetableTileTopText;
 
 // screen entry point.
 let views;
@@ -37,8 +38,9 @@ export function init(_views) {
     TimeLabel       = document.getElementById("time-text");
     BottomLabel     = document.getElementById("bottom-text");
     let tileList    = document.getElementById("home-list")
-    TimetableTile   = tileList.getElementById("timetable-tile");
     WorkoutsTile    = tileList.getElementById("workouts-tile");
+    TimetableTile   = tileList.getElementById("timetable-tile");
+    TimetableTileTopText = TimetableTile.getElementByElementById("text-top");
 
     debugLog("view-tmpl :: initialize!");
     onMount();
@@ -80,8 +82,13 @@ function onMount() {
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
         hide(PhoneIcon) : show(PhoneIcon);
 
-    // let settings = AppSettings.load();
-
+    let settings = AppSettings.load();
+    if (settings.club === underfined) {
+        sendValue("lm-sync");
+        (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
+            TimetableTileHeader.text = "Reteving Location..." :
+            TimetableTileHeader.text = "Display";
+    }
 
 }
 
@@ -133,6 +140,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 let clubName = evt.data.value;
                 AppSettings.setValue("club", clubName);
+                TimetableTileHeader.text = clubName;
                 LoadingScreen.hide();
                 debugLog(`Club changed to: ${clubName}`);
             }
@@ -141,6 +149,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 let clubName = evt.data.value;
                 AppSettings.setValue("club", clubName);
+                TimetableTileHeader.text = clubName;
                 LoadingScreen.hide();
                 debugLog(`Club changed to: ${clubName}`);
             }
