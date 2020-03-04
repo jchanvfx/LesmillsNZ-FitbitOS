@@ -82,14 +82,8 @@ function onMount() {
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
         hide(PhoneIcon) : show(PhoneIcon);
 
-    let settings = AppSettings.load();
-    if (settings.club === underfined) {
-        sendValue("lm-sync");
-        (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
-            TimetableTileHeader.text = "Reteving Location..." :
-            TimetableTileHeader.text = "Display";
-    }
-
+    TimetableTileHeader.text = "Club:";
+    sendValue("lm-sync");
 }
 
 // Clean-up function executed before the view is unloaded.
@@ -140,7 +134,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 let clubName = evt.data.value;
                 AppSettings.setValue("club", clubName);
-                TimetableTileHeader.text = clubName;
+                TimetableTileHeader.text = `Club: (${clubName})`;
                 LoadingScreen.hide();
                 debugLog(`Club changed to: ${clubName}`);
             }
@@ -149,7 +143,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 let clubName = evt.data.value;
                 AppSettings.setValue("club", clubName);
-                TimetableTileHeader.text = clubName;
+                TimetableTileHeader.text = `Club: (${clubName})`;
                 LoadingScreen.hide();
                 debugLog(`Club changed to: ${clubName}`);
             }
