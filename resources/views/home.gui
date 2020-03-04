@@ -76,8 +76,8 @@
             width="50%"
             font-size="24"
             font-family="System-Bold"
-            text-length="12"
-            >00 Month</text>
+            text-length="24"
+            />
         <text
             id="time-text"
             x="100%"
@@ -87,7 +87,7 @@
             text-anchor="end"
             font-family="System-Bold"
             text-length="5"
-            >00:00--</text>
+            />
         <image
             id="no-phone"
             x="50%-13"

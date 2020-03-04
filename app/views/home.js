@@ -49,9 +49,9 @@ function onMount() {
 
     // Configure Date & Time
     TimeLabel.text = formatTo12hrTime(date);
-    DateLabel.text = `${date.getDate()} ${MONTHS_SHORT[date.getMonth()]}`;
+    DateLabel.text = `${date.getDate()} ${MONTHS_SHORT[date.getMonth()]} (Today)`;
 
-    BottomLabel.text = `version ${BUILD_VER}`;
+    BottomLabel.text = `Build: v${BUILD_VER}`;
 
     // wire up events.
     clock.granularity = "minutes";
@@ -65,11 +65,13 @@ function onMount() {
 
     document.addEventListener("keypress", onKeyPressEvent);
 
-    TimetableTile.onclick   = evt => {
+    TimetableTile.getElementById("click-pad").onclick = evt => {
+        debugLog("TimetableTile clicked.");
         TimetableTile.getElementById("overlay").animate("enable");
         // setTimeout(() => {views.navigate("timetable");}, 300);
     };
-    WorkoutsTile.onclick    = evt => {
+    WorkoutsTile.getElementById("click-pad").onclick = evt => {
+        debugLog("WorkoutsTile clicked.");
         WorkoutsTile.getElementById("overlay").animate("enable");
         // setTimeout(() => {views.navigate("workouts");}, 300);
     };
