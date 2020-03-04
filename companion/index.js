@@ -122,6 +122,16 @@ messaging.peerSocket.onmessage = (evt) => {
                 sendValue("lm-noClub");
             }
             break;
+        case "lm-sync":
+            if (clubSettings != null) {
+                let selectedClub = JSON.parse(clubSettings).values[0];
+                let clubID = selectedClub.value;
+                let clubName = selectedClub.name;
+                sendValue("lm-syncReply", clubName);
+            } else {
+                sendValue("lm-noClub");
+            }
+            break;
         default:
             return;
     }
