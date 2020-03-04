@@ -104,7 +104,7 @@ function onMount() {
     SideMenu.SubButton3.text = `${DAYS_SHORT[date2.getDay()]} ` +
                                `${date2.getDate()} ` +
                                `${MONTHS_SHORT[date2.getMonth()]}`;
-    SideMenu.Footer.text     = BUILD_VER;
+    SideMenu.Footer.text     = "v" + BUILD_VER;
     hide(SideMenu.Element);
 
     // disable jumpTo button.
@@ -135,7 +135,7 @@ function onMount() {
     });
     // workout button.
     SideMenu.MainButton.addEventListener("activate", () => {
-        views.navigate("classes");
+        views.navigate("workouts");
     });
     // timetable schedule buttons.
     SideMenu.SubButton1.addEventListener("activate", () => {
@@ -166,12 +166,12 @@ function onMount() {
 // No need to unsubscribe from DOM events, it's done automatically.
 function onUnMount() {
     debugLog(">>> unMounted - Workouts");
-    LM_CLASSES.length = 0;
-    clock.granularity = "off";
-    clock.ontick = undefined;
-    messaging.peerSocket.onopen = undefined;
-    messaging.peerSocket.onclose = undefined;
-    messaging.peerSocket.onmessage = undefined;
+    LM_CLASSES.length               = 0;
+    clock.granularity               = "off";
+    clock.ontick                    = undefined;
+    messaging.peerSocket.onopen     = undefined;
+    messaging.peerSocket.onclose    = undefined;
+    messaging.peerSocket.onmessage  = undefined;
     inbox.removeEventListener("newfile", onDataRecieved);
 }
 
@@ -202,6 +202,7 @@ function onMessageRecieved(evt) {
         case "lm-classesReply":
             if (evt.data.value) {
                 let clubName = evt.data.value;
+                AppSettings.setValue("club", clubName);
                 debugLog(`${clubName} classes queued.`);
                 if (OnFileRecievedUpdateGui) {
                     LoadingScreen.Label.text = "Loading Workouts...";
@@ -254,7 +255,7 @@ function onDataRecieved() {
 }
 
 // send data to companion.
-export function sendValue(key, data=null) {
+function sendValue(key, data=null) {
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
         if (data == null) {
             messaging.peerSocket.send({key: key});

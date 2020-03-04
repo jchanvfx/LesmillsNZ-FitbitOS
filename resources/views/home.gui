@@ -1,0 +1,115 @@
+<svg id="view-home" viewport-fill="black">
+    <defs>
+        <symbol
+            id="home-tile-item"
+            href="#tile-list-item"
+            focusable="false"
+            pointer-events="none"
+            system-events="all"
+            display="inline">
+            <rect id="background"/>
+            <!-- tl -->
+            <rect x="1%" y="3%" width="10" height="10" fill="black" />
+            <circle r="10" cx="1%+10" cy="3%+10" class="home-tile-cnr" />
+            <!-- tr -->
+            <rect x="98%-7" y="3%" width="10" height="10" fill="black" />
+            <circle r="10" cx="98%-7" cy="3%+10" class="home-tile-cnr" />
+            <!-- bl -->
+            <rect x="1%" y="96%-8" width="10" height="10" fill="black" />
+            <circle r="10" cx="1%+10" cy="96%-8" class="home-tile-cnr" />
+            <!-- br -->
+            <rect x="98%-7" y="96%-8" width="10" height="10" fill="black" />
+            <circle r="10" cx="98%-7" cy="96%-8" class="home-tile-cnr" />
+            <text
+                id="text-top"
+                x="20" y="35%"
+                font-size="20"
+                font-family="System-Regular" />
+            <text
+                id="text"
+                x="20" y="$+25"
+                font-size="50"
+                font-family="System-Light" />
+            <rect id="overlay" x="98%-7" y="96%-8">
+                <animate attributeName="opacity" begin="enable"
+                         from="1" to="0" dur="0.3" final="restore" />
+            </rect>
+            <rect
+                id="click-pad"
+                pointer-events="all"
+                x="0"
+                y="0"
+                width="100%"
+                height="100%-2"
+                opacity="0" />
+        </symbol>
+    </defs>
+    <!-- Main Wrapper -->
+    <section y="30" height="100%-80">
+        <use id="home-list" href="#tile-list">
+            <var id="virtual" value="1" />
+            <var id="reorder-enabled" value="0" />
+            <var id="peek-enabled" value="0" />
+            <var id="separator-height-bottom" value="2" />
+
+            <use id="timetable-tile" href="#home-tile-item">
+                <set href="text-top" attributeName="fill" to="fb-aqua" />
+                <set href="text-top" attributeName="text-buffer" to="Club:" />
+                <set href="text" attributeName="text-buffer" to="Timetable" />
+            </use>
+
+            <use id="workouts-tile" href="#home-tile-item">
+                <set href="text-top" attributeName="fill" to="fb-yellow" />
+                <set href="text-top" attributeName="text-buffer" to="Group Fitness:" />
+                <set href="text" attributeName="text-buffer" to="Workouts" />
+            </use>
+
+        </use>
+    </section>
+    <!-- Status Bar -->
+    <section x="5" width="100%-10" height="30">
+        <!-- <rect width="100%" height="100%" fill="green" /> -->
+        <text
+            id="date-text"
+            x="0"
+            y="50%+10"
+            width="50%"
+            font-size="24"
+            font-family="System-Bold"
+            text-length="12"
+            >00 Month</text>
+        <text
+            id="time-text"
+            x="100%"
+            y="50%+10"
+            width="50%"
+            font-size="24"
+            text-anchor="end"
+            font-family="System-Bold"
+            text-length="5"
+            >00:00--</text>
+        <image
+            id="no-phone"
+            x="50%-13"
+            y="50%-13"
+            width="26"
+            height="26"
+            fill="fb-red"
+            href="./resources/images/no_phone.png" />
+    </section>
+    <text
+        id="bottom-text"
+        x="50%"
+        y="100%-20"
+        width="100%"
+        font-size="20"
+        text-anchor="middle"
+        font-family="System-Regular"
+        text-length="24"
+        fill="fb-light-gray"
+        />
+    <!-- Message Dialog -->
+    <use id="message-dialog" href="#message-dialog" display="none" />
+    <!-- Loading Screen -->
+    <use id="loading-screen" href="#loading-screen" display="none" />
+</svg>

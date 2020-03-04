@@ -40,7 +40,7 @@
             <use href="#scrollview-item" height="25" class="side-menu-header">
                 <text id="footer-label"
                       fill="fb-gray"
-                      text-length="12"
+                      text-length="16"
                       font-family="System-Regular" />
             </use>
         </use>

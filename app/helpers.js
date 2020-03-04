@@ -97,6 +97,15 @@ export function createLoadingScreenHelper(element) {
 
 export function createSettingsHelper(settingsFile) {
     return {
+        setValue(key, value) {
+            let data = this.load();
+            data[key] = value;
+            this.save(data);
+        },
+        getValue(key) {
+            let data = this.load();
+            return data[key];
+        },
         save(data) {
             writeFileSync(settingsFile, data, "cbor");
         },

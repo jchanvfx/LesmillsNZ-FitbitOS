@@ -88,10 +88,10 @@ settingsStorage.onchange = (evt) => {
             lesMills.fetchTimetableData(clubID, timetableCallback);
             lesMills.fetchClasses(clubID, fitnessClassesCallback);
             break;
-        case "homeScreen":
-            let selectedScreen = JSON.parse(evt.newValue).values[0];
-            sendValue("lm-defaultHome", {value: selectedScreen.name});
-            break;
+        // case "homeScreen":
+        //     let selectedScreen = JSON.parse(evt.newValue).values[0];
+        //     sendValue("lm-defaultHome", {value: selectedScreen.name});
+        //     break;
         default:
             return;
     }
