@@ -45,7 +45,7 @@
         x="50%" y="35%"
         font-size="26"
         text-anchor="middle"
-        fill="#00BFFF"
+        fill="fb-aqua"
         text-length="24" />
 
     <!-- Timecode -->

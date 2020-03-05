@@ -104,7 +104,7 @@ function onMount() {
     // Configure SideMenu button labels.
     SideMenu.MainLabel.text  = "Group Fitness";
     SideMenu.MainButton.text = "Workouts";
-    SideMenu.SubLabel.text   = "Timetable Schedule";
+    SideMenu.SubLabel.text   = "Timetable";
     SideMenu.SubButton1.text = `${DAYS_SHORT[date.getDay()]} ` +
                                `${date.getDate()} ` +
                                `${MONTHS_SHORT[date.getMonth()]}`;
