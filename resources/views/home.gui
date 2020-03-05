@@ -30,7 +30,7 @@
                 x="20" y="$+25"
                 font-size="50"
                 font-family="System-Light" />
-            <rect id="overlay" x="98%-7" y="96%-8">
+            <rect id="overlay">
                 <animate attributeName="opacity" begin="enable"
                          from="1" to="0" dur="0.3" final="restore" />
             </rect>
@@ -45,7 +45,7 @@
         </symbol>
     </defs>
     <!-- Main Wrapper -->
-    <section y="30" height="100%-80">
+    <section y="40" height="100%-80">
         <use id="home-list" href="#tile-list">
             <var id="virtual" value="1" />
             <var id="reorder-enabled" value="0" />
@@ -67,7 +67,7 @@
         </use>
     </section>
     <!-- Status Bar -->
-    <section x="5" width="100%-10" height="30">
+    <section x="5" width="100%-10" height="40">
         <!-- <rect width="100%" height="100%" fill="green" /> -->
         <text
             id="date-text"
@@ -86,7 +86,7 @@
             font-size="24"
             text-anchor="end"
             font-family="System-Bold"
-            text-length="5"
+            text-length="7"
             />
         <image
             id="no-phone"

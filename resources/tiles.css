@@ -126,6 +126,14 @@
     font-family: System-Bold;
     text-length: 14;
 }
+#home-tile-item rect#overlay {
+    x: 4%;
+    y: 14%;
+    width: 92%;
+    height: 72%;
+    fill:#404040;
+    opacity: 0;
+}
 #home-tile-item rect#background {
     x: 3;
     y: 2;
