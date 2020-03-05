@@ -4,9 +4,9 @@ import * as messaging from "messaging";
 import { me } from "appbit";
 import { display } from "display";
 
-import { debugLog } from "../utils"
+import { debugLog, toTitleCase } from "../utils"
 import { SETTINGS_FILE, BUILD_VER } from "../config"
-import { MONTHS_SHORT, date, formatTo12hrTime } from "../datelib"
+import { MONTHS, date, formatTo12hrTime } from "../datelib"
 import {
     show, hide,
     createLoadingScreenHelper,
@@ -23,24 +23,24 @@ let TimeLabel;
 let BottomLabel;
 let WorkoutsTile;
 let TimetableTile;
-let TimetableTileTopText;
+let TimetableTopText;
 
 // screen entry point.
 let views;
 export function init(_views) {
     views = _views;
 
-    AppSettings     = createSettingsHelper(SETTINGS_FILE);
-    MessageDialog   = createMessageDialogHelper(document.getElementById("message-dialog"));
-    LoadingScreen   = createLoadingScreenHelper(document.getElementById("loading-screen"));
-    PhoneIcon       = document.getElementById("no-phone");
-    DateLabel       = document.getElementById("date-text");
-    TimeLabel       = document.getElementById("time-text");
-    BottomLabel     = document.getElementById("bottom-text");
-    let tileList    = document.getElementById("home-list")
-    WorkoutsTile    = tileList.getElementById("workouts-tile");
-    TimetableTile   = tileList.getElementById("timetable-tile");
-    // TimetableTileTopText = TimetableTile.getByElementById("text-top");
+    AppSettings      = createSettingsHelper(SETTINGS_FILE);
+    MessageDialog    = createMessageDialogHelper(document.getElementById("message-dialog"));
+    LoadingScreen    = createLoadingScreenHelper(document.getElementById("loading-screen"));
+    PhoneIcon        = document.getElementById("no-phone");
+    DateLabel        = document.getElementById("date-text");
+    TimeLabel        = document.getElementById("time-text");
+    BottomLabel      = document.getElementById("bottom-text");
+    let tileList     = document.getElementById("home-list")
+    WorkoutsTile     = tileList.getElementById("workouts-tile");
+    TimetableTile    = tileList.getElementById("timetable-tile");
+    TimetableTopText = TimetableTile.getElementById("text-top");
 
     debugLog("view-tmpl :: initialize!");
     onMount();
@@ -51,9 +51,11 @@ function onMount() {
 
     // Configure Date & Time
     TimeLabel.text = formatTo12hrTime(date);
-    DateLabel.text = `${date.getDate()} ${MONTHS_SHORT[date.getMonth()]} (Today)`;
+    DateLabel.text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
 
-    BottomLabel.text = `Build: v${BUILD_VER}`;
+    // Configure Labels
+    TimetableTopText.text = "Club:";
+    BottomLabel.text = `v${BUILD_VER}`;
 
     // wire up events.
     clock.granularity = "minutes";
@@ -70,20 +72,19 @@ function onMount() {
     TimetableTile.getElementById("click-pad").onclick = evt => {
         debugLog("TimetableTile clicked.");
         TimetableTile.getElementById("overlay").animate("enable");
-        // setTimeout(() => {views.navigate("timetable");}, 300);
+        setTimeout(() => {views.navigate("timetable");}, 300);
     };
     WorkoutsTile.getElementById("click-pad").onclick = evt => {
         debugLog("WorkoutsTile clicked.");
         WorkoutsTile.getElementById("overlay").animate("enable");
-        // setTimeout(() => {views.navigate("workouts");}, 300);
+        setTimeout(() => {views.navigate("workouts");}, 300);
     };
 
     // Validate Phone connection.
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
         hide(PhoneIcon) : show(PhoneIcon);
 
-    // TimetableTileTopText.text = "Club:";
-    // sendValue("lm-sync");
+    sendValue("lm-sync");
 }
 
 // Clean-up function executed before the view is unloaded.
@@ -134,7 +135,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 let clubName = evt.data.value;
                 AppSettings.setValue("club", clubName);
-                TimetableTileTopText.text = `Club: (${clubName})`;
+                TimetableTopText.text = `${toTitleCase(clubName)}:`;
                 LoadingScreen.hide();
                 debugLog(`Club changed to: ${clubName}`);
             }
@@ -143,9 +144,9 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 let clubName = evt.data.value;
                 AppSettings.setValue("club", clubName);
-                TimetableTileTopText.text = `Club: (${clubName})`;
+                TimetableTopText.text = `${toTitleCase(clubName)}:`;
                 LoadingScreen.hide();
-                debugLog(`Club changed to: ${clubName}`);
+                debugLog(`Club location recieved: ${clubName}`);
             }
             break;
         default:
