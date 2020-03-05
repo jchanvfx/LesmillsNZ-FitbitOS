@@ -42,12 +42,13 @@ export function init(_views) {
 
 function onMount() {
 
+    let clubName = AppSettings.getValue("club");
+
     // Configure Date & Time
     TimeLabel.text = formatTo12hrTime(date);
     DateLabel.text = `${zeroPad(date.getDate())} ${MONTHS[date.getMonth()]}`;
 
     // Configure Labels
-    let clubName = AppSettings.getValue("club");
     TimetableTopText.text = clubName || "Club";
 
     // wire up events.
@@ -76,8 +77,19 @@ function onMount() {
     // Validate Phone connection.
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
         hide(PhoneIcon) : show(PhoneIcon);
+    
+    // Display message dialog if club location is not set.
+    if (clubName === undefined) {
+        MessageDialog.Header.text = "Club Not Set";
+        MessageDialog.Message.text =
+            "Please select a club location from the phone app settings.";
+        display.poke();
+        MessageDialog.show();
+    }
 
+    // Sync Club Location settings.
     sendValue("lm-sync");
+
 }
 
 // Clean-up function executed before the view is unloaded.
