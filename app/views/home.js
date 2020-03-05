@@ -88,7 +88,7 @@ function onUnMount() {
     messaging.peerSocket.onopen     = undefined;
     messaging.peerSocket.onclose    = undefined;
     messaging.peerSocket.onmessage  = undefined;
-    debugLog(">>> unMounted - view-tmpl");
+    debugLog(">>> unMounted - home");
 }
 
 function onKeyPressEvent(evt) {
