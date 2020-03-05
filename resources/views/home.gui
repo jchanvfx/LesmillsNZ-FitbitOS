@@ -15,10 +15,10 @@
             <rect x="98%-7" y="3%" width="10" height="10" fill="black" />
             <circle r="10" cx="98%-7" cy="3%+10" class="home-tile-cnr" />
             <!-- bl -->
-            <rect x="1%" y="96%-8" width="10" height="10" fill="black" />
+            <rect x="1%" y="96%-7" width="10" height="10" fill="black" />
             <circle r="10" cx="1%+10" cy="96%-8" class="home-tile-cnr" />
             <!-- br -->
-            <rect x="98%-7" y="96%-8" width="10" height="10" fill="black" />
+            <rect x="98%-7" y="96%-7" width="10" height="10" fill="black" />
             <circle r="10" cx="98%-7" cy="96%-8" class="home-tile-cnr" />
             <text
                 id="text-top"
@@ -50,7 +50,7 @@
             <var id="virtual" value="1" />
             <var id="reorder-enabled" value="0" />
             <var id="peek-enabled" value="0" />
-            <var id="separator-height-bottom" value="2" />
+            <var id="separator-height-bottom" value="4" />
 
             <use id="timetable-tile" href="#home-tile-item">
                 <set href="text-top" attributeName="fill" to="fb-aqua" />
