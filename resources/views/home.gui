@@ -55,13 +55,13 @@
             <use id="timetable-tile" href="#home-tile-item">
                 <set href="text-top" attributeName="fill" to="fb-aqua" />
                 <set href="text-top" attributeName="text-length" to="24" />
-                <set href="text-top" attributeName="text-buffer" to="Club:" />
+                <set href="text-top" attributeName="text-buffer" to="Club" />
                 <set href="text" attributeName="text-buffer" to="Timetable" />
             </use>
 
             <use id="workouts-tile" href="#home-tile-item">
                 <set href="text-top" attributeName="fill" to="fb-aqua" />
-                <set href="text-top" attributeName="text-buffer" to="Group Fitness:" />
+                <set href="text-top" attributeName="text-buffer" to="Group Fitness" />
                 <set href="text" attributeName="text-buffer" to="Workouts" />
             </use>
 
