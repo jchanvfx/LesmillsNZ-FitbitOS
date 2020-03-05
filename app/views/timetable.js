@@ -1,13 +1,13 @@
 import document from "document";
 import clock from "clock";
 import * as messaging from "messaging";
-import { me } from "appbit";
+// import { me } from "appbit";
 import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 
 import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../config"
-import { debugLog } from "../utils"
+import { debugLog, toTitleCase } from "../utils"
 import {
     DAYS_SHORT, MONTHS_SHORT,
     date, date1, date2, formatTo12hrTime
@@ -234,6 +234,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
+                AppSettings.setValue("club", toTitleCase(clubName));
                 debugLog(`Timetable :: club changed to: ${clubName}`);
                 LoadingScreen.Label.text = "Changing Clubs...";
                 LoadingScreen.SubLabel.text = clubName;
@@ -243,7 +244,7 @@ function onMessageRecieved(evt) {
         case "lm-fetchReply":
             if (OnFileRecievedUpdateGui) {
                 let clubName = evt.data.value;
-                AppSettings.setValue("club", clubName);
+                AppSettings.setValue("club", toTitleCase(clubName));
                 LoadingScreen.Label.text = "Retrieving Timetable...";
                 LoadingScreen.SubLabel.text = clubName;
                 LoadingScreen.show();

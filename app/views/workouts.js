@@ -1,13 +1,13 @@
 import clock from "clock";
 import document from "document";
 import * as messaging from "messaging";
-import { me } from "appbit";
+// import { me } from "appbit";
 import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, readFileSync, statSync } from "fs";
 
 import { CLASSES_FILE, SETTINGS_FILE, BUILD_VER } from "../config"
-import { debugLog } from "../utils"
+import { debugLog, toTitleCase } from "../utils"
 import { DAYS_SHORT, MONTHS_SHORT, date, date1, date2 } from "../datelib"
 import {
     show, hide,
@@ -193,6 +193,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
+                AppSettings.setValue("club", toTitleCase(clubName));
                 debugLog(`Workouts :: club changed to: ${clubName}`);
                 LoadingScreen.Label.text = "Changing Clubs...";
                 LoadingScreen.SubLabel.text = clubName;
@@ -202,7 +203,7 @@ function onMessageRecieved(evt) {
         case "lm-classesReply":
             if (evt.data.value) {
                 let clubName = evt.data.value;
-                AppSettings.setValue("club", clubName);
+                AppSettings.setValue("club", toTitleCase(clubName));
                 debugLog(`Workouts :: ${clubName} classes queued.`);
                 if (OnFileRecievedUpdateGui) {
                     LoadingScreen.Label.text = "Loading Workouts...";

@@ -35,7 +35,7 @@ export function init(_views) {
     TimetableTile    = tileList.getElementById("timetable-tile");
     TimetableTopText = TimetableTile.getElementById("text-top");
 
-    debugLog("view-tmpl :: initialize!");
+    debugLog("Home :: initialize!");
     onMount();
     return onUnMount;
 }
@@ -47,7 +47,8 @@ function onMount() {
     DateLabel.text = `${zeroPad(date.getDate())} ${MONTHS[date.getMonth()]}`;
 
     // Configure Labels
-    TimetableTopText.text = "Club";
+    let clubName = AppSettings.getValue("club");
+    TimetableTopText.text = clubName || "Club";
 
     // wire up events.
     clock.granularity = "minutes";
@@ -120,23 +121,26 @@ function onMessageRecieved(evt) {
             MessageDialog.Header.text = "Club Not Set";
             MessageDialog.Message.text =
                 "Please select a club location from the phone app settings.";
+            display.poke();
             MessageDialog.show();
             break;
         case "lm-clubChanged":
             if (evt.data.value) {
-                let clubName = evt.data.value;
+                let clubName = toTitleCase(evt.data.value);
                 AppSettings.setValue("club", clubName);
-                TimetableTopText.text = toTitleCase(clubName);
+                TimetableTopText.text = clubName;
                 MessageDialog.hide();
+                display.poke();
                 debugLog(`Home :: club changed: ${clubName}`);
             }
             break;
         case "lm-syncReply":
             if (evt.data.value) {
-                let clubName = evt.data.value;
+                let clubName = toTitleCase(evt.data.value);
                 AppSettings.setValue("club", clubName);
-                TimetableTopText.text = toTitleCase(clubName);
+                TimetableTopText.text = clubName;
                 MessageDialog.hide();
+                display.poke();
                 debugLog(`Home :: club location recieved: ${clubName}`);
             }
             break;
