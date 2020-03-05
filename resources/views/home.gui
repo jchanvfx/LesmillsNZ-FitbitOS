@@ -67,6 +67,8 @@
 
         </use>
     </section>
+    <!-- Message Dialog -->
+    <use id="message-dialog" href="#message-dialog" display="none" />
     <!-- Status Bar -->
     <section x="5" width="100%-10" height="40">
         <text
@@ -97,6 +99,4 @@
             fill="fb-red"
             href="./resources/images/no_phone.png" />
     </section>
-    <!-- Message Dialog -->
-    <use id="message-dialog" href="#message-dialog" display="none" />
 </svg>
