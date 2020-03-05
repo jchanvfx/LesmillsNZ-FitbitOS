@@ -94,7 +94,7 @@ function onMount() {
     // Configure SideMenu button labels.
     SideMenu.MainLabel.text  = "Group Fitness";
     SideMenu.MainButton.text = "Workouts";
-    SideMenu.SubLabel.text   = "Timetable Schedule";
+    SideMenu.SubLabel.text   = "Timetable";
     SideMenu.SubButton1.text = `${DAYS_SHORT[date.getDay()]} ` +
                                `${date.getDate()} ` +
                                `${MONTHS_SHORT[date.getMonth()]}`;
@@ -104,7 +104,7 @@ function onMount() {
     SideMenu.SubButton3.text = `${DAYS_SHORT[date2.getDay()]} ` +
                                `${date2.getDate()} ` +
                                `${MONTHS_SHORT[date2.getMonth()]}`;
-    SideMenu.Footer.text     = BUILD_VER;
+    SideMenu.Footer.text     = "v" + BUILD_VER;
     hide(SideMenu.Element);
 
     // disable jumpTo button.
@@ -135,7 +135,7 @@ function onMount() {
     });
     // workout button.
     SideMenu.MainButton.addEventListener("activate", () => {
-        views.navigate("classes");
+        views.navigate("workouts");
     });
     // timetable schedule buttons.
     SideMenu.SubButton1.addEventListener("activate", () => {
@@ -166,12 +166,12 @@ function onMount() {
 // No need to unsubscribe from DOM events, it's done automatically.
 function onUnMount() {
     debugLog(">>> unMounted - Workouts");
-    LM_CLASSES.length = 0;
-    clock.granularity = "off";
-    clock.ontick = undefined;
-    messaging.peerSocket.onopen = undefined;
-    messaging.peerSocket.onclose = undefined;
-    messaging.peerSocket.onmessage = undefined;
+    LM_CLASSES.length               = 0;
+    clock.granularity               = "off";
+    clock.ontick                    = undefined;
+    messaging.peerSocket.onopen     = undefined;
+    messaging.peerSocket.onclose    = undefined;
+    messaging.peerSocket.onmessage  = undefined;
     inbox.removeEventListener("newfile", onDataRecieved);
 }
 
@@ -182,7 +182,7 @@ function onMessageRecieved(evt) {
     display.poke();
     switch (evt.data.key) {
         case "lm-noClub":
-            debugLog("no club selected.");
+            debugLog("Workouts :: no club selected.");
             LoadingScreen.hide();
             MessageDialog.Header.text = "Club Not Set";
             MessageDialog.Message.text =
@@ -193,7 +193,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
-                debugLog(`Club changed to: ${clubName}`);
+                debugLog(`Workouts :: club changed to: ${clubName}`);
                 LoadingScreen.Label.text = "Changing Clubs...";
                 LoadingScreen.SubLabel.text = clubName;
                 LoadingScreen.show();
@@ -202,7 +202,8 @@ function onMessageRecieved(evt) {
         case "lm-classesReply":
             if (evt.data.value) {
                 let clubName = evt.data.value;
-                debugLog(`${clubName} classes queued.`);
+                AppSettings.setValue("club", clubName);
+                debugLog(`Workouts :: ${clubName} classes queued.`);
                 if (OnFileRecievedUpdateGui) {
                     LoadingScreen.Label.text = "Loading Workouts...";
                     LoadingScreen.SubLabel.text = clubName;
@@ -213,18 +214,12 @@ function onMessageRecieved(evt) {
             }
             break;
         case "lm-noClasses":
-            debugLog("no classes.");
+            debugLog("Workouts :: no classes.");
             LoadingScreen.hide();
             MessageDialog.Header.text = "No Classes";
             MessageDialog.Message.text =
                 "Failed to retrive group fitness workouts from database.";
             MessageDialog.show();
-            break;
-        case "lm-defaultHome":
-            let settings = AppSettings.load();
-            settings.homeScreen = evt.data.value;
-            AppSettings.save(settings);
-            debugLog(`default home screen: ${settings.homeScreen}`);
             break;
         default:
             return;
@@ -254,7 +249,7 @@ function onDataRecieved() {
 }
 
 // send data to companion.
-export function sendValue(key, data=null) {
+function sendValue(key, data=null) {
     if (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) {
         if (data == null) {
             messaging.peerSocket.send({key: key});
@@ -338,6 +333,9 @@ function onKeyPressEvent(evt) {
             QuestionDialog.Header.text = "";
             QuestionDialog.hide();
         }
-        else {me.exit();}
+        else {
+            views.navigate("home");
+            // me.exit();
+        }
     }
 }

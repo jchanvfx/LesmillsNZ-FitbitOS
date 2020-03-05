@@ -2,28 +2,37 @@ import document from "document";
 import { me } from "appbit";
 import { debugLog } from "../utils";
 
-// screen initialize.
+let Button;
+
+// screen entry point.
 let views;
 export function init(_views) {
-  views = _views;
-  debugLog("view-tmpl init()");
-  onMount();
+    views = _views;
+
+    Button = document.getElementById("btn1");
+
+    debugLog("view-tmpl :: initialize!");
+    onMount();
+    return onUnMount;
 }
 
-// entry point when this view is mounted, setup elements and events.
 function onMount() {
-    let btn = document.getElementById("btn1");
-
-    btn.addEventListener("click", clickHandler);
-    document.addEventListener("keypress", keyHandler);
+    Button.addEventListener("click", onButtonClicked);
+    document.addEventListener("keypress", onKeyPressEvent);
 }
 
-function clickHandler(_evt) {
+// Clean-up function executed before the view is unloaded.
+// No need to unsubscribe from DOM events, it's done automatically.
+function onUnMount() {
+    debugLog(">>> unMounted - view-tmpl");
+}
+
+function onButtonClicked(_evt) {
     debugLog("Button Clicked!");
     // views.navigate("");
 }
 
-function keyHandler(evt) {
+function onKeyPressEvent(evt) {
     if (evt.key === "back") {
         evt.preventDefault();
         // views.navigate("");

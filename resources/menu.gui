@@ -22,17 +22,17 @@
                 <rect/><text id="sub-label" text-length="24" />
             </use>
             <use id="sub-itm1" href="#scrollview-item" height="62">
-                <use id="sub-btn1" href="#square-button" y="2" height="62" fill="fb-aqua">
+                <use id="sub-btn1" href="#square-button" y="2" height="62" fill="fb-yellow">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
             <use id="sub-itm2" href="#scrollview-item" height="62">
-                <use id="sub-btn2" href="#square-button" y="$" height="62" fill="fb-aqua">
+                <use id="sub-btn2" href="#square-button" y="$" height="62" fill="fb-yellow">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
             <use id="sub-itm3" href="#scrollview-item" height="62">
-                <use id="sub-btn3" href="#square-button" y="$" height="62" fill="fb-aqua">
+                <use id="sub-btn3" href="#square-button" y="$" height="62" fill="fb-yellow">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
@@ -40,7 +40,7 @@
             <use href="#scrollview-item" height="25" class="side-menu-header">
                 <text id="footer-label"
                       fill="fb-gray"
-                      text-length="12"
+                      text-length="16"
                       font-family="System-Regular" />
             </use>
         </use>

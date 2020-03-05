@@ -6,7 +6,7 @@
         </symbol>
         <symbol id="exercise-popup">
             <rect width="100%" height="100%" fill="black" />
-            <text x="5" y="45" font-size="45" height="50" fill="yellowgreen">Nice Work!</text>
+            <text x="5" y="45" font-size="45" height="50" fill="fb-yellow">Nice Work!</text>
             <use id="workout" y="$" href="#exercise-popup-itm">
                 <set href="#icon" attributeName="href" to="./resources/images/stat_drop_32px_p.png" />
                 <set href="#icon" attributeName="fill" to="fb-cerulean" />
@@ -27,7 +27,7 @@
                 <set href="#icon" attributeName="href" to="./resources/images/stat_cals_open_32px.png" />
                 <set href="#icon" attributeName="fill" to="fb-peach" />
             </use>
-            <use id="btn-done" href="#square-button" y="100%-60" height="60" fill="yellowgreen">
+            <use id="btn-done" href="#square-button" y="100%-60" height="60" fill="fb-yellow">
                 <set href="#text" attributeName="text-buffer" to="Done" />
                 <set href="#text" attributeName="text-length" to="4" />
             </use>
@@ -45,7 +45,7 @@
         x="50%" y="35%"
         font-size="26"
         text-anchor="middle"
-        fill="#00BFFF"
+        fill="fb-aqua"
         text-length="24" />
 
     <!-- Timecode -->
