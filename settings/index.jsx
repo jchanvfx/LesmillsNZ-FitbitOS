@@ -28,17 +28,6 @@ function settingsComponent(props) {
                     />
                 }
             />
-
-            {/* <Select
-                title="Default Home Screen"
-                label={`Selection`}
-                settingsKey="homeScreen"
-                options={[
-                    {name:"Workouts"},
-                    {name:"Timetable"},
-                ]}
-            /> */}
-
         </Page>
     );
 }

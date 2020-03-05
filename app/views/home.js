@@ -4,23 +4,18 @@ import * as messaging from "messaging";
 import { me } from "appbit";
 import { display } from "display";
 
-import { debugLog, toTitleCase } from "../utils"
-import { SETTINGS_FILE, BUILD_VER } from "../config"
+import { SETTINGS_FILE } from "../config"
+import { debugLog, toTitleCase, zeroPad } from "../utils"
 import { MONTHS, date, formatTo12hrTime } from "../datelib"
 import {
-    show, hide,
-    createLoadingScreenHelper,
-    createMessageDialogHelper,
-    createSettingsHelper
+    show, hide, createMessageDialogHelper, createSettingsHelper
 } from "../helpers"
 
 let AppSettings;
 let MessageDialog;
-let LoadingScreen;
 let PhoneIcon;
 let DateLabel;
 let TimeLabel;
-let BottomLabel;
 let WorkoutsTile;
 let TimetableTile;
 let TimetableTopText;
@@ -32,11 +27,9 @@ export function init(_views) {
 
     AppSettings      = createSettingsHelper(SETTINGS_FILE);
     MessageDialog    = createMessageDialogHelper(document.getElementById("message-dialog"));
-    LoadingScreen    = createLoadingScreenHelper(document.getElementById("loading-screen"));
     PhoneIcon        = document.getElementById("no-phone");
     DateLabel        = document.getElementById("date-text");
     TimeLabel        = document.getElementById("time-text");
-    BottomLabel      = document.getElementById("bottom-text");
     let tileList     = document.getElementById("home-list")
     WorkoutsTile     = tileList.getElementById("workouts-tile");
     TimetableTile    = tileList.getElementById("timetable-tile");
@@ -51,11 +44,10 @@ function onMount() {
 
     // Configure Date & Time
     TimeLabel.text = formatTo12hrTime(date);
-    DateLabel.text = `${date.getDate()} ${MONTHS[date.getMonth()]}`;
+    DateLabel.text = `${zeroPad(date.getDate())} ${MONTHS[date.getMonth()]}`;
 
     // Configure Labels
-    TimetableTopText.text = "Club:";
-    BottomLabel.text = `v${BUILD_VER}`;
+    TimetableTopText.text = "Club";
 
     // wire up events.
     clock.granularity = "minutes";
@@ -124,8 +116,7 @@ function onMessageRecieved(evt) {
     display.poke();
     switch (evt.data.key) {
         case "lm-noClub":
-            debugLog("no club selected.");
-            LoadingScreen.hide();
+            debugLog("Home :: no club selected.");
             MessageDialog.Header.text = "Club Not Set";
             MessageDialog.Message.text =
                 "Please select a club location from the phone app settings.";
@@ -135,18 +126,18 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 let clubName = evt.data.value;
                 AppSettings.setValue("club", clubName);
-                TimetableTopText.text = `${toTitleCase(clubName)}:`;
-                LoadingScreen.hide();
-                debugLog(`Club changed to: ${clubName}`);
+                TimetableTopText.text = toTitleCase(clubName);
+                MessageDialog.hide();
+                debugLog(`Home :: club changed: ${clubName}`);
             }
             break;
         case "lm-syncReply":
             if (evt.data.value) {
                 let clubName = evt.data.value;
                 AppSettings.setValue("club", clubName);
-                TimetableTopText.text = `${toTitleCase(clubName)}:`;
-                LoadingScreen.hide();
-                debugLog(`Club location recieved: ${clubName}`);
+                TimetableTopText.text = toTitleCase(clubName);
+                MessageDialog.hide();
+                debugLog(`Home :: club location recieved: ${clubName}`);
             }
             break;
         default:

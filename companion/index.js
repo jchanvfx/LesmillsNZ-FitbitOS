@@ -5,9 +5,9 @@ import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
 
-const LM_CLASSES = "LM_classes";
-const LM_PREFIX = "LM_dat";
-const LM_EXT = ".cbor";
+const LM_CLASSES    = "LM_classes";
+const LM_PREFIX     = "LM_dat";
+const LM_EXT        = ".cbor";
 
 // check permissions
 if (!companion.permissions.granted("access_internet")) {
@@ -60,8 +60,8 @@ function timetableCallback(data) {
         `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`,
     ];
     for (let i = 0; i < keys.length; i++) {
-        let dayKey = keys[i];
-        let fileName = `${LM_PREFIX}${dayKey}${LM_EXT}`;
+        let dayKey      = keys[i];
+        let fileName    = `${LM_PREFIX}${dayKey}${LM_EXT}`;
         sendData("lm-dataQueued", data[dayKey.toString()], fileName, clubName);
     }
 }
@@ -81,17 +81,13 @@ function fitnessClassesCallback(data) {
 settingsStorage.onchange = (evt) => {
     switch (evt.key) {
         case "clubID":
-            let selectedClub = JSON.parse(evt.newValue).values[0];
-            let clubID = selectedClub.value;
-            let clubName = selectedClub.name;
+            let selectedClub    = JSON.parse(evt.newValue).values[0];
+            let clubID          = selectedClub.value;
+            let clubName        = selectedClub.name;
             sendValue("lm-clubChanged", clubName);
             lesMills.fetchTimetableData(clubID, timetableCallback);
             lesMills.fetchClasses(clubID, fitnessClassesCallback);
             break;
-        // case "homeScreen":
-        //     let selectedScreen = JSON.parse(evt.newValue).values[0];
-        //     sendValue("lm-defaultHome", {value: selectedScreen.name});
-        //     break;
         default:
             return;
     }
@@ -102,9 +98,9 @@ messaging.peerSocket.onmessage = (evt) => {
     switch (evt.data.key) {
         case "lm-fetch":
             if (clubSettings != null) {
-                let selectedClub = JSON.parse(clubSettings).values[0];
-                let clubID = selectedClub.value;
-                let clubName = selectedClub.name;
+                let selectedClub    = JSON.parse(clubSettings).values[0];
+                let clubID          = selectedClub.value;
+                let clubName        = selectedClub.name;
                 lesMills.fetchTimetableData(clubID, timetableCallback);
                 sendValue("lm-fetchReply", clubName);
             } else {
@@ -113,9 +109,9 @@ messaging.peerSocket.onmessage = (evt) => {
             break;
         case "lm-classes":
             if (clubSettings != null) {
-                let selectedClub = JSON.parse(clubSettings).values[0];
-                let clubID = selectedClub.value;
-                let clubName = selectedClub.name;
+                let selectedClub    = JSON.parse(clubSettings).values[0];
+                let clubID          = selectedClub.value;
+                let clubName        = selectedClub.name;
                 lesMills.fetchClasses(clubID, fitnessClassesCallback);
                 sendValue("lm-classesReply", clubName);
             } else {
@@ -124,9 +120,8 @@ messaging.peerSocket.onmessage = (evt) => {
             break;
         case "lm-sync":
             if (clubSettings != null) {
-                let selectedClub = JSON.parse(clubSettings).values[0];
-                let clubID = selectedClub.value;
-                let clubName = selectedClub.name;
+                let selectedClub    = JSON.parse(clubSettings).values[0];
+                let clubName        = selectedClub.name;
                 sendValue("lm-syncReply", clubName);
             } else {
                 sendValue("lm-noClub");

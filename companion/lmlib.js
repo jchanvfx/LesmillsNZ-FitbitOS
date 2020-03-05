@@ -19,14 +19,14 @@ export function fetchTimetableData(clubID, callbackFunc) {
             date1.setDate(today.getDate() + 1);
             date2.setDate(today.getDate() + 2);
 
-            let dKey = `${today.getDay()}${today.getDate()}${today.getMonth()}`;
+            let dKey  = `${today.getDay()}${today.getDate()}${today.getMonth()}`;
             let dKey1 = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
             let dKey2 = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
             let fltrs = [dKey, dKey1, dKey2];
 
             let timetable = {};
             timetable['fetched'] = today.toJSON();
-            timetable[dKey.toString()] = [];
+            timetable[dKey.toString()]  = [];
             timetable[dKey1.toString()] = [];
             timetable[dKey2.toString()] = [];
             // retrive and query 3 days of data.
@@ -69,12 +69,12 @@ export function fetchClasses(clubID, callbackFunc) {
     return fetch(urlAPI, fetchData)
         .then(response => response.json())
         .then(data => {
-            let fitnessClasses = [];
-            let fitnessColors = [];
+            let fitnessClasses  = [];
+            let fitnessColors   = [];
             for (let i = 0; i < data.Classes.length; i++) {
-                let clsInfo = data.Classes[i];
-                let clsColor = clsInfo.Colour;
-                let clsName = clsInfo.ClassName;
+                let clsInfo     = data.Classes[i];
+                let clsColor    = clsInfo.Colour;
+                let clsName     = clsInfo.ClassName;
                 clsName = clsName.replace(/Virtual|virtual|30|45/g, "");
                 clsName = clsName.replace(/^\s+|\s+$/g, "");
                 if (fitnessClasses.includes(clsName)) {

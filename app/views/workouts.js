@@ -182,7 +182,7 @@ function onMessageRecieved(evt) {
     display.poke();
     switch (evt.data.key) {
         case "lm-noClub":
-            debugLog("no club selected.");
+            debugLog("Workouts :: no club selected.");
             LoadingScreen.hide();
             MessageDialog.Header.text = "Club Not Set";
             MessageDialog.Message.text =
@@ -193,7 +193,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
-                debugLog(`Club changed to: ${clubName}`);
+                debugLog(`Workouts :: club changed to: ${clubName}`);
                 LoadingScreen.Label.text = "Changing Clubs...";
                 LoadingScreen.SubLabel.text = clubName;
                 LoadingScreen.show();
@@ -203,7 +203,7 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 let clubName = evt.data.value;
                 AppSettings.setValue("club", clubName);
-                debugLog(`${clubName} classes queued.`);
+                debugLog(`Workouts :: ${clubName} classes queued.`);
                 if (OnFileRecievedUpdateGui) {
                     LoadingScreen.Label.text = "Loading Workouts...";
                     LoadingScreen.SubLabel.text = clubName;
@@ -214,18 +214,12 @@ function onMessageRecieved(evt) {
             }
             break;
         case "lm-noClasses":
-            debugLog("no classes.");
+            debugLog("Workouts :: no classes.");
             LoadingScreen.hide();
             MessageDialog.Header.text = "No Classes";
             MessageDialog.Message.text =
                 "Failed to retrive group fitness workouts from database.";
             MessageDialog.show();
-            break;
-        case "lm-defaultHome":
-            let settings = AppSettings.load();
-            settings.homeScreen = evt.data.value;
-            AppSettings.save(settings);
-            debugLog(`default home screen: ${settings.homeScreen}`);
             break;
         default:
             return;
@@ -339,6 +333,9 @@ function onKeyPressEvent(evt) {
             QuestionDialog.Header.text = "";
             QuestionDialog.hide();
         }
-        else {me.exit();}
+        else {
+            views.navigate("home");
+            // me.exit();
+        }
     }
 }

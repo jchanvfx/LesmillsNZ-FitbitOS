@@ -11,7 +11,7 @@
                 <rect/><text id="main-label" text-length="24" />
             </use>
             <use id="main-itm1" href="#scrollview-item" height="68">
-                <use id="main-btn1" href="#square-button" y="2" height="62" fill="fb-yellow">
+                <use id="main-btn1" href="#square-button" y="2" height="62" fill="fb-aqua">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>

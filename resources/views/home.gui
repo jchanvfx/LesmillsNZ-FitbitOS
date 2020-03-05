@@ -45,7 +45,7 @@
         </symbol>
     </defs>
     <!-- Main Wrapper -->
-    <section y="40" height="100%-80">
+    <section y="40" height="100%-40">
         <use id="home-list" href="#tile-list">
             <var id="virtual" value="1" />
             <var id="reorder-enabled" value="0" />
@@ -60,7 +60,7 @@
             </use>
 
             <use id="workouts-tile" href="#home-tile-item">
-                <set href="text-top" attributeName="fill" to="fb-yellow" />
+                <set href="text-top" attributeName="fill" to="fb-aqua" />
                 <set href="text-top" attributeName="text-buffer" to="Group Fitness:" />
                 <set href="text" attributeName="text-buffer" to="Workouts" />
             </use>
@@ -69,14 +69,13 @@
     </section>
     <!-- Status Bar -->
     <section x="5" width="100%-10" height="40">
-        <!-- <rect width="100%" height="100%" fill="green" /> -->
         <text
             id="date-text"
             x="0"
             y="50%+10"
             width="50%"
             font-size="24"
-            font-family="System-Bold"
+            font-family="System-Regular"
             text-length="24"
             />
         <text
@@ -86,7 +85,7 @@
             width="50%"
             font-size="24"
             text-anchor="end"
-            font-family="System-Bold"
+            font-family="System-Regular"
             text-length="7"
             />
         <image
@@ -98,19 +97,6 @@
             fill="fb-red"
             href="./resources/images/no_phone.png" />
     </section>
-    <text
-        id="bottom-text"
-        x="50%"
-        y="100%-20"
-        width="100%"
-        font-size="20"
-        text-anchor="middle"
-        font-family="System-Regular"
-        text-length="24"
-        fill="fb-light-gray"
-        />
     <!-- Message Dialog -->
     <use id="message-dialog" href="#message-dialog" display="none" />
-    <!-- Loading Screen -->
-    <use id="loading-screen" href="#loading-screen" display="none" />
 </svg>
