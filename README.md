@@ -7,5 +7,5 @@
     view the timetable on my watch and also log each exercise under the Les Mills class names.
 
  ## Note:
-    Current this app is only packages for the ``Versa 2`` at the moment 
-    as that is the only device I own for testing.
+    Current this app is only packaged for the Versa 2 at the moment as it is the only physical device 
+    I own for testing.
