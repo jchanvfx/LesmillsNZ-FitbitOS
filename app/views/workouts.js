@@ -64,12 +64,12 @@ function onMount() {
                 type  : "workouts-pool",
                 value : clsData.name,
                 color : clsData.color,
-                icon  : WORKOUT_ICONS[parseInt(clsData.iconIdx)]
+                icon  : clsData.iconName
             };
         },
         configureTile: function(tile, info) {
             if (info.type == "workouts-pool") {
-                let iconPath = `./resources/icons/${info.icon}_32px.png`;
+                let iconPath = `./resources/icons/${info.icon}.png`;
                 tile.getElementById("icon").href = iconPath;
 
                 let workout = info.value.toUpperCase();

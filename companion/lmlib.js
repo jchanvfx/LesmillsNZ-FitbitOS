@@ -92,8 +92,8 @@ export function fetchClasses(clubID, callbackFunc) {
             for (let i = 0; i < fitnessClasses.length; i++) {
                 let color = (fitnessColors[i] !== null) ? fitnessColors[i] : "black";
                 let workout = fitnessClasses[i];
-                let iconIndex = getIconIndex(workout.toUpperCase());
-                classesData.push({name:workout, color:color, iconIdx:iconIndex});
+                let iconName = getIconImageName(workout.toUpperCase());
+                classesData.push({name:workout, color:color, iconName:iconName});
             }
             classesData.sort((a, b) => (a.name > b.name) ? 1 : -1)
 
@@ -105,41 +105,55 @@ export function fetchClasses(clubID, callbackFunc) {
         });
 }
 
-function getIconIndex(workout) {
-    // -- Icon idx reference.
-// 0: man (default)
-    let icon = "0";
-// 1: bands
-    if ([
-        "CXWORX", "TONE"
-    ].includes(workout)) {icon = "1";}
-// 2: boxing
-    else if ([
-        "BODYCOMBAT", "CONQUER", "IMPACT"
-    ].includes(workout)) {icon = "2";}
-// 3: cycle
-    else if ([
-        "RPM", "RPM ENDURO", "SPRINT", "THE TRIP"
-    ].includes(workout)) {icon = "3";}
-// 4: dance
-    else if ([
-        "BODYJAM", "HIP HOP", "SH'BAM"
-    ].includes(workout)) {icon = "4";}
-// 5: jump
-    else if ([
-        "BODYATTACK", "GRIT CARDIO"
-    ].includes(workout)) {icon = "5";}
-// 6: step
-    else if ([
-        "BODYSTEP", "BODYSTEP ATHLETIC", "GRIT ATHLETIC"
-    ].includes(workout)) {icon = "6";}
-// 7: stretch
-    else if ([
-        "BODYBALANCE", "LES MILLS STRETCH", "YOGA"
-    ].includes(workout)) {icon = "7";}
-// 8: weightlift
-    else if ([
-        "BODYPUMP", "BODYPUMP INTRO", "GRIT STRENGTH"
-    ].includes(workout)) {icon = "8";}
-    return icon;
+function getIconImageName(workout) {
+    let name;
+    switch (workout) {
+        case "CXWORX":
+        case "TONE":
+            name = "bands";
+            break;
+        case "BODYCOMBAT":
+        case "CONQUER":
+        case "IMPACT":
+            name = "boxing";
+            break;
+        case "RPM":
+        case "RPM ENDURO":
+        case "SPRINT":
+        case "THE TRIP":
+            name = "cycle";
+            break;
+        case "BODYJAM":
+        case "HIP HOP":
+        case "SH'BAM":
+            name = "dance";
+            break;
+        case "BODYATTACK":
+            name = "jump";
+            break;
+        case "GRIT CARDIO":
+            name = "mclimb";
+            break;
+        case "BODYSTEP":
+        case "BODYSTEP ATHLETIC":
+        case "GRIT ATHLETIC":
+            name = "step";
+            break;
+        case "BARRE":
+        case "BODYBALANCE":
+        case "LES MILLS STRETCH":
+            name = "stretch";
+            break;
+        case "BODYPUMP":
+        case "BODYPUMP INTRO":
+        case "GRIT STRENGTH":
+            name = "weightlift";
+            break;
+        case "YOGA":
+            name = "yoga";
+            break;
+        default:
+            name = "default";
+    }
+    return name;
 }
