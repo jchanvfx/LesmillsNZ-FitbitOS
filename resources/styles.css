@@ -24,7 +24,7 @@ text {
 #status-bar text {
     y: 20;
     font-size: 20;
-    font-family: System-Bold;
+    font-family: System-Regular;
     font-weight: regular;
     fill: #d6d6d6;
 }

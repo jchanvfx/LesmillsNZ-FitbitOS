@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, readFileSync, statSync } from "fs";
 
-import { CLASSES_FILE, SETTINGS_FILE, BUILD_VER } from "../config"
+import { CLASSES_FILE, SETTINGS_FILE, BUILD_VER, WORKOUT_ICONS } from "../config"
 import { debugLog, toTitleCase } from "../utils"
 import { DAYS_SHORT, MONTHS_SHORT, date, date1, date2 } from "../datelib"
 import {
@@ -60,14 +60,18 @@ function onMount() {
         getTileInfo: function(index) {
             let clsData = LM_CLASSES[index];
             return {
-                index: index,
-                type: "workouts-pool",
-                value: clsData.name,
-                color: clsData.color
+                index : index,
+                type  : "workouts-pool",
+                value : clsData.name,
+                color : clsData.color,
+                icon  : WORKOUT_ICONS[parseInt(clsData.iconIdx)]
             };
         },
         configureTile: function(tile, info) {
             if (info.type == "workouts-pool") {
+                let iconPath = `./resources/icons/${info.icon}_32px.png`;
+                tile.getElementById("icon").href = iconPath;
+
                 let workout = info.value.toUpperCase();
                 let mixedtext = tile.getElementById("mixedtext");
                 if (workout.length > 13) {
