@@ -77,7 +77,7 @@ function onMount() {
     // Validate Phone connection.
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
         hide(PhoneIcon) : show(PhoneIcon);
-    
+
     // Display message dialog if club location is not set.
     if (clubName === undefined) {
         MessageDialog.Header.text = "Club Not Set";
@@ -100,7 +100,7 @@ function onUnMount() {
     messaging.peerSocket.onopen     = undefined;
     messaging.peerSocket.onclose    = undefined;
     messaging.peerSocket.onmessage  = undefined;
-    debugLog(">>> unMounted - home");
+    debugLog(">>> unMounted - Home");
 }
 
 function onKeyPressEvent(evt) {
