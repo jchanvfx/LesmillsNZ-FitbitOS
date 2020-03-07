@@ -72,7 +72,7 @@ function onMount() {
                 let iconPath = `./resources/icons/${info.icon}.png`;
                 tile.getElementById("icon").href = iconPath;
 
-                let workout = info.value.toUpperCase();
+                let workout = info.value;
                 let mixedtext = tile.getElementById("mixedtext");
                 if (workout.length > 13) {
                     mixedtext.getElementById("copy").text = workout;
@@ -320,7 +320,7 @@ function loadWorkoutClasses() {
 }
 
 function onTileClicked(tile, info) {
-    let workout = info.value.toUpperCase();
+    let workout = info.value;
     QuestionDialog.setHeader(workout);
     QuestionDialog.Message.text = "Start Workout?"
     tile.getElementById("overlay").animate("enable");

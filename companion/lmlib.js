@@ -34,13 +34,17 @@ export function fetchTimetableData(clubID, callbackFunc) {
                 let clsInfo = data.Classes[i];
                 let clsDate = new Date(clsInfo.StartDateTime);
                 let clsKey = `${clsDate.getDay()}${clsDate.getDate()}${clsDate.getMonth()}`;
+                let siteName = clsInfo.Site.SiteName;
+                if (siteName.length > 13) {
+                    siteName = siteName.substr(0, 12) + "...";
+                }
                 if (fltrs.includes(clsKey)) {
                     let grpCls = {
                         name: clsInfo.ClassName,
                         date: clsInfo.StartDateTime,
                         instructor: clsInfo.MainInstructor.Name,
                         color: (clsInfo.Colour !== null) ? clsInfo.Colour : "black",
-                        desc: `${clsInfo.Site.SiteName} (${clsInfo.Duration}mins)`,
+                        desc: `${siteName} (${clsInfo.Duration}mins)`,
                     };
                     timetable[clsKey.toString()].push(grpCls);
                 }
@@ -75,8 +79,12 @@ export function fetchClasses(clubID, callbackFunc) {
                 let clsInfo     = data.Classes[i];
                 let clsColor    = clsInfo.Colour;
                 let clsName     = clsInfo.ClassName;
-                clsName = clsName.replace(/Virtual|virtual|30|45/g, "");
+                clsName = clsName.toUpperCase();
+                clsName = clsName.replace(/VIRTUAL|30|45/g, "");
                 clsName = clsName.replace(/^\s+|\s+$/g, "");
+                if (clsName.endsWith("INTRO")) {
+                    clsName = clsName.slice(0, -" INTRO".length);
+                }
                 if (fitnessClasses.includes(clsName)) {
                     let idx = fitnessClasses.indexOf(clsName);
                     if (fitnessColors[idx] === null && clsColor !== null) {
@@ -92,7 +100,7 @@ export function fetchClasses(clubID, callbackFunc) {
             for (let i = 0; i < fitnessClasses.length; i++) {
                 let color = (fitnessColors[i] !== null) ? fitnessColors[i] : "black";
                 let workout = fitnessClasses[i];
-                let iconName = getIconImageName(workout.toUpperCase());
+                let iconName = getIconImageName(workout);
                 classesData.push({name:workout, color:color, iconName:iconName});
             }
             classesData.sort((a, b) => (a.name > b.name) ? 1 : -1)
@@ -109,7 +117,6 @@ function getIconImageName(workout) {
     let name;
     switch (workout) {
         case "CXWORX":
-        case "CXWORX INTRO":
         case "TONE":
             name = "bands";
             break;
@@ -146,7 +153,6 @@ function getIconImageName(workout) {
             name = "stretch";
             break;
         case "BODYPUMP":
-        case "BODYPUMP INTRO":
         case "GRIT STRENGTH":
             name = "weightlift";
             break;

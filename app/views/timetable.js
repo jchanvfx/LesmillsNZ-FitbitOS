@@ -411,6 +411,12 @@ function onTileClicked(tile, info) {
     let workout = info.name.toUpperCase();;
     workout = workout.replace(/VIRTUAL|30|45/g, "");
     workout = workout.replace(/^\s+|\s+$/g, "");
+    // ECMAScript 5.1 doesn't support "String.endsWith()"
+    let excl = " INTRO";
+    if (workout.slice(-excl.length) === excl) {
+        workout = workout.slice(0, -excl.length);
+    }
+
     QuestionDialog.setHeader(workout);
     QuestionDialog.Message.text = "Start Workout?"
     tile.getElementById("overlay").animate("enable");

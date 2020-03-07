@@ -144,6 +144,11 @@ function onMessageRecieved(evt) {
                 MessageDialog.hide();
                 display.poke();
                 debugLog(`Home :: club changed: ${clubName}`);
+
+                // send request for updated workouts.
+                sendValue("lm-classes");
+                // send request for updated timetable.
+                sendValue("lm-fetch");
             }
             break;
         case "lm-syncReply":
