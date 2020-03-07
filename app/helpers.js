@@ -63,7 +63,6 @@ export function createQuestionDialogHelper(element) {
         show() {element.style.display = "inline";},
         hide() {element.style.display = "none";},
         setHeader (text) {
-            console.log(text.length);
             if (text.length > 12) {
                 this.Header.text = "";
                 this.HeaderSmall.text = text;
