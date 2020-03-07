@@ -87,6 +87,9 @@ function onMount() {
         MessageDialog.show();
     }
 
+    // Set current date for the Timetable screen.
+    AppSettings.setValue("currentDate", date.toISOString());
+
     // Sync Club Location settings.
     sendValue("lm-sync");
 
