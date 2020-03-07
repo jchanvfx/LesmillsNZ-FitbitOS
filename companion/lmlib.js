@@ -109,6 +109,7 @@ function getIconImageName(workout) {
     let name;
     switch (workout) {
         case "CXWORX":
+        case "CXWORX INTRO":
         case "TONE":
             name = "bands";
             break;

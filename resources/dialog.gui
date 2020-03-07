@@ -1,9 +1,18 @@
 <symbol id="question-dialog">
     <rect width="100%" height="100%" fill="black" />
+    <text
+        id="header-small"
+        x="50%" y="32%"
+        text-anchor="middle"
+        text-length="24"
+        font-size="30"
+        fill="fb-yellow"
+        display="none"
+    />
     <use id="mixedtext" href="#mixed-text-center-mid" class="dialog-mixed-text" fill="fb-white">
         <set href="#top-padding" attributeName="display" to="none" />
         <set href="#header/text" attributeName="text-buffer" to="Workout" />
-        <set href="#header/text" attributeName="text-length" to="16" />
+        <set href="#header/text" attributeName="text-length" to="13" />
         <set href="#header/text" attributeName="fill" to="fb-yellow"/>
         <set href="#copy/text" attributeName="text-length" to="18" />
         <set href="#copy/text" attributeName="text-buffer" to="Start Workout?" />
