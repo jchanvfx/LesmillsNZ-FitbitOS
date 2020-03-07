@@ -103,7 +103,7 @@ function onMount() {
     document.getElementById("workout-title").text = WorkoutName;
 
     // Configure Finish Dialog.
-    EndDialog.Header.text      = WorkoutName;
+    EndDialog.setHeader(WorkoutName);
     EndDialog.Message.text     = "End this workout?";
     EndDialog.YesButton.text   = "Yes";
     EndDialog.NoButton.text    = "No";

@@ -64,12 +64,12 @@ function onMount() {
                 type  : "workouts-pool",
                 value : clsData.name,
                 color : clsData.color,
-                icon  : WORKOUT_ICONS[parseInt(clsData.iconIdx)]
+                icon  : clsData.iconName
             };
         },
         configureTile: function(tile, info) {
             if (info.type == "workouts-pool") {
-                let iconPath = `./resources/icons/${info.icon}_32px.png`;
+                let iconPath = `./resources/icons/${info.icon}.png`;
                 tile.getElementById("icon").href = iconPath;
 
                 let workout = info.value.toUpperCase();
@@ -88,7 +88,7 @@ function onMount() {
                 }
                 tile.getElementById("ring").style.fill = info.color;
                 let clickPad = tile.getElementById("click-pad");
-                clickPad.onclick = evt => {onTileClicked(tile);}
+                clickPad.onclick = evt => {onTileClicked(tile, info);}
             }
         }
     };
@@ -156,12 +156,12 @@ function onMount() {
     QuestionDialog.YesButton.addEventListener("activate", () => {
         LM_CLASSES.length = 0;
         let settings = AppSettings.load();
-        settings.workout = QuestionDialog.Header.text;
+        settings.workout = QuestionDialog.getHeader();
         AppSettings.save(settings);
         views.navigate("exercise");
     });
     QuestionDialog.NoButton.addEventListener("activate", () => {
-        QuestionDialog.Header.text = "";
+        QuestionDialog.setHeader("");
         QuestionDialog.hide();
     });
 }
@@ -319,9 +319,9 @@ function loadWorkoutClasses() {
     display.poke();
 }
 
-function onTileClicked(tile) {
-    let workout = tile.getElementById("text").text;
-    QuestionDialog.Header.text = workout;
+function onTileClicked(tile, info) {
+    let workout = info.value.toUpperCase();
+    QuestionDialog.setHeader(workout);
     QuestionDialog.Message.text = "Start Workout?"
     tile.getElementById("overlay").animate("enable");
     setTimeout(() => {QuestionDialog.show();}, 300);
@@ -335,7 +335,7 @@ function onKeyPressEvent(evt) {
             SideMenu.hide();
         }
         else if (QuestionDialog.isVisible()) {
-            QuestionDialog.Header.text = "";
+            QuestionDialog.setHeader("");
             QuestionDialog.hide();
         }
         else {

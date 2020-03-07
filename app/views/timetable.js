@@ -93,7 +93,7 @@ function onMount() {
                     tile.getElementById("color").style.fill = info.color;
 
                     let clickPad = tile.getElementById("click-pad");
-                    clickPad.onclick = evt => {onTileClicked(tile);}
+                    clickPad.onclick = evt => {onTileClicked(tile, info);}
                 }
             }
         }
@@ -193,12 +193,12 @@ function onMount() {
     QuestionDialog.YesButton.addEventListener("activate", () => {
         LM_TIMETABLE.length = 0;
         let settings = AppSettings.load();
-        settings.workout = QuestionDialog.Header.text;
+        settings.workout = QuestionDialog.getHeader();
         AppSettings.save(settings);
         views.navigate("exercise");
     });
     QuestionDialog.NoButton.addEventListener("activate", () => {
-        QuestionDialog.Header.text = "";
+        QuestionDialog.setHeader("");
         QuestionDialog.hide();
     });
 }
@@ -407,11 +407,11 @@ function jumpToTile() {
     TimetableList.value = currentIdx;
 }
 
-function onTileClicked(tile) {
-    let workout = tile.getElementById("text-title").text;
+function onTileClicked(tile, info) {
+    let workout = info.name.toUpperCase();;
     workout = workout.replace(/VIRTUAL|30|45/g, "");
     workout = workout.replace(/^\s+|\s+$/g, "");
-    QuestionDialog.Header.text = workout;
+    QuestionDialog.setHeader(workout);
     QuestionDialog.Message.text = "Start Workout?"
     tile.getElementById("overlay").animate("enable");
     setTimeout(() => {QuestionDialog.show();}, 300);
@@ -427,7 +427,7 @@ function onKeyPressEvent(evt) {
             SideMenu.hide();
         }
         else if (QuestionDialog.isVisible()) {
-            QuestionDialog.Header.text = "";
+            QuestionDialog.setHeader("");
             QuestionDialog.hide();
         }
         else {
