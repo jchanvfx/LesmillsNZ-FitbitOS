@@ -123,6 +123,8 @@ function getIconImageName(workout) {
         case "BODYCOMBAT":
         case "CONQUER":
         case "IMPACT":
+        case "IMPACT BOXING":
+        case "LOW IMPACT":
             name = "boxing";
             break;
         case "RPM":
@@ -137,7 +139,11 @@ function getIconImageName(workout) {
             name = "dance";
             break;
         case "BODYATTACK":
+        case "GRIT PYLO":
             name = "jump";
+            break;
+        case "BARRE":
+            name = "leap";
             break;
         case "GRIT CARDIO":
             name = "mclimb";
@@ -147,7 +153,6 @@ function getIconImageName(workout) {
         case "GRIT ATHLETIC":
             name = "step";
             break;
-        case "BARRE":
         case "BODYBALANCE":
         case "LES MILLS STRETCH":
             name = "stretch";
@@ -156,6 +161,10 @@ function getIconImageName(workout) {
         case "GRIT STRENGTH":
             name = "weightlift";
             break;
+        case "HATHA YOGA":
+        case "VINYASA YOGA":
+        case "YANG YIN YOGA":
+        case "YIN YOGA":
         case "YOGA":
             name = "yoga";
             break;
