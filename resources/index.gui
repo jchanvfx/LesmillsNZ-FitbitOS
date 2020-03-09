@@ -8,13 +8,6 @@
         font-size="24"
         font-weight="bold"
         text-anchor="middle">#LesMillsNZ</text>
-    <!-- <image
-        x="50%-20"
-        y="100%-110"
-        width="40"
-        height="40"
-        fill="fb-light-gray"
-        href="./resources/images/logo_splash.png" /> -->
     <text
         x="50%"
         y="100%-46"
