@@ -6,8 +6,8 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, readFileSync, statSync } from "fs";
 
-import { CLASSES_FILE, SETTINGS_FILE, BUILD_VER, WORKOUT_ICONS } from "../config"
-import { debugLog, toTitleCase } from "../utils"
+import { CLASSES_FILE, SETTINGS_FILE, BUILD_VER } from "../config"
+import { debugLog, toTitleCase, truncateString } from "../utils"
 import { DAYS_SHORT, MONTHS_SHORT, date, date1, date2 } from "../datelib"
 import {
     show, hide,
@@ -34,8 +34,10 @@ let LM_CLASSES = [];
 
 // screen entry point.
 let views;
-export function init(_views) {
-    views = _views;
+let options;
+export function init(_views, _options) {
+    views   = _views;
+    options = _options;
 
     WorkoutsList    = document.getElementById("workouts-list");
     LoadingScreen   = createLoadingScreenHelper(document.getElementById("loading-screen"));
@@ -98,7 +100,8 @@ function onMount() {
     // Configure SideMenu button labels.
     SideMenu.MainLabel.text  = "Group Fitness";
     SideMenu.MainButton.text = "Workouts";
-    SideMenu.SubLabel.text   = "Timetable";
+    let clubName = AppSettings.getValue("club");
+    SideMenu.SubLabel.text   = truncateString(clubName, 26);
     SideMenu.SubButton1.text = `${DAYS_SHORT[date.getDay()]} ` +
                                `${date.getDate()} ` +
                                `${MONTHS_SHORT[date.getMonth()]}`;
@@ -155,10 +158,7 @@ function onMount() {
     // question dialog buttons.
     QuestionDialog.YesButton.addEventListener("activate", () => {
         LM_CLASSES.length = 0;
-        let settings = AppSettings.load();
-        settings.workout = QuestionDialog.getHeader();
-        AppSettings.save(settings);
-        views.navigate("exercise");
+        views.navigate("exercise", {workout: `${QuestionDialog.getHeader()}`});
     });
     QuestionDialog.NoButton.addEventListener("activate", () => {
         QuestionDialog.setHeader("");
@@ -197,23 +197,27 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
-                AppSettings.setValue("club", toTitleCase(clubName));
                 debugLog(`Workouts :: club changed to: ${clubName}`);
-                LoadingScreen.Label.text = "Changing Clubs...";
+                LoadingScreen.Label.text    = "Changing Clubs...";
                 LoadingScreen.SubLabel.text = clubName;
                 LoadingScreen.show();
+                clubName = toTitleCase(clubName);
+                AppSettings.setValue("club", clubName);
+                SideMenu.SubLabel.text = truncateString(clubName, 26);
             }
             break;
         case "lm-classesReply":
             if (evt.data.value) {
                 let clubName = evt.data.value;
-                AppSettings.setValue("club", toTitleCase(clubName));
                 debugLog(`Workouts :: ${clubName} classes queued.`);
                 if (OnFileRecievedUpdateGui) {
-                    LoadingScreen.Label.text = "Loading Workouts...";
+                    LoadingScreen.Label.text    = "Loading Workouts...";
                     LoadingScreen.SubLabel.text = clubName;
                     LoadingScreen.show();
                 }
+                clubName = toTitleCase(clubName);
+                AppSettings.setValue("club", clubName);
+                SideMenu.SubLabel.text = truncateString(clubName, 26);
             } else {
                 debugLog("classes reply");
             }
@@ -221,7 +225,8 @@ function onMessageRecieved(evt) {
         case "lm-noClasses":
             debugLog("Workouts :: no classes.");
             LoadingScreen.hide();
-            MessageDialog.Header.text = "No Classes";
+            SideMenu.SubLabel.text     = "Timetable";
+            MessageDialog.Header.text  = "No Classes";
             MessageDialog.Message.text =
                 "Failed to retrive group fitness workouts from database.";
             MessageDialog.show();
@@ -271,10 +276,7 @@ function sendValue(key, data=null) {
 
 function loadTimetable(date) {
     LM_CLASSES.length = 0;
-    let settings = AppSettings.load();
-    settings.currentDate = date.toISOString();
-    AppSettings.save(settings);
-    views.navigate("timetable");
+    views.navigate("timetable", {currentDate: date.toISOString()});
 }
 
 function loadWorkoutClasses() {

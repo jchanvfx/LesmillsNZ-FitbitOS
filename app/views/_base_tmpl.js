@@ -6,8 +6,10 @@ let Button;
 
 // screen entry point.
 let views;
-export function init(_views) {
-    views = _views;
+let options;
+export function init(_views, _options) {
+    views   = _views;
+    options = _options;
 
     Button = document.getElementById("btn1");
 

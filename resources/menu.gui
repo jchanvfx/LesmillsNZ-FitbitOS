@@ -9,6 +9,7 @@
                 <circle cx="14" />
                 <circle cx="100%-14" />
                 <rect/><text id="main-label" text-length="24" />
+                <circle r="6" cx="14" fill="fb-yellow" />
             </use>
             <use id="main-itm1" href="#scrollview-item" height="68">
                 <use id="main-btn1" href="#square-button" y="2" height="62" fill="fb-yellow">
@@ -19,7 +20,8 @@
             <use id="sub-itm-label" href="#scrollview-item" height="25" class="side-menu-header">
                 <circle cx="14" />
                 <circle cx="100%-14" />
-                <rect/><text id="sub-label" text-length="24" />
+                <rect/><text id="sub-label" text-length="26" />
+                <circle r="6" cx="14" fill="fb-yellow" />
             </use>
             <use id="sub-itm1" href="#scrollview-item" height="62">
                 <use id="sub-btn1" href="#square-button" y="2" height="62" fill="fb-yellow">
@@ -39,6 +41,7 @@
 
             <use href="#scrollview-item" height="25" class="side-menu-header">
                 <text id="footer-label"
+                      x="10"
                       fill="fb-gray"
                       text-length="16"
                       font-family="System-Regular" />

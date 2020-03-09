@@ -7,17 +7,13 @@ import { HeartRateSensor } from "heart-rate";
 import { me } from "appbit";
 import { display } from "display";
 
-import { SETTINGS_FILE } from "../config"
 import { debugLog, zeroPad } from "../utils";
 import { date, formatTo12hrTime } from "../datelib"
 import {
-    show, hide, isVisible,
-    createSettingsHelper,
-    createQuestionDialogHelper
+    show, hide, isVisible, createQuestionDialogHelper
 } from "../helpers"
 
 let Sensors;
-let AppSettings;
 let WorkoutName;
 let EndDialog;
 let ResultsDialog;
@@ -31,8 +27,10 @@ let LabelCALS;
 
 // screen entry point.
 let views;
-export function init(_views) {
-    views = _views;
+let options;
+export function init(_views, _options) {
+    views   = _views;
+    options = _options;
 
     if (me.permissions.granted("access_heart_rate") &&
         me.permissions.granted("access_activity")) {
@@ -52,8 +50,7 @@ export function init(_views) {
         return;
     }
 
-    AppSettings  = createSettingsHelper(SETTINGS_FILE);
-    WorkoutName  = AppSettings.load().workout;
+    WorkoutName  = options.workout;
     EndDialog = createQuestionDialogHelper(
         document.getElementById("question-dialog")
     );
