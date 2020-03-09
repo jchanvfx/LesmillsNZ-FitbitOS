@@ -22,8 +22,10 @@ let TimetableTopText;
 
 // screen entry point.
 let views;
-export function init(_views) {
-    views = _views;
+let options;
+export function init(_views, _options) {
+    views   = _views;
+    options = _options;
 
     AppSettings      = createSettingsHelper(SETTINGS_FILE);
     MessageDialog    = createMessageDialogHelper(document.getElementById("message-dialog"));
@@ -65,8 +67,9 @@ function onMount() {
 
     TimetableTile.getElementById("click-pad").onclick = evt => {
         debugLog("TimetableTile clicked.");
+        let options = {currentDate: date.toISOString()};
         TimetableTile.getElementById("overlay").animate("enable");
-        setTimeout(() => {views.navigate("timetable");}, 300);
+        setTimeout(() => {views.navigate("timetable", options);}, 300);
     };
     WorkoutsTile.getElementById("click-pad").onclick = evt => {
         debugLog("WorkoutsTile clicked.");
@@ -86,9 +89,6 @@ function onMount() {
         display.poke();
         MessageDialog.show();
     }
-
-    // Set current date for the Timetable screen.
-    AppSettings.setValue("currentDate", date.toISOString());
 
     // Sync Club Location settings.
     sendValue("lm-sync");

@@ -7,7 +7,7 @@ import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 
 import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../config"
-import { debugLog, toTitleCase } from "../utils"
+import { debugLog, toTitleCase, truncateString } from "../utils"
 import {
     DAYS_SHORT, MONTHS_SHORT,
     date, date1, date2, formatTo12hrTime
@@ -37,8 +37,10 @@ let LM_TIMETABLE = [];
 
 // screen entry point.
 let views;
-export function init(_views) {
-    views = _views;
+let options;
+export function init(_views, _options) {
+    views   = _views;
+    options = _options;
 
     TimetableList   = document.getElementById("lm-class-list");
     LoadingScreen   = createLoadingScreenHelper(document.getElementById("loading-screen"));
@@ -104,7 +106,8 @@ function onMount() {
     // Configure SideMenu button labels.
     SideMenu.MainLabel.text  = "Group Fitness";
     SideMenu.MainButton.text = "Workouts";
-    SideMenu.SubLabel.text   = "Timetable";
+    let clubName = AppSettings.getValue("club");
+    SideMenu.SubLabel.text   = truncateString(clubName, 26);
     SideMenu.SubButton1.text = `${DAYS_SHORT[date.getDay()]} ` +
                                `${date.getDate()} ` +
                                `${MONTHS_SHORT[date.getMonth()]}`;
@@ -118,7 +121,7 @@ function onMount() {
     hide(SideMenu.Element);
 
     // Configure StatusBar date.
-    let dateStr = AppSettings.load().currentDate;
+    let dateStr     = options.currentDate;
     let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
     StatusBar.setDate(currentDate);
 
@@ -192,10 +195,7 @@ function onMount() {
     // question dialog buttons.
     QuestionDialog.YesButton.addEventListener("activate", () => {
         LM_TIMETABLE.length = 0;
-        let settings = AppSettings.load();
-        settings.workout = QuestionDialog.getHeader();
-        AppSettings.save(settings);
-        views.navigate("exercise");
+        views.navigate("exercise", {workout: `${QuestionDialog.getHeader()}`});
     });
     QuestionDialog.NoButton.addEventListener("activate", () => {
         QuestionDialog.setHeader("");
@@ -225,6 +225,7 @@ function onMessageRecieved(evt) {
         case "lm-noClub":
             debugLog("Timetable :: no club selected.");
             LoadingScreen.hide();
+            SideMenu.SubLabel.text   = "Timetable";
             MessageDialog.Header.text = "Club Not Set";
             MessageDialog.Message.text =
                 "Please select a club location from the phone app settings.";
@@ -234,20 +235,24 @@ function onMessageRecieved(evt) {
             if (evt.data.value) {
                 OnFileRecievedUpdateGui = true;
                 let clubName = evt.data.value;
-                AppSettings.setValue("club", toTitleCase(clubName));
                 debugLog(`Timetable :: club changed to: ${clubName}`);
-                LoadingScreen.Label.text = "Changing Clubs...";
+                LoadingScreen.Label.text    = "Changing Clubs...";
                 LoadingScreen.SubLabel.text = clubName;
                 LoadingScreen.show();
+                clubName = toTitleCase(clubName);
+                AppSettings.setValue("club", clubName);
+                SideMenu.SubLabel.text = truncateString(clubName, 26);
             }
             break;
         case "lm-fetchReply":
             if (OnFileRecievedUpdateGui) {
                 let clubName = evt.data.value;
-                AppSettings.setValue("club", toTitleCase(clubName));
-                LoadingScreen.Label.text = "Retrieving Timetable...";
+                LoadingScreen.Label.text    = "Retrieving Timetable...";
                 LoadingScreen.SubLabel.text = clubName;
                 LoadingScreen.show();
+                clubName = toTitleCase(clubName);
+                AppSettings.setValue("club", clubName);
+                SideMenu.SubLabel.text = truncateString(clubName, 26);
             }
             break;
         case "lm-dataQueued":

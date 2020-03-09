@@ -148,9 +148,9 @@ text {
     fill: "fb-extra-dark-gray";
 }
 .side-menu-header text {
-    x: 15;
+    x: 30;
     y: 50%+7;
-    fill: white;
-    font-size: 20;
-    font-family: System-Bold;
+    fill: "fb-aqua";
+    font-size: 22;
+    font-family: System-Regular;
 }

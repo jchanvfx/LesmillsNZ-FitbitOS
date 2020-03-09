@@ -6,7 +6,7 @@
         </symbol>
         <symbol id="exercise-popup">
             <rect width="100%" height="100%" fill="black" />
-            <text x="5" y="45" font-size="45" height="50" fill="fb-yellow">Nice Work!</text>
+            <text x="5" y="45" font-size="45" height="50" fill="fb-yellow">Nice Workout!</text>
             <use id="workout" y="$" href="#exercise-popup-itm">
                 <set href="#icon" attributeName="href" to="./resources/images/stat_drop_32px_p.png" />
                 <set href="#icon" attributeName="fill" to="fb-cerulean" />

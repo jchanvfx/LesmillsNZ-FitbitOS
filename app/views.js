@@ -21,13 +21,13 @@ export function init(_views, _prefix) {
      * loaded and executed, and the current view is replaced by the selected one.
      * @param {number} _index The array position of the view to be selected.
      */
-    const select = _index => {
+    const select = (_index, _options) => {
         const [viewGUI, viewJSLoader] = views[_index];
         viewSelected = viewGUI;
         viewJSLoader()
             .then(({ init }) => {
                 document.replaceSync(`${viewsPrefix}${viewGUI}${viewsSuffix}`);
-                viewReturn = init({ navigate });
+                viewReturn = init({ navigate }, _options);
             })
             .catch((err) => {
                 console.error(`Failed to load view JS:\n  ${viewGUI}:${err}`);
@@ -39,12 +39,12 @@ export function init(_views, _prefix) {
      * @param {string} _viewName The name of a .gui file, excluding its path or
      * file extension.
      */
-    const navigate = _viewName => {
+    const navigate = (_viewName, _options) => {
         if (typeof viewReturn === "function") {
             viewReturn();
         };
         const index = views.indexOf(views.filter(el => el[0] == _viewName)[0]);
-        select(index);
+        select(index, _options);
     };
 
     return {
