@@ -120,18 +120,6 @@ function onMount() {
     SideMenu.Footer.text     = "v" + BUILD_VER;
     hide(SideMenu.Element);
 
-    // Configure StatusBar date.
-    let dateStr     = options.currentDate;
-    let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
-    StatusBar.setDate(currentDate);
-
-    // Update timetable
-    CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
-                           `${currentDate.getDay()}` +
-                           `${currentDate.getDate()}` +
-                           `${currentDate.getMonth()}.cbor`;
-    loadTimetableFile(CurrentTimetableFile);
-
     // wire up events.
     clock.granularity = "minutes";
     clock.ontick = (evt) => {StatusBar.setTime(evt.date);}
@@ -167,30 +155,33 @@ function onMount() {
         show(StatusBar.JumpToButton);
         show(StatusBar.JumpToIcon);
         SideMenu.hide();
-        loadTimetableFile(`${DATA_FILE_PREFIX}` +
-                          `${date.getDay()}` +
-                          `${date.getDate()}` +
-                          `${date.getMonth()}.cbor`);
+        CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
+                               `${date.getDay()}` +
+                               `${date.getDate()}` +
+                               `${date.getMonth()}.cbor`
+        loadTimetableFile(CurrentTimetableFile);
     });
     SideMenu.SubButton2.addEventListener("activate", () => {
         StatusBar.setDate(date1);
         show(StatusBar.JumpToButton);
         show(StatusBar.JumpToIcon);
         SideMenu.hide();
-        loadTimetableFile(`${DATA_FILE_PREFIX}` +
-                          `${date1.getDay()}` +
-                          `${date1.getDate()}` +
-                          `${date1.getMonth()}.cbor`);
+        CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
+                               `${date1.getDay()}` +
+                               `${date1.getDate()}` +
+                               `${date1.getMonth()}.cbor`;
+        loadTimetableFile(CurrentTimetableFile);
     });
     SideMenu.SubButton3.addEventListener("activate", () => {
         StatusBar.setDate(date2);
         show(StatusBar.JumpToButton);
         show(StatusBar.JumpToIcon);
         SideMenu.hide();
-        loadTimetableFile(`${DATA_FILE_PREFIX}` +
-                          `${date2.getDay()}` +
-                          `${date2.getDate()}` +
-                          `${date2.getMonth()}.cbor`);
+        CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
+                               `${date2.getDay()}` +
+                               `${date2.getDate()}` +
+                               `${date2.getMonth()}.cbor`;
+        loadTimetableFile(CurrentTimetableFile);
     });
     // question dialog buttons.
     QuestionDialog.YesButton.addEventListener("activate", () => {
@@ -201,6 +192,18 @@ function onMount() {
         QuestionDialog.setHeader("");
         QuestionDialog.hide();
     });
+
+    // Update StatusBar date.
+    let dateStr     = options.currentDate;
+    let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
+    StatusBar.setDate(currentDate);
+
+    // Update timetable
+    CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
+                           `${currentDate.getDay()}` +
+                           `${currentDate.getDate()}` +
+                           `${currentDate.getMonth()}.cbor`;
+    loadTimetableFile(CurrentTimetableFile);
 }
 
 // Clean-up function executed before the view is unloaded.
@@ -416,6 +419,7 @@ function onTileClicked(tile, info) {
     let workout = info.name.toUpperCase();;
     workout = workout.replace(/VIRTUAL|30|45/g, "");
     workout = workout.replace(/^\s+|\s+$/g, "");
+
     // ECMAScript 5.1 doesn't support "String.endsWith()"
     let excl = " INTRO";
     if (workout.slice(-excl.length) === excl) {
