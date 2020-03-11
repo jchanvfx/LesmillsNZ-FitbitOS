@@ -79,7 +79,8 @@ function onMount() {
                 tile.getElementById("text-subtitle").text = info.instructor;
                 tile.getElementById("text-L").text = formatTo12hrTime(itmDate);
                 tile.getElementById("text-R").text = info.desc;
-                if (itmDate - date < 0) {
+                let diffMsecs = itmDate - date;
+                if (Math.floor((diffMsecs / 1000) / 60) < 6) {
                     tile.getElementById("text-title").style.fill = "#6e6e6e";
                     tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
                     tile.getElementById("text-L").style.fill = "#6e6e6e";
