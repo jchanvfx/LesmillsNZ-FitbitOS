@@ -3,6 +3,7 @@ import clock from "clock";
 import * as messaging from "messaging";
 import { me } from "appbit";
 import { display } from "display";
+import { inbox } from "file-transfer"
 
 import { SETTINGS_FILE } from "../../common/config"
 import { debugLog, toTitleCase, zeroPad } from "../utils"
@@ -62,6 +63,7 @@ function onMount() {
     messaging.peerSocket.onclose = () => {
         debugLog("App Socket Closed"); show(PhoneIcon);}
     messaging.peerSocket.onmessage = onMessageRecieved;
+    inbox.addEventListener("newfile", onDataRecieved);
 
     document.addEventListener("keypress", onKeyPressEvent);
 
@@ -104,6 +106,7 @@ function onUnMount() {
     messaging.peerSocket.onopen     = undefined;
     messaging.peerSocket.onclose    = undefined;
     messaging.peerSocket.onmessage  = undefined;
+    inbox.removeEventListener("newfile", onDataRecieved);
     debugLog(">>> unMounted - Home");
 }
 
@@ -168,4 +171,10 @@ function onMessageRecieved(evt) {
         default:
             return;
     }
+}
+
+// callback when file transfer has completed.
+function onDataRecieved() {
+    (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
+        hide(PhoneIcon) : show(PhoneIcon);
 }

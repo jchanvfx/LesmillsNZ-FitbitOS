@@ -388,7 +388,6 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
 
     // Give 6 second period before displaying connection lost or retry.
     setTimeout(() => {
-        debugLog(LoadingScreen);
         if (LoadingScreen.isVisible()) {
             if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
                 LoadingScreen.hide();

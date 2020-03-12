@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, readFileSync, statSync } from "fs";
 
-import { CLASSES_FILE, SETTINGS_FILE, BUILD_VER } from "../../common/config"
+import { WORKOUTS_FILE, SETTINGS_FILE, BUILD_VER } from "../../common/config"
 import { debugLog, toTitleCase, truncateString } from "../utils"
 import { DAYS_SHORT, MONTHS_SHORT, date, date1, date2 } from "../datelib"
 import {
@@ -240,7 +240,7 @@ function onMessageRecieved(evt) {
 function onDataRecieved() {
     let fileName;
     while (fileName = inbox.nextFile()) {
-        if (fileName === CLASSES_FILE) {
+        if (fileName === WORKOUTS_FILE) {
             debugLog(`file ${fileName} recieved!`);
             // hide loading screen & message dialog just incase.
             LoadingScreen.hide();
@@ -286,13 +286,13 @@ function loadWorkoutClasses() {
     LoadingScreen.show();
 
     LM_CLASSES.length = 0;
-    if (existsSync(`/private/data/${CLASSES_FILE}`)) {
-        LM_CLASSES = readFileSync(CLASSES_FILE, "cbor");
+    if (existsSync(`/private/data/${WORKOUTS_FILE}`)) {
+        LM_CLASSES = readFileSync(WORKOUTS_FILE, "cbor");
     }
     debugLog(`number of classes ${LM_CLASSES.length}`);
 
     if (LM_CLASSES.length != 0) {
-        debugLog(`Loading data file: ${CLASSES_FILE}`);
+        debugLog(`Loading data file: ${WORKOUTS_FILE}`);
 
         // refresh to the list.
         WorkoutsList.length = LM_CLASSES.length;
@@ -302,10 +302,10 @@ function loadWorkoutClasses() {
         LoadingScreen.hide();
 
         // request background update if the file modified is more than 5 days old.
-        let mTime = statSync(CLASSES_FILE).mtime;
+        let mTime = statSync(WORKOUTS_FILE).mtime;
         let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
         if (timeDiff > 120) {
-            debugLog(`File ${CLASSES_FILE} outdated by ${timeDiff}hrs`);
+            debugLog(`File ${WORKOUTS_FILE} outdated by ${timeDiff}hrs`);
             OnFileRecievedUpdateGui = false;
             sendValue("lm-classes");
         } else {

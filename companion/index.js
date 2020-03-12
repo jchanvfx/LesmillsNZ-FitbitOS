@@ -4,9 +4,7 @@ import { encode } from "cbor";
 import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
-import { DATA_FILE_PREFIX, CLASSES_FILE } from "../common/config"
-
-const LM_EXT        = ".cbor";
+import { DATA_FILE_PREFIX, WORKOUTS_FILE } from "../common/config"
 
 // check permissions
 if (!companion.permissions.granted("access_internet")) {
@@ -60,14 +58,14 @@ function timetableCallback(data) {
     ];
     for (let i = 0; i < keys.length; i++) {
         let dayKey      = keys[i];
-        let fileName    = `${DATA_FILE_PREFIX}${dayKey}${LM_EXT}`;
+        let fileName    = `${DATA_FILE_PREFIX}${dayKey}.cbor`;
         sendData("lm-dataQueued", data[dayKey.toString()], fileName, clubName);
     }
 }
 // fetch fitness classes and send data to device.
 function fitnessClassesCallback(data) {
     if (data.length !== 0) {
-        sendData("lm-classesQueued", data, `${CLASSES_FILE}${LM_EXT}`);
+        sendData("lm-classesQueued", data, `${WORKOUTS_FILE}`);
     } else {
         sendValue("lm-noClasses");
     }
