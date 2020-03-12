@@ -1,4 +1,4 @@
-import { DEBUG_MODE } from "./config"
+import { DEBUG_MODE } from "../common/config"
 
 export function debugLog(value) {if (DEBUG_MODE) {console.log(value);}}
 export function zeroPad(i) {if (i < 10) {i = "0" + i;} return i;}
