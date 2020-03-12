@@ -80,14 +80,14 @@ function onMount() {
                 tile.getElementById("text-L").text = formatTo12hrTime(itmDate);
                 tile.getElementById("text-R").text = info.desc;
                 let diffMsecs = itmDate - date;
-                if (Math.floor((diffMsecs / 1000) / 60) < 6) {
+                if (Math.floor((diffMsecs / 1000) / 60) < -6) {
                     tile.getElementById("text-title").style.fill = "#6e6e6e";
                     tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
                     tile.getElementById("text-L").style.fill = "#6e6e6e";
                     tile.getElementById("text-R").style.fill = "#6e6e6e";
                     tile.getElementById("color").style.fill = "#4f4f4f";
                     let clickPad = tile.getElementById("click-pad");
-                    clickPad.onclick = evt => {}
+                    clickPad.onclick = undefined;
                 } else {
                     tile.getElementById("text-title").style.fill = "white";
                     tile.getElementById("text-subtitle").style.fill = "white";
