@@ -1,5 +1,6 @@
 # osx
 .DS_Store
+.idea
 
 # node.js
 build

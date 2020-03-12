@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, readFileSync, statSync } from "fs";
 
-import { CLASSES_FILE, SETTINGS_FILE, BUILD_VER } from "../config"
+import { CLASSES_FILE, SETTINGS_FILE, BUILD_VER } from "../../common/config"
 import { debugLog, toTitleCase, truncateString } from "../utils"
 import { DAYS_SHORT, MONTHS_SHORT, date, date1, date2 } from "../datelib"
 import {

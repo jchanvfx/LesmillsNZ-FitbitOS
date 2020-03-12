@@ -6,7 +6,7 @@ import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 
-import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../config"
+import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../../common/config"
 import { debugLog, toTitleCase, truncateString } from "../utils"
 import {
     DAYS_SHORT, MONTHS_SHORT,
@@ -336,10 +336,11 @@ function cleanUpFiles() {
 }
 
 function loadTimetableFile(fileName, jumpToIndex=true) {
-    hide(TimetableList);
     LoadingScreen.Label.text = "Loading Timetable...";
     LoadingScreen.SubLabel.text = "";
     LoadingScreen.show();
+
+    hide(TimetableList);
 
     // load locally fetched data file locally eg. "LM_dat123.cbor"
     LM_TIMETABLE.length = 0;
@@ -387,6 +388,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
 
     // Give 6 second period before displaying connection lost or retry.
     setTimeout(() => {
+        debugLog(LoadingScreen);
         if (LoadingScreen.isVisible()) {
             if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
                 LoadingScreen.hide();

@@ -4,9 +4,8 @@ import { encode } from "cbor";
 import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
+import { DATA_FILE_PREFIX, CLASSES_FILE } from "../common/config"
 
-const LM_CLASSES    = "LM_classes";
-const LM_PREFIX     = "LM_dat";
 const LM_EXT        = ".cbor";
 
 // check permissions
@@ -61,14 +60,14 @@ function timetableCallback(data) {
     ];
     for (let i = 0; i < keys.length; i++) {
         let dayKey      = keys[i];
-        let fileName    = `${LM_PREFIX}${dayKey}${LM_EXT}`;
+        let fileName    = `${DATA_FILE_PREFIX}${dayKey}${LM_EXT}`;
         sendData("lm-dataQueued", data[dayKey.toString()], fileName, clubName);
     }
 }
 // fetch fitness classes and send data to device.
 function fitnessClassesCallback(data) {
     if (data.length !== 0) {
-        sendData("lm-classesQueued", data, `${LM_CLASSES}${LM_EXT}`);
+        sendData("lm-classesQueued", data, `${CLASSES_FILE}${LM_EXT}`);
     } else {
         sendValue("lm-noClasses");
     }

@@ -4,7 +4,7 @@ import * as messaging from "messaging";
 import { me } from "appbit";
 import { display } from "display";
 
-import { SETTINGS_FILE } from "../config"
+import { SETTINGS_FILE } from "../../common/config"
 import { debugLog, toTitleCase, zeroPad } from "../utils"
 import { MONTHS, date, formatTo12hrTime } from "../datelib"
 import {
@@ -67,9 +67,10 @@ function onMount() {
 
     TimetableTile.getElementById("click-pad").onclick = evt => {
         debugLog("TimetableTile clicked.");
-        let options = {currentDate: date.toISOString()};
         TimetableTile.getElementById("overlay").animate("enable");
-        setTimeout(() => {views.navigate("timetable", options);}, 300);
+        setTimeout(() => {
+            views.navigate("timetable", {currentDate: date.toISOString()});
+        }, 300);
     };
     WorkoutsTile.getElementById("click-pad").onclick = evt => {
         debugLog("WorkoutsTile clicked.");
