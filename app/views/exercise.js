@@ -101,7 +101,7 @@ function onMount() {
 
     // Configure Finish Dialog.
     EndDialog.setHeader(WorkoutName);
-    EndDialog.Message.text     = "End this workout?";
+    EndDialog.Message.text     = "End Workout?";
     EndDialog.YesButton.text   = "Yes";
     EndDialog.NoButton.text    = "No";
     EndDialog.hide();

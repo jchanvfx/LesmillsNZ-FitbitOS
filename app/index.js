@@ -18,4 +18,4 @@ const views = init(
 // Select the first view after 1 second
 setTimeout(() => {
     views.navigate("home");
-}, 1000);
+}, 800);

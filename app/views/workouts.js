@@ -164,6 +164,9 @@ function onMount() {
         QuestionDialog.setHeader("");
         QuestionDialog.hide();
     });
+
+    // Hide FadeIn element.
+    setTimeout(() => {hide(document.getElementById("black-fade"));}, 400)
 }
 
 // Clean-up function executed before the view is unloaded.

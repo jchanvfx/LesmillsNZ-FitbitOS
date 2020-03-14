@@ -54,7 +54,7 @@ function onMount() {
     // Configure Labels
     TimetableTopText.text = clubName || "Club";
 
-    // wire up events.
+    // Wire up events.
     clock.granularity = "minutes";
     clock.ontick = (evt) => {TimeLabel.text = formatTo12hrTime(evt.date);}
 
@@ -96,6 +96,8 @@ function onMount() {
     // Sync Club Location settings.
     sendValue("lm-sync");
 
+    // Hide FadeIn element.
+    setTimeout(() => {hide(document.getElementById("black-fade"));}, 400)
 }
 
 // Clean-up function executed before the view is unloaded.

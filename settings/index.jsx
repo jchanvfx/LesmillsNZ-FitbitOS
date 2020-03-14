@@ -2,6 +2,7 @@ function settingsComponent(props) {
     return (
         <Page>
             <Section title={<Text bold align="center">App Settings</Text>}/>
+            <Text>Note: When changing club location please make sure to have the app open on your fitbit device.</Text>
             <Select
                 title="Club Location"
                 label={`Selection`}

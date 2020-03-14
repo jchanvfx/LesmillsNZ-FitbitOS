@@ -72,4 +72,10 @@
     <use id="status-bar" href="#status-bar" />
     <!-- Exercise Dialog -->
     <use id="question-dialog" href="#question-dialog" display="none"/>
+    <!-- FadeIn Element -->
+    <rect id="black-fade" width="100%" height="100%" fill="black">
+        <animate
+            attributeName="opacity" begin="load"
+            from="1" to="0" dur="0.3" final="keep" />
+    </rect>
 </svg>

@@ -101,4 +101,10 @@
             fill="fb-red"
             href="./resources/images/no_phone.png" />
     </section>
+    <!-- FadeIn Element -->
+    <rect id="black-fade" width="100%" height="100%" fill="black">
+        <animate
+            attributeName="opacity" begin="load"
+            from="1" to="0" dur="0.3" final="keep" />
+    </rect>
 </svg>

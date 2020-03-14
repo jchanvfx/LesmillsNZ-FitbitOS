@@ -121,7 +121,7 @@ function onMount() {
     SideMenu.Footer.text     = "v" + BUILD_VER;
     hide(SideMenu.Element);
 
-    // wire up events.
+    // Wire up events.
     clock.granularity = "minutes";
     clock.ontick = (evt) => {StatusBar.setTime(evt.date);}
 
