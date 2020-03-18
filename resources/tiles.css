@@ -47,10 +47,10 @@
     y: 2;
     width: 100%-6;
     height: 100%-4;
-    fill:#2a2d2e;
+    fill:#363636;
 }
 .lm-tile-cnr {
-    fill:#2a2d2e;
+    fill:#363636;
 }
 
 /* Workout Tile */
@@ -94,10 +94,10 @@
     y: 2;
     width: 100%-6;
     height: 100%-4;
-    fill:#2a2d2e;
+    fill:#363636;
 }
 .wrk-tile-cnr {
-    fill:#2a2d2e;
+    fill:#363636;
 }
 #workout-tile-item rect#overlay {
     x: 4%;
@@ -139,8 +139,8 @@
     y: 3;
     width: 100%-6;
     height: 100%-6;
-    fill:#2a2d2e;
+    fill:#363636;
 }
 .home-tile-cnr {
-    fill:#2a2d2e;
+    fill:#363636;
 }

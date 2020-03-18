@@ -46,6 +46,10 @@
                 opacity="0" />
         </symbol>
     </defs>
+
+    <!-- Trasition Anim START -->
+    <g>
+
     <!-- Main Wrapper -->
     <section y="40" height="100%-40">
         <use id="home-list" href="#tile-list">
@@ -107,4 +111,10 @@
             attributeName="opacity" begin="load"
             from="1" to="0" dur="0.3" final="keep" />
     </rect>
+
+    <!-- Trasition Anim END -->
+    <animateTransform
+        attributeType="translate" begin="load" easing="ease"
+        from="-100%, 0%" to="0, 0" dur="0.4" final="keep" />
+    </g>
 </svg>
