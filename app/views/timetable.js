@@ -58,6 +58,9 @@ export function init(_views, _options) {
 function onMount() {
     OnFileRecievedUpdateGui = false;
 
+    (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
+        hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
+
     // Configure TimetableList.
     TimetableList.delegate = {
         getTileInfo: index => {
@@ -199,12 +202,17 @@ function onMount() {
     let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
     StatusBar.setDate(currentDate);
 
-    // Update timetable
+    // Display the loader non animated.
+    LoadingScreen.Label.text = "Loading...";
+    LoadingScreen.SubLabel.text = clubName.toUpperCase();
+    show(LoadingScreen.Element);
+
+    // Load current timetable after transition.
     CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
                            `${currentDate.getDay()}` +
                            `${currentDate.getDate()}` +
                            `${currentDate.getMonth()}.cbor`;
-    loadTimetableFile(CurrentTimetableFile);
+    setTimeout(() => {loadTimetableFile(CurrentTimetableFile);}, 400);
 }
 
 // Clean-up function executed before the view is unloaded.

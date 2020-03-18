@@ -7,7 +7,7 @@
         fill="fb-aqua"
         font-size="20"
         font-weight="bold"
-        text-anchor="middle">Loading...</text>
+        text-anchor="middle">loading...</text>
     <text
         x="50%"
         y="100%-23"
@@ -15,5 +15,5 @@
         fill="fb-light-gray"
         font-size="18"
         font-weight="bold"
-        text-anchor="middle">#LesMillsNZ</text>
+        text-anchor="middle">www.lesmills.co.nz</text>
 </svg>
