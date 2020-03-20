@@ -32,12 +32,13 @@ export function createStatusBarHelper(element) {
 export function createSideMenuHelper(element) {
     return {
         Element         : element,
-        MainLabel       : element.getElementById("main-label"),
-        MainButton      : element.getElementById("main-btn1"),
-        SubLabel        : element.getElementById("sub-label"),
-        SubButton1      : element.getElementById("sub-btn1"),
-        SubButton2      : element.getElementById("sub-btn2"),
-        SubButton3      : element.getElementById("sub-btn3"),
+        MainLabel       : element.getElementById("fitness-label"),
+        MainButton      : element.getElementById("fitness-btn1"),
+        SubLabel        : element.getElementById("timetable-label"),
+        SubButton1      : element.getElementById("timetable-btn1"),
+        SubButton2      : element.getElementById("timetable-btn2"),
+        SubButton3      : element.getElementById("timetable-btn3"),
+        SyncButton      : element.getElementById("sync-btn"),
         Footer          : element.getElementById("footer-label"),
         isVisible() {return isVisible(element);},
         show() {

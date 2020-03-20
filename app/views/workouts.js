@@ -154,6 +154,15 @@ function onMount() {
     SideMenu.SubButton3.addEventListener("activate", () => {
         loadTimetable(date2);
     });
+    // sync button.
+    SideMenu.SyncButton.addEventListener("activate", () => {
+        SideMenu.hide();
+        OnFileRecievedUpdateGui = true;
+        LoadingScreen.Label.text = "Updating Timetable...";
+        LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
+        LoadingScreen.show();
+        setTimeout(() => {sendValue("lm-fetch");}, 500);
+    });
 
     // question dialog buttons.
     QuestionDialog.YesButton.addEventListener("activate", () => {
@@ -166,7 +175,7 @@ function onMount() {
     });
 
     // Hide FadeIn element.
-    setTimeout(() => {hide(document.getElementById("black-fade"));}, 400)
+    setTimeout(() => {hide(document.getElementById("black-fade"));}, 400);
 }
 
 // Clean-up function executed before the view is unloaded.
@@ -234,6 +243,12 @@ function onMessageRecieved(evt) {
                 "Failed to retrive group fitness workouts from database.";
             MessageDialog.show();
             break;
+        case "lm-fetchReply":
+            LoadingScreen.hide();
+            let clubName = evt.data.value;
+            clubName = toTitleCase(clubName);
+            AppSettings.setValue("club", clubName);
+            SideMenu.SubLabel.text = truncateString(clubName, 26);
         default:
             return;
     }

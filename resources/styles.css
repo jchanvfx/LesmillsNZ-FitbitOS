@@ -123,34 +123,22 @@ text {
 }
 
 /* Side Menu */
-#main-itm-label.side-menu-header rect {
+.side-menu-header rect {
     x: 12;
     y: 0;
     width: 100%-24;
     height: 100%;
-    fill: "fb-extra-dark-gray";
+    fill: #242424;
 }
-#main-itm-label.side-menu-header circle {
+.side-menu-header circle {
     r: 12;
     cy: 12;
-    fill: "fb-extra-dark-gray";
-}
-#sub-itm-label.side-menu-header rect {
-    x: 12;
-    y: 0;
-    width: 100%-24;
-    height: 100%;
-    fill: "fb-extra-dark-gray";
-}
-#sub-itm-label.side-menu-header circle {
-    r: 12;
-    cy: 12;
-    fill: "fb-extra-dark-gray";
+    fill: #242424;
 }
 .side-menu-header text {
     x: 30;
     y: 50%+7;
-    fill: "fb-aqua";
+    fill: #fae13c;
     font-size: 22;
     font-family: System-Regular;
 }
