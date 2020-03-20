@@ -187,6 +187,17 @@ function onMount() {
                                `${date2.getMonth()}.cbor`;
         loadTimetableFile(CurrentTimetableFile);
     });
+    // sync button.
+    SideMenu.SyncButton.addEventListener("activate", () => {
+        SideMenu.hide();
+        show(StatusBar.JumpToButton);
+        show(StatusBar.JumpToIcon);
+        OnFileRecievedUpdateGui = true;
+        LoadingScreen.Label.text = "Updating Timetable...";
+        LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
+        LoadingScreen.show();
+        sendValue("lm-fetch");
+    });
     // question dialog buttons.
     QuestionDialog.YesButton.addEventListener("activate", () => {
         LM_TIMETABLE.length = 0;
