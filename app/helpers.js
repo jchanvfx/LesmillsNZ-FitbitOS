@@ -88,8 +88,12 @@ export function createMessageDialogHelper(element) {
         Element     : element,
         Header      : element.getElementById("#mixedtext"),
         Message     : element.getElementById("#mixedtext").getElementById("copy"),
+        OkButton    : element.getElementById("btn-ok"),
         isVisible() {return isVisible(element);},
-        show() {element.style.display = "inline";},
+        show(showButton=false) {
+            element.style.display = "inline";
+            (showButton) ? show(this.OkButton) : hide(this.OkButton);
+        },
         hide() {element.style.display = "none";},
     };
 }

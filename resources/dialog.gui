@@ -36,5 +36,8 @@
             <set href="#copy/text" attributeName="text-buffer" to="{no data}"/>
             <set href="#copy/text" attributeName="text-length" to="128" />
         </use>
+        <use id="btn-ok" href="#square-button" y="100%-60" height="60" fill="fb-yellow" display="none">
+            <set href="#text" attributeName="text-buffer" to="Ok" />
+        </use>
     <!-- </section> -->
 </symbol>

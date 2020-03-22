@@ -157,13 +157,23 @@ function onMount() {
     // sync button.
     SideMenu.SyncButton.addEventListener("activate", () => {
         SideMenu.hide();
+        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+            MessageDialog.Header.text = "Can't Sync";
+            MessageDialog.Message.text =
+                "Phone connection required for internet access.";
+            MessageDialog.show(true);
+            return;
+        }
         OnFileRecievedUpdateGui = true;
         LoadingScreen.Label.text = "Updating Timetable...";
         LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
         LoadingScreen.show();
         setTimeout(() => {sendValue("lm-fetch");}, 500);
     });
-
+    // message dialog button.
+    MessageDialog.OkButton.addEventListener("activate", () => {
+        MessageDialog.hide();
+    });
     // question dialog buttons.
     QuestionDialog.YesButton.addEventListener("activate", () => {
         LM_CLASSES.length = 0;

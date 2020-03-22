@@ -190,6 +190,13 @@ function onMount() {
     // sync button.
     SideMenu.SyncButton.addEventListener("activate", () => {
         SideMenu.hide();
+        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+            MessageDialog.Header.text = "Can't Sync";
+            MessageDialog.Message.text =
+                "Phone connection required for internet access.";
+            MessageDialog.show(true);
+            return;
+        }
         show(StatusBar.JumpToButton);
         show(StatusBar.JumpToIcon);
         OnFileRecievedUpdateGui = true;
@@ -197,6 +204,10 @@ function onMount() {
         LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
         LoadingScreen.show();
         sendValue("lm-fetch");
+    });
+    // message dialog button.
+    MessageDialog.OkButton.addEventListener("activate", () => {
+        MessageDialog.hide();
     });
     // question dialog buttons.
     QuestionDialog.YesButton.addEventListener("activate", () => {
@@ -378,11 +389,11 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
             show(TimetableList);
             LoadingScreen.hide();
 
-            // request background update if the file modified is more than 48hrs old.
+            // request background update if the file modified time is more than 36hrs old.
             // then fetch data in the background.
             let mTime = statSync(fileName).mtime;
             let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
-            if (timeDiff > 48) {
+            if (timeDiff > 36) {
                 debugLog(`File ${fileName} outdated by ${timeDiff}hrs`);
                 OnFileRecievedUpdateGui = false;
                 sendValue("lm-fetch");

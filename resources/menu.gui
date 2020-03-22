@@ -49,7 +49,7 @@
                     fill="white"
                     font-family="System-Regular"
                     font-size="20">
-                Update cached timetable data manually with the "Sync" button.
+                Update and refresh timetable data with the "Sync" button.
                 </textarea>
             </use>
             <use id="sync-itm" href="#scrollview-item" height="68">
