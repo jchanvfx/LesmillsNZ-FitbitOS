@@ -19,7 +19,8 @@ import {
     createQuestionDialogHelper,
     createStatusBarHelper,
     createSideMenuHelper,
-    createSettingsHelper
+    createSettingsHelper,
+    isVisible
 } from "../helpers"
 
 let TimetableList;
@@ -32,6 +33,7 @@ let AppSettings;
 
 let CurrentTimetableFile;
 let OnFileRecievedUpdateGui;
+let ConectionRetryCount;
 
 let LM_TIMETABLE = [];
 
@@ -57,6 +59,7 @@ export function init(_views, _options) {
 
 function onMount() {
     OnFileRecievedUpdateGui = false;
+    ConectionRetryCount = -1;
 
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
         hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
@@ -367,7 +370,7 @@ function cleanUpFiles() {
 
 function loadTimetableFile(fileName, jumpToIndex=true) {
     LoadingScreen.Label.text = "Loading Timetable...";
-    LoadingScreen.SubLabel.text = "";
+    LoadingScreen.SubLabel.text = AppSettings.getValue("club");
     LoadingScreen.show();
 
     hide(TimetableList);
@@ -377,11 +380,13 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
     if (existsSync(`/private/data/${fileName}`)) {
         LM_TIMETABLE = readFileSync(fileName, "cbor");
     }
+
+    TimetableList.length = LM_TIMETABLE.length;
+
     if (LM_TIMETABLE.length !== 0) {
         debugLog(`Loading data file: ${fileName}`);
         setTimeout(() => {
-            // refresh to the list.
-            TimetableList.length = LM_TIMETABLE.length;
+            // refresh the list.
             TimetableList.redraw();
             // jump to latest tile.
             if (jumpToIndex) {jumpToTile();}
@@ -395,44 +400,58 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
             let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
             if (timeDiff > 36) {
                 debugLog(`File ${fileName} outdated by ${timeDiff}hrs`);
-                OnFileRecievedUpdateGui = false;
+                OnFileRecievedUpdateGui = true;
                 sendValue("lm-fetch");
             } else {
                 (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
                     hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
             }
+
+            display.poke();
+            cleanUpFiles();
         }, 200);
 
-        display.poke();
-        cleanUpFiles();
+        ConectionRetryCount = -1;
         return;
     }
 
     debugLog('Fetching Database...');
-    OnFileRecievedUpdateGui = true;
-    LoadingScreen.Label.text = "Requesting Timetable...";
-    LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
-    LoadingScreen.show();
-    sendValue("lm-fetch");
+
+    ConectionRetryCount += 1;
+    if (ConectionRetryCount === 0) {
+        LoadingScreen.Label.text = "Retrieving Timetable...";
+        LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
+    } else {
+        LoadingScreen.Label.text = "No Classes Found!";
+        LoadingScreen.SubLabel.text = `Reconnecting: ${ConectionRetryCount} of 3`;
+    }
+
     cleanUpFiles();
 
-    // Give 6 second period before displaying connection lost or retry.
-    setTimeout(() => {
-        if (LoadingScreen.isVisible()) {
-            if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
-                LoadingScreen.hide();
-                MessageDialog.Header.text = "Connection Lost";
-                MessageDialog.Message.text = "Failed to retrive data from phone.";
-                MessageDialog.show();
-            } else {
-                LoadingScreen.Label.text = "Reconnecting...";
-                LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
-                LoadingScreen.show();
-                sendValue("lm-fetch");
-            }
+    if (ConectionRetryCount > 3) {
+        ConectionRetryCount = -1;
+        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+            LoadingScreen.hide();
+            MessageDialog.Header.text = "Connection Lost";
+            MessageDialog.Message.text = "Failed to retrive data from phone.";
+            MessageDialog.show(true);
+            return;
         }
-        display.poke();
-    }, 6000);
+        if (LoadingScreen.isVisible()) {
+            LoadingScreen.hide();
+            MessageDialog.Header.text = "No Classes";
+            MessageDialog.Message.text = "Couldn't retrive any classes for this date.";
+            MessageDialog.show(true);
+            return;
+        }
+    }
+
+    OnFileRecievedUpdateGui = true;
+    if (ConectionRetryCount === 0) {
+        sendValue("lm-fetch");
+        return;
+    }
+    setTimeout(() => {sendValue("lm-fetch");}, 2000);
 }
 
 function jumpToTile() {
