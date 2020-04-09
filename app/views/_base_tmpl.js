@@ -1,3 +1,4 @@
+// base template module for creating a screen
 import document from "document";
 import { me } from "appbit";
 import { debugLog } from "../utils";

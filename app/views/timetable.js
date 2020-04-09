@@ -188,7 +188,7 @@ function onMount() {
     }
     // message dialog button.
     MessageDialog.OkButton.onactivate    = () => {MessageDialog.hide();}
-    // question dialog buttons.
+    // question dialog buttons. (not used)
     QuestionDialog.YesButton.onactivate  = () => {
         debugLog("Question Dialog: YES Clicked!");
     }
