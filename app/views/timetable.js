@@ -1,7 +1,8 @@
 import document from "document";
 import clock from "clock";
 import * as messaging from "messaging";
-// import { me } from "appbit";
+
+import { me } from "appbit";
 import { display } from "display";
 import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
@@ -20,7 +21,6 @@ import {
     createStatusBarHelper,
     createSideMenuHelper,
     createSettingsHelper,
-    isVisible
 } from "../helpers"
 
 let TimetableList;
@@ -42,7 +42,7 @@ let views;
 let options;
 export function init(_views, _options) {
     views   = _views;
-    options = _options;
+    options = _options || {};
 
     TimetableList   = document.getElementById("lm-class-list");
     LoadingScreen   = createLoadingScreenHelper(document.getElementById("loading-screen"));
@@ -85,6 +85,7 @@ function onMount() {
                 tile.getElementById("text-subtitle").text = info.instructor;
                 tile.getElementById("text-L").text = formatTo12hrTime(itmDate);
                 tile.getElementById("text-R").text = info.desc;
+                // let clickPad = tile.getElementById("click-pad");
                 let diffMsecs = itmDate - date;
                 if (Math.floor((diffMsecs / 1000) / 60) < -6) {
                     tile.getElementById("text-title").style.fill = "#6e6e6e";
@@ -92,17 +93,14 @@ function onMount() {
                     tile.getElementById("text-L").style.fill = "#6e6e6e";
                     tile.getElementById("text-R").style.fill = "#6e6e6e";
                     tile.getElementById("color").style.fill = "#4f4f4f";
-                    let clickPad = tile.getElementById("click-pad");
-                    clickPad.onclick = undefined;
+                    // clickPad.onclick = undefined;
                 } else {
                     tile.getElementById("text-title").style.fill = "white";
                     tile.getElementById("text-subtitle").style.fill = "white";
                     tile.getElementById("text-L").style.fill = "white";
                     tile.getElementById("text-R").style.fill = "white";
                     tile.getElementById("color").style.fill = info.color;
-
-                    let clickPad = tile.getElementById("click-pad");
-                    clickPad.onclick = evt => {onTileClicked(tile, info);}
+                    // clickPad.onclick = (evt) => {return;}
                 }
             }
         }
@@ -111,9 +109,7 @@ function onMount() {
     TimetableList.length = LM_TIMETABLE.length;
 
     // Configure SideMenu button labels.
-    SideMenu.MainLabel.text  = "Group Fitness";
-    SideMenu.MainButton.text = "Workouts";
-    let clubName = AppSettings.getValue("club");
+    let clubName = AppSettings.getValue("club") || "Club Not Set!";
     SideMenu.SubLabel.text   = truncateString(clubName, 26);
     SideMenu.SubButton1.text = `${DAYS_SHORT[date.getDay()]} ` +
                                `${date.getDate()} ` +
@@ -131,17 +127,33 @@ function onMount() {
     clock.granularity = "minutes";
     clock.ontick = (evt) => {StatusBar.setTime(evt.date);}
 
-    messaging.peerSocket.onopen = () => {
+    // key press
+    document.onkeypress = (evt) => {
+        if (evt.key === "back") {
+            evt.preventDefault();
+            if (SideMenu.isVisible()) {
+                show(StatusBar.JumpToButton);
+                show(StatusBar.JumpToIcon);
+                SideMenu.hide();
+            }
+            else if (QuestionDialog.isVisible()) {
+                QuestionDialog.setHeader("");
+                QuestionDialog.hide();
+            }
+            else {me.exit();}
+        }
+    }
+    // data inbox
+    inbox.onnewfile = onDataRecieved;
+    // messaging
+    messaging.peerSocket.onmessage  = onMessageRecieved;
+    messaging.peerSocket.onopen     = () => {
         debugLog("App Socket Open"); hide(StatusBar.PhoneIcon);}
-    messaging.peerSocket.onclose = () => {
+    messaging.peerSocket.onclose    = () => {
         debugLog("App Socket Closed"); show(StatusBar.PhoneIcon);}
-    messaging.peerSocket.onmessage = onMessageRecieved;
-    inbox.addEventListener("newfile", onDataRecieved);
-    // key press.
-    document.addEventListener("keypress", onKeyPressEvent);
     // status bar buttons.
-    StatusBar.JumpToButton.addEventListener("click", jumpToTile)
-    StatusBar.MenuButton.addEventListener("click", () => {
+    StatusBar.JumpToButton.onclick  = () => {jumpToLatestClass();}
+    StatusBar.MenuButton.onclick    = () => {
         if (SideMenu.isVisible()) {
             show(StatusBar.JumpToButton);
             show(StatusBar.JumpToIcon);
@@ -151,47 +163,13 @@ function onMount() {
             hide(StatusBar.JumpToIcon);
             SideMenu.show();
         }
-    });
-    // workout button.
-    SideMenu.MainButton.addEventListener("activate", () => {
-        views.navigate("workouts");
-    });
+    }
     // timetable schedule buttons.
-    SideMenu.SubButton1.addEventListener("activate", () => {
-        StatusBar.setDate(date);
-        show(StatusBar.JumpToButton);
-        show(StatusBar.JumpToIcon);
-        SideMenu.hide();
-        CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
-                               `${date.getDay()}` +
-                               `${date.getDate()}` +
-                               `${date.getMonth()}.cbor`
-        loadTimetableFile(CurrentTimetableFile);
-    });
-    SideMenu.SubButton2.addEventListener("activate", () => {
-        StatusBar.setDate(date1);
-        show(StatusBar.JumpToButton);
-        show(StatusBar.JumpToIcon);
-        SideMenu.hide();
-        CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
-                               `${date1.getDay()}` +
-                               `${date1.getDate()}` +
-                               `${date1.getMonth()}.cbor`;
-        loadTimetableFile(CurrentTimetableFile);
-    });
-    SideMenu.SubButton3.addEventListener("activate", () => {
-        StatusBar.setDate(date2);
-        show(StatusBar.JumpToButton);
-        show(StatusBar.JumpToIcon);
-        SideMenu.hide();
-        CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
-                               `${date2.getDay()}` +
-                               `${date2.getDate()}` +
-                               `${date2.getMonth()}.cbor`;
-        loadTimetableFile(CurrentTimetableFile);
-    });
+    SideMenu.SubButton1.onactivate = () => {loadTimetableByDate(date);}
+    SideMenu.SubButton2.onactivate = () => {loadTimetableByDate(date1);}
+    SideMenu.SubButton3.onactivate = () => {loadTimetableByDate(date2);}
     // sync button.
-    SideMenu.SyncButton.addEventListener("activate", () => {
+    SideMenu.SyncButton.onactivate = () => {
         SideMenu.hide();
         if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
             MessageDialog.Header.text = "Can't Sync";
@@ -203,24 +181,21 @@ function onMount() {
         show(StatusBar.JumpToButton);
         show(StatusBar.JumpToIcon);
         OnFileRecievedUpdateGui = true;
-        LoadingScreen.Label.text = "Updating Timetable...";
+        LoadingScreen.Label.text = "Requesting Data...";
         LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
         LoadingScreen.show();
         sendValue("lm-fetch");
-    });
+    }
     // message dialog button.
-    MessageDialog.OkButton.addEventListener("activate", () => {
-        MessageDialog.hide();
-    });
+    MessageDialog.OkButton.onactivate    = () => {MessageDialog.hide();}
     // question dialog buttons.
-    QuestionDialog.YesButton.addEventListener("activate", () => {
-        LM_TIMETABLE.length = 0;
-        views.navigate("exercise", {workout: `${QuestionDialog.getHeader()}`});
-    });
-    QuestionDialog.NoButton.addEventListener("activate", () => {
-        QuestionDialog.setHeader("");
+    QuestionDialog.YesButton.onactivate  = () => {
+        debugLog("Question Dialog: YES Clicked!");
+    }
+    QuestionDialog.NoButton.onactivate   = () => {
+        debugLog("Question Dialog: NO Clicked!");
         QuestionDialog.hide();
-    });
+    }
 
     // Update StatusBar date.
     let dateStr     = options.currentDate;
@@ -250,7 +225,7 @@ function onUnMount() {
     messaging.peerSocket.onopen     = undefined;
     messaging.peerSocket.onclose    = undefined;
     messaging.peerSocket.onmessage  = undefined;
-    inbox.removeEventListener("newfile", onDataRecieved);
+    inbox.onnewfile                 = undefined;
 }
 
 // ----------------------------------------------------------------------------
@@ -368,6 +343,18 @@ function cleanUpFiles() {
     }
 }
 
+function jumpToLatestClass() {
+    let currentIdx = 0;
+    let time;
+    let i = LM_TIMETABLE.length, x = -1;
+    while (i--) {
+        x++;
+        time = new Date(LM_TIMETABLE[x].date);
+        if (time - date > 0) {currentIdx = x; break;}
+    }
+    TimetableList.value = currentIdx;
+}
+
 function loadTimetableFile(fileName, jumpToIndex=true) {
     LoadingScreen.Label.text = "Loading Timetable...";
     LoadingScreen.SubLabel.text = AppSettings.getValue("club");
@@ -389,7 +376,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
             // refresh the list.
             TimetableList.redraw();
             // jump to latest tile.
-            if (jumpToIndex) {jumpToTile();}
+            if (jumpToIndex) {jumpToLatestClass();}
 
             show(TimetableList);
             LoadingScreen.hide();
@@ -454,51 +441,14 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
     setTimeout(() => {sendValue("lm-fetch");}, 2000);
 }
 
-function jumpToTile() {
-    let currentIdx = 0;
-    let time;
-    let i = LM_TIMETABLE.length, x = -1;
-    while (i--) {
-        x++;
-        time = new Date(LM_TIMETABLE[x].date);
-        if (time - date > 0) {currentIdx = x; break;}
-    }
-    TimetableList.value = currentIdx;
-}
-
-function onTileClicked(tile, info) {
-    let workout = info.name.toUpperCase();;
-    workout = workout.replace(/VIRTUAL|30|45/g, "");
-    workout = workout.replace(/^\s+|\s+$/g, "");
-
-    // ECMAScript 5.1 doesn't support "String.endsWith()"
-    let excl = " INTRO";
-    if (workout.slice(-excl.length) === excl) {
-        workout = workout.slice(0, -excl.length);
-    }
-
-    QuestionDialog.setHeader(workout);
-    QuestionDialog.Message.text = "Start Workout?"
-    tile.getElementById("overlay").animate("enable");
-    setTimeout(() => {QuestionDialog.show();}, 300);
-    debugLog(`${workout} tile clicked`);
-}
-
-function onKeyPressEvent(evt) {
-    if (evt.key === "back") {
-        evt.preventDefault();
-        if (SideMenu.isVisible()) {
-            show(StatusBar.JumpToButton);
-            show(StatusBar.JumpToIcon);
-            SideMenu.hide();
-        }
-        else if (QuestionDialog.isVisible()) {
-            QuestionDialog.setHeader("");
-            QuestionDialog.hide();
-        }
-        else {
-            views.navigate("home");
-            // me.exit();
-        }
-    }
+function loadTimetableByDate(date) {
+    StatusBar.setDate(date);
+    show(StatusBar.JumpToButton);
+    show(StatusBar.JumpToIcon);
+    SideMenu.hide();
+    CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
+                            `${date.getDay()}` +
+                            `${date.getDate()}` +
+                            `${date.getMonth()}.cbor`
+    loadTimetableFile(CurrentTimetableFile);
 }

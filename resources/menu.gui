@@ -27,38 +27,19 @@
                 </use>
             </use>
 
-            <!-- Group Fitness -->
-            <use id="fitness-itm-label" href="#scrollview-item" height="25" class="side-menu-header">
-                <circle cx="100%-14" />
-                <rect/><text id="fitness-label" text-length="24" />
-                <circle cx="14" fill="#453617"/>
-                <circle r="6" cx="14" fill="#fae13c" />
-            </use>
-            <use id="fitness-itm1" href="#scrollview-item" height="68">
-                <use id="fitness-btn1" href="#square-button" y="2" height="62" fill="fb-aqua">
-                    <set href="#text" attributeName="text-length" to="12" />
-                </use>
-            </use>
-
-            <use href="#scrollview-item" height="80">
-                <rect x="10" y="$+20" width="100%-20" height="1" fill="grey" />
-                <textarea
-                    x="10" y="$+10"
-                    width="100%-10"
-                    height="75"
-                    fill="white"
-                    font-family="System-Regular"
-                    font-size="20">
-                Update and refresh timetable data with the "Sync" button.
-                </textarea>
+            <!-- Reload Screen -->
+            <use href="#scrollview-item" height="55">
+                <rect x="10" y="$+20" width="100%-20" height="2" fill="grey" />
+                <text x="10" y="$+25" font-size="22">reload current screen</text>
             </use>
             <use id="sync-itm" href="#scrollview-item" height="68">
                 <use id="sync-btn" href="#square-button-icon" y="2" height="62" fill="fb-yellow">
-                    <set href="#text" attributeName="text-buffer" to="Sync" />
+                    <set href="#text" attributeName="text-buffer" to="Reload" />
                     <set href="#image" attributeName="href" to="./resources/images/refresh.png" />
                 </use>
             </use>
 
+            <!-- Footer -->
             <use href="#scrollview-item" height="25" class="side-menu-header">
                 <text id="footer-label"
                       x="10"
