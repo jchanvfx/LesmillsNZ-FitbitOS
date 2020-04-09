@@ -172,7 +172,7 @@ function onMount() {
     SideMenu.SyncButton.onactivate = () => {
         SideMenu.hide();
         if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
-            MessageDialog.Header.text = "Can't Sync";
+            MessageDialog.Header.text = "Connection Lost";
             MessageDialog.Message.text =
                 "Phone connection required for internet access.";
             MessageDialog.show(true);
@@ -344,6 +344,7 @@ function cleanUpFiles() {
 }
 
 function jumpToLatestClass() {
+    if (LM_TIMETABLE.length === 0) {return;}
     let currentIdx = 0;
     let time;
     let i = LM_TIMETABLE.length, x = -1;
@@ -420,7 +421,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
         if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
             LoadingScreen.hide();
             MessageDialog.Header.text = "Connection Lost";
-            MessageDialog.Message.text = "Failed to retrive data from phone.";
+            MessageDialog.Message.text = "Phone connection required for internet access.";
             MessageDialog.show(true);
             return;
         }
