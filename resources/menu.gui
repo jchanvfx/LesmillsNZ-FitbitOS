@@ -28,9 +28,8 @@
             </use>
 
             <!-- Reload Screen -->
-            <use href="#scrollview-item" height="55">
-                <rect x="10" y="$+20" width="100%-20" height="2" fill="grey" />
-                <text x="10" y="$+25" font-size="22">reload current screen</text>
+            <use href="#scrollview-item" height="30">
+                <rect x="10" y="$+15" width="100%-20" height="2" fill="grey" />
             </use>
             <use id="sync-itm" href="#scrollview-item" height="68">
                 <use id="sync-btn" href="#square-button-icon" y="2" height="62" fill="fb-yellow">
