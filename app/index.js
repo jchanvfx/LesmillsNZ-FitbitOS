@@ -7,7 +7,7 @@ import { init } from "./views";
 const views = init(
     [
         ["timetable", () => import("./views/timetable")],
-        // ["template", () => import("./views/_base_tmpl")],
+        // ["test", () => import("./views/test")],
     ],
     "./resources/views/"
 );

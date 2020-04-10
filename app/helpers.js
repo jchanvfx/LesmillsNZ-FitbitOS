@@ -32,8 +32,6 @@ export function createStatusBarHelper(element) {
 export function createSideMenuHelper(element) {
     return {
         Element         : element,
-        MainLabel       : element.getElementById("fitness-label"),
-        MainButton      : element.getElementById("fitness-btn1"),
         SubLabel        : element.getElementById("timetable-label"),
         SubButton1      : element.getElementById("timetable-btn1"),
         SubButton2      : element.getElementById("timetable-btn2"),

@@ -29,6 +29,7 @@ let MessageDialog;
 let QuestionDialog;
 let StatusBar;
 let SideMenu;
+let SyncText;
 let AppSettings;
 
 let CurrentTimetableFile;
@@ -50,6 +51,7 @@ export function init(_views, _options) {
     QuestionDialog  = createQuestionDialogHelper(document.getElementById("question-dialog"));
     StatusBar       = createStatusBarHelper(document.getElementById("status-bar"));
     SideMenu        = createSideMenuHelper(document.getElementById("menu-screen"));
+    SyncText        = SideMenu.Element.getElementById("sync-message");
     AppSettings     = createSettingsHelper(SETTINGS_FILE);
 
     onMount();
@@ -60,6 +62,7 @@ export function init(_views, _options) {
 function onMount() {
     OnFileRecievedUpdateGui = false;
     ConectionRetryCount = -1;
+    SyncText.text = "Last Updated: N/A";
 
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
         hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
@@ -81,25 +84,25 @@ function onMount() {
         configureTile: (tile, info) => {
             if (info.type == "lm-pool") {
                 let itmDate = new Date(info.date);
-                tile.getElementById("text-title").text = info.name.toUpperCase();
+                tile.getElementById("text-title").text    = info.name.toUpperCase();
                 tile.getElementById("text-subtitle").text = info.instructor;
-                tile.getElementById("text-L").text = formatTo12hrTime(itmDate);
-                tile.getElementById("text-R").text = info.desc;
+                tile.getElementById("text-L").text        = formatTo12hrTime(itmDate);
+                tile.getElementById("text-R").text        = info.desc;
                 // let clickPad = tile.getElementById("click-pad");
                 let diffMsecs = itmDate - date;
                 if (Math.floor((diffMsecs / 1000) / 60) < -6) {
-                    tile.getElementById("text-title").style.fill = "#6e6e6e";
+                    tile.getElementById("text-title").style.fill    = "#6e6e6e";
                     tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
-                    tile.getElementById("text-L").style.fill = "#6e6e6e";
-                    tile.getElementById("text-R").style.fill = "#6e6e6e";
-                    tile.getElementById("color").style.fill = "#4f4f4f";
+                    tile.getElementById("text-L").style.fill        = "#6e6e6e";
+                    tile.getElementById("text-R").style.fill        = "#6e6e6e";
+                    tile.getElementById("color").style.fill         = "#4f4f4f";
                     // clickPad.onclick = undefined;
                 } else {
-                    tile.getElementById("text-title").style.fill = "white";
+                    tile.getElementById("text-title").style.fill    = "white";
                     tile.getElementById("text-subtitle").style.fill = "white";
-                    tile.getElementById("text-L").style.fill = "white";
-                    tile.getElementById("text-R").style.fill = "white";
-                    tile.getElementById("color").style.fill = info.color;
+                    tile.getElementById("text-L").style.fill        = "white";
+                    tile.getElementById("text-R").style.fill        = "white";
+                    tile.getElementById("color").style.fill         = info.color;
                     // clickPad.onclick = (evt) => {return;}
                 }
             }
@@ -257,6 +260,7 @@ function onMessageRecieved(evt) {
             }
             break;
         case "lm-fetchReply":
+            MessageDialog.hide();
             if (OnFileRecievedUpdateGui) {
                 let clubName = evt.data.value;
                 LoadingScreen.Label.text    = "Retrieving Timetable...";
@@ -382,10 +386,16 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
             show(TimetableList);
             LoadingScreen.hide();
 
+            let lastModified = statSync(fileName).mtime;
+
+            // update last sync label.
+            SyncText.text = `Last Updated: ` +
+                            `${lastModified.getDate()}/${lastModified.getMonth()} - ` +
+                            `${formatTo12hrTime(lastModified)}`;
+
             // request background update if the file modified time is more than 36hrs old.
             // then fetch data in the background.
-            let mTime = statSync(fileName).mtime;
-            let timeDiff = Math.round(Math.abs(date - mTime) / 36e5);
+            let timeDiff = Math.round(Math.abs(date - lastModified) / 36e5);
             if (timeDiff > 36) {
                 debugLog(`File ${fileName} outdated by ${timeDiff}hrs`);
                 OnFileRecievedUpdateGui = true;

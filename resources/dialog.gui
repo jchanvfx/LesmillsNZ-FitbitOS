@@ -28,7 +28,6 @@
 </symbol>
 
 <symbol id="message-dialog">
-    <!-- <section y="50" height="100%-50"> -->
         <rect width="100%" height="100%" fill="black" />
         <use id="mixedtext" href="#mixed-text-center-mid" height="100%" fill="fb-yellow">
             <set href="#header/text" attributeName="text-buffer" to="{no data}"/>
@@ -39,5 +38,4 @@
         <use id="btn-ok" href="#square-button" y="100%-60" height="60" fill="fb-yellow" display="none">
             <set href="#text" attributeName="text-buffer" to="Ok" />
         </use>
-    <!-- </section> -->
 </symbol>

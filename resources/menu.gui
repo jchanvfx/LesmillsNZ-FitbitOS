@@ -4,6 +4,7 @@
         <animate attributeName="x" begin="disable" from="0%" to="-100%" dur="0.3" easing="ease"/>
         <rect width="100%" height="100%" fill="black" />
         <use id="side-menu-scroll" href="#scrollview">
+
             <!-- Timetable -->
             <use id="timetable-itm-label" href="#scrollview-item" height="25" class="side-menu-header">
                 <circle cx="100%-14" />
@@ -28,8 +29,13 @@
             </use>
 
             <!-- Reload Screen -->
-            <use href="#scrollview-item" height="30">
-                <rect x="10" y="$+15" width="100%-20" height="2" fill="grey" />
+            <use href="#scrollview-item" height="50">
+                <rect x="10" y="$+15" width="100%-20" height="2" fill="fb-gray" />
+                <text id="sync-message"
+                      x="10" y="$+24"
+                      font-size="20"
+                      text-length="32"
+                      fill="fb-light-gray" />
             </use>
             <use id="sync-itm" href="#scrollview-item" height="68">
                 <use id="sync-btn" href="#square-button-icon" y="2" height="62" fill="fb-yellow">
