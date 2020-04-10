@@ -1,7 +1,17 @@
+// base template module for creating a screen
 import document from "document";
 import { me } from "appbit";
 import { debugLog } from "../utils";
+import {
+    createLoadingScreenHelper,
+    createMessageDialogHelper,
+    createStatusBarHelper,
+} from "../helpers"
 
+
+let LoadingScreen;
+let MessageDialog;
+let StatusBar;
 let Button;
 
 // screen entry point.
@@ -11,7 +21,10 @@ export function init(_views, _options) {
     views   = _views;
     options = _options;
 
-    Button = document.getElementById("btn1");
+    LoadingScreen   = createLoadingScreenHelper(document.getElementById("loading-screen"));
+    MessageDialog   = createMessageDialogHelper(document.getElementById("message-dialog"));
+    StatusBar       = createStatusBarHelper(document.getElementById("status-bar"));
+    Button          = document.getElementById("btn1");
 
     debugLog("view-tmpl :: initialize!");
     onMount();
@@ -19,6 +32,7 @@ export function init(_views, _options) {
 }
 
 function onMount() {
+    // LoadingScreen.show();
     Button.addEventListener("click", onButtonClicked);
     document.addEventListener("keypress", onKeyPressEvent);
 }

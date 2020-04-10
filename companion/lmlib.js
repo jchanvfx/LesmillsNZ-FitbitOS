@@ -1,7 +1,7 @@
 // Timetable web API
 const urlAPI = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi";
 
-// Fetch timetable data from the LesMills database.
+// Fetch timetable data from the website.
 export function fetchTimetableData(clubID, callbackFunc) {
     let fetchData = {
         method: "POST",
@@ -61,7 +61,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
         });
 }
 
-// Fetch fitness classes from the LesMills database.
+// Fetch fitness classes from website.
 export function fetchClasses(clubID, callbackFunc) {
     let fetchData = {
         method: "POST",
@@ -100,8 +100,7 @@ export function fetchClasses(clubID, callbackFunc) {
             for (let i = 0; i < fitnessClasses.length; i++) {
                 let color = (fitnessColors[i] !== null) ? fitnessColors[i] : "black";
                 let workout = fitnessClasses[i];
-                let iconName = getIconImageName(workout);
-                classesData.push({name:workout, color:color, iconName:iconName});
+                classesData.push({name:workout, color:color});
             }
             classesData.sort((a, b) => (a.name > b.name) ? 1 : -1)
 
@@ -111,65 +110,4 @@ export function fetchClasses(clubID, callbackFunc) {
         .catch(err => {
             console.log(`Failure: ${err}`);
         });
-}
-
-function getIconImageName(workout) {
-    let name;
-    switch (workout) {
-        case "CXWORX":
-        case "TONE":
-            name = "bands";
-            break;
-        case "BODYCOMBAT":
-        case "CONQUER":
-        case "IMPACT":
-        case "IMPACT BOXING":
-        case "LOW IMPACT":
-            name = "boxing";
-            break;
-        case "RPM":
-        case "RPM ENDURO":
-        case "SPRINT":
-        case "THE TRIP":
-            name = "cycle";
-            break;
-        case "BODYJAM":
-        case "HIP HOP":
-        case "SH'BAM":
-            name = "dance";
-            break;
-        case "BODYATTACK":
-        case "GRIT PYLO":
-            name = "jump";
-            break;
-        case "BARRE":
-            name = "leap";
-            break;
-        case "GRIT CARDIO":
-            name = "mclimb";
-            break;
-        case "BODYSTEP":
-        case "BODYSTEP ATHLETIC":
-        case "GRIT ATHLETIC":
-            name = "step";
-            break;
-        case "BODYBALANCE":
-        case "LES MILLS STRETCH":
-            name = "stretch";
-            break;
-        case "BODYPUMP":
-        case "GRIT STRENGTH":
-            name = "weightlift";
-            break;
-        case "HATHA YOGA":
-        case "VINYASA YOGA":
-        case "YANG YIN YOGA":
-        case "YIN YOGA":
-        case "YOGA":
-            name = "yoga";
-            break;
-        default:
-            name = "default";
-    }
-    return name;
 }

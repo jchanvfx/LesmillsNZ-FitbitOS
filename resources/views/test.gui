@@ -16,7 +16,10 @@
         </use>
     </section>
 
+    <!-- Message Dialog -->
+    <use id="message-dialog" href="#message-dialog" display="none" />
+    <!-- Loading Screen -->
+    <use id="loading-screen" href="#loading-screen" display="none" />
     <!-- Status Bar -->
-    <use id="status-bar" href="#lm-status-bar" />
-
+    <use id="status-bar" href="#status-bar" />
 </svg>

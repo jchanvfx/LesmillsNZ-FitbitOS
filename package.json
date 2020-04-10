@@ -1,6 +1,6 @@
 {
-  "name": "lm_workouts",
-  "version": "0.1.10",
+  "name": "lm_timetable",
+  "version": "0.2.0",
   "private": true,
   "license": "MIT",
   "devDependencies": {
@@ -10,16 +10,11 @@
   "fitbit": {
     "appUUID": "8f60152d-38d3-4fea-9a76-f0db013ec51b",
     "appType": "app",
-    "appDisplayName": "Workouts",
+    "appDisplayName": "Classes",
     "iconFile": "resources/icon.png",
     "wipeColor": "#38f8df",
     "requestedPermissions": [
-      "access_activity",
-      "access_exercise",
-      "access_heart_rate",
-      "access_internet",
-      "access_user_profile",
-      "run_background"
+      "access_internet"
     ],
     "buildTargets": [
       "mira",

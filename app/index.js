@@ -6,16 +6,13 @@ import { init } from "./views";
  */
 const views = init(
     [
-        ["home",      () => import("./views/home")],
         ["timetable", () => import("./views/timetable")],
-        ["workouts",  () => import("./views/workouts")],
-        ["exercise",  () => import("./views/exercise")],
-        // ["template", () => import("./views/_base_tmpl")],
+        // ["test", () => import("./views/test")],
     ],
     "./resources/views/"
 );
 
 // Select the first view after 1 second
 setTimeout(() => {
-    views.navigate("home");
+    views.navigate("timetable");
 }, 1000);
