@@ -1,0 +1,25 @@
+<svg viewport-fill="black">
+    <!-- Main Wrapper -->
+    <section y="50" height="100%-50">
+        <text
+            x="50%"
+            y="50%"
+            font-family="System-Regular"
+            fill="#4bfbc7"
+            font-size="30"
+            font-weight="bold"
+            text-anchor="middle">Test Text</text>
+
+        <use id="btn1" href="#square-button" fill="#1effce">
+            <set href="#text" attributeName="text-length" to="12" />
+            <set href="#text" attributeName="text-buffer" to="Test Button" />
+        </use>
+    </section>
+
+    <!-- Message Dialog -->
+    <use id="message-dialog" href="#message-dialog" display="none" />
+    <!-- Loading Screen -->
+    <use id="loading-screen" href="#loading-screen" display="none" />
+    <!-- Status Bar -->
+    <use id="status-bar" href="#status-bar" />
+</svg>
