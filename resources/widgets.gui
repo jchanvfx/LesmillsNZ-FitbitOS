@@ -2,12 +2,13 @@
   <defs>
     <link rel="stylesheet" href="styles.css" />
     <link rel="import" href="/mnt/sysassets/widgets_common.gui" />
-    <!-- Additional Imports -->
+    <!-- Views -->
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui" />
+    <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.gui" />
+    <!-- Buttons -->
     <link rel="import" href="/mnt/sysassets/widgets/combo_button_widget.gui" />
     <link rel="import" href="/mnt/sysassets/widgets/square_button_widget.gui" />
-    <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.gui" />
     <!-- Dynamic Textarea -->
     <link rel="stylesheet" href="/mnt/sysassets/widgets/dynamic_textarea.css"/>
     <link rel="import" href="/mnt/sysassets/widgets/dynamic_textarea.gui"/>

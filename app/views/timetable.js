@@ -390,7 +390,8 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
 
             // update last sync label.
             SyncText.text = `Last Updated: ` +
-                            `${lastModified.getDate()}/${lastModified.getMonth()} - ` +
+                            `${lastModified.getDate()} ` +
+                            `${MONTHS_SHORT[lastModified.getMonth()]} - ` +
                             `${formatTo12hrTime(lastModified)}`;
 
             // request background update if the file modified time is more than 36hrs old.
