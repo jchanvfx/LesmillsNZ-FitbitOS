@@ -9,7 +9,7 @@ export const DAYS = [
     "Friday", "Saturday"
 ];
 export const DAYS_SHORT = [
-    "Sun", "Mon", "Tue", "Wed", "Thur", "Fri", "Sat"
+    "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"
 ];
 export const MONTHS = [
     "January", "February", "March", "April", "May", "June", "July",

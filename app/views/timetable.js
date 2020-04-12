@@ -62,7 +62,7 @@ export function init(_views, _options) {
 function onMount() {
     OnFileRecievedUpdateGui = false;
     ConectionRetryCount = -1;
-    SyncText.text = "Last Updated: N/A";
+    SyncText.text = "Last Synced: N/A";
 
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
         hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
@@ -389,7 +389,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
             let lastModified = statSync(fileName).mtime;
 
             // update last sync label.
-            SyncText.text = `Last Updated: ` +
+            SyncText.text = `Last Synced: ` +
                             `${lastModified.getDate()} ` +
                             `${MONTHS_SHORT[lastModified.getMonth()]} - ` +
                             `${formatTo12hrTime(lastModified)}`;

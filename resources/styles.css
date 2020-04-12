@@ -127,20 +127,29 @@ text {
     x: 12;
     y: 0;
     width: 100%-24;
-    height: 100%;
-    fill: #242424;
+    height: 24;
+    fill: #3f3f3f;
 }
 .side-menu-header circle {
     r: 12;
     cy: 12;
-    fill: #242424;
+    fill: #3f3f3f;
 }
 .side-menu-header text {
-    x: 30;
-    y: 50%+7;
-    fill: #fae13c;
+    x: 28;
+    y: "$+1";
+    fill: "white";
     font-size: 22;
     font-family: System-Regular;
+}
+.side-menu-header text#footer-label {
+    x: 10;
+    y: 50%+2;
+    fill: "fb-gray";
+    text-length: 16;
+}
+.side-menu-header text#timetable-label {
+    text-length: 26;
 }
 
 /* Tile Item */

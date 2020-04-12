@@ -8,9 +8,10 @@
             <!-- Timetable -->
             <use id="timetable-itm-label" href="#scrollview-item" height="25" class="side-menu-header">
                 <circle cx="100%-14" />
-                <rect/><text id="timetable-label" text-length="26" />
-                <circle cx="14" fill="#453617" />
+                <circle cx="14" />
+                <rect />
                 <circle r="6" cx="14" fill="#fae13c" />
+                <text id="timetable-label" />
             </use>
             <use id="timetable-itm1" href="#scrollview-item" height="62">
                 <use id="timetable-btn1" href="#square-button" y="2" height="62" fill="fb-aqua">
@@ -38,7 +39,7 @@
                       fill="fb-light-gray" />
             </use>
             <use id="sync-itm" href="#scrollview-item" height="68">
-                <use id="sync-btn" href="#square-button-icon" y="2" height="62" fill="fb-yellow">
+                <use id="sync-btn" href="#square-button-icon" y="2" height="62" fill="#fae13c">
                     <set href="#text" attributeName="text-buffer" to="Reload" />
                     <set href="#image" attributeName="href" to="./resources/images/refresh.png" />
                 </use>
@@ -46,11 +47,7 @@
 
             <!-- Footer -->
             <use href="#scrollview-item" height="25" class="side-menu-header">
-                <text id="footer-label"
-                      x="10"
-                      fill="fb-gray"
-                      text-length="16"
-                      font-family="System-Regular" />
+                <text id="footer-label" />
             </use>
         </use>
     </section>
