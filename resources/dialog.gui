@@ -6,14 +6,14 @@
         text-anchor="middle"
         text-length="24"
         font-size="30"
-        fill="fb-yellow"
+        fill="#fae13c"
         display="none"
     />
     <use id="mixedtext" href="#mixed-text-center-mid" class="dialog-mixed-text" fill="fb-white">
         <set href="#top-padding" attributeName="display" to="none" />
         <set href="#header/text" attributeName="text-buffer" to="Workout" />
         <set href="#header/text" attributeName="text-length" to="13" />
-        <set href="#header/text" attributeName="fill" to="fb-yellow"/>
+        <set href="#header/text" attributeName="fill" to="#fae13c"/>
         <set href="#copy/text" attributeName="text-length" to="18" />
         <set href="#copy/text" attributeName="text-buffer" to="Start Workout?" />
     </use>
@@ -21,7 +21,7 @@
         <set href="#text" attributeName="text-buffer" to="Cancel" />
         <set href="#text" attributeName="text-anchor" to="middle" />
     </use>
-    <use id="btn-right" class="dialog-half-button-right" href="#square-button" fill="fb-yellow">
+    <use id="btn-right" class="dialog-half-button-right" href="#square-button" fill="#fae13c">
         <set href="#text" attributeName="text-buffer" to="Start" />
         <set href="#text" attributeName="text-anchor" to="middle" />
     </use>
@@ -29,13 +29,13 @@
 
 <symbol id="message-dialog">
         <rect width="100%" height="100%" fill="black" />
-        <use id="mixedtext" href="#mixed-text-center-mid" height="100%" fill="fb-yellow">
+        <use id="mixedtext" href="#mixed-text-center-mid" height="100%" fill="#fae13c">
             <set href="#header/text" attributeName="text-buffer" to="{no data}"/>
             <set href="#header/text" attributeName="text-length" to="16" />
             <set href="#copy/text" attributeName="text-buffer" to="{no data}"/>
             <set href="#copy/text" attributeName="text-length" to="128" />
         </use>
-        <use id="btn-ok" href="#square-button" y="100%-60" height="60" fill="fb-yellow" display="none">
+        <use id="btn-ok" href="#square-button" y="100%-60" height="60" fill="#fae13c" display="none">
             <set href="#text" attributeName="text-buffer" to="Ok" />
         </use>
 </symbol>
