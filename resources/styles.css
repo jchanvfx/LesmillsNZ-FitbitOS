@@ -28,6 +28,13 @@ text {
     font-weight: regular;
     fill: #d6d6d6;
 }
+#status-bar text#today {
+    x: "$+4";
+    fill: "dimgrey";
+    text-anchor: start;
+    font-size: 16;
+    font-family: System-Bold;
+}
 #status-bar text#date1 {
     x: 45;
     text-anchor: start;

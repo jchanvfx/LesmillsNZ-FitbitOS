@@ -18,8 +18,9 @@ export function createStatusBarHelper(element) {
         JumpToIcon      : element.getElementById("jump-to"),
         PhoneIcon       : element.getElementById("no-phone"),
         setDate(dateObj) {
-            let day = (date.getDay() === dateObj.getDay()) ? " (Today)" : "";
-            this.DateLabel1.text = `${DAYS_SHORT[dateObj.getDay()]}${day}`;
+            let today = element.getElementById("today");
+            (date.getDay() === dateObj.getDay()) ? show(today) : hide(today);
+            this.DateLabel1.text = DAYS_SHORT[dateObj.getDay()];
             this.DateLabel2.text = `${dateObj.getDate()} ${MONTHS[dateObj.getMonth()]}`;
             this.TimeLabel.text  = formatTo12hrTime(dateObj);
         },

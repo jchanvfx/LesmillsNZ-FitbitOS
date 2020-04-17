@@ -240,10 +240,10 @@ function onMessageRecieved(evt) {
         case "lm-noClub":
             debugLog("Timetable :: no club selected.");
             LoadingScreen.hide();
-            SideMenu.SubLabel.text   = "Timetable";
+            SideMenu.SubLabel.text   = "Club Not Set";
             MessageDialog.Header.text = "Club Not Set";
             MessageDialog.Message.text =
-                "Please select a club location from the phone app settings.";
+                "Select a club location from the phone app settings.";
             MessageDialog.show();
             break;
         case "lm-clubChanged":
@@ -275,7 +275,7 @@ function onMessageRecieved(evt) {
             let clubName = evt.data.value;
             debugLog(`Timetable :: Data has been queued: ${clubName}`);
             if (LoadingScreen.isVisible()) {
-                LoadingScreen.Label.text = "Waiting for Data...";
+                LoadingScreen.Label.text = "Retrieving Data...";
                 LoadingScreen.SubLabel.text = clubName;
             }
             break;
