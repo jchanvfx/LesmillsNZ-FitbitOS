@@ -18,6 +18,7 @@ import {
     createLoadingScreenHelper,
     createMessageDialogHelper,
     createQuestionDialogHelper,
+    createClassDialogHelper,
     createStatusBarHelper,
     createSideMenuHelper,
     createSettingsHelper,
@@ -27,6 +28,7 @@ let TimetableList;
 let LoadingScreen;
 let MessageDialog;
 let QuestionDialog;
+let ClassDialog;
 let StatusBar;
 let SideMenu;
 let SyncText;
@@ -48,6 +50,7 @@ export function init(_views, _options) {
     TimetableList   = document.getElementById("lm-class-list");
     LoadingScreen   = createLoadingScreenHelper(document.getElementById("loading-screen"));
     MessageDialog   = createMessageDialogHelper(document.getElementById("message-dialog"));
+    ClassDialog     = createClassDialogHelper(document.getElementById("class-dialog"));
     QuestionDialog  = createQuestionDialogHelper(document.getElementById("question-dialog"));
     StatusBar       = createStatusBarHelper(document.getElementById("status-bar"));
     SideMenu        = createSideMenuHelper(document.getElementById("menu-screen"));
@@ -75,20 +78,25 @@ function onMount() {
                 index: index,
                 type: "lm-pool",
                 name: tileInfo.name,
-                instructor: tileInfo.instructor,
+                instructor1: tileInfo.instructor1,
+                instructor2: tileInfo.instructor2,
                 date: tileInfo.date,
-                desc: tileInfo.desc,
+                duration: tileInfo.duration,
                 color: tileInfo.color,
+                location: tileInfo.location
             };
         },
         configureTile: (tile, info) => {
             if (info.type == "lm-pool") {
                 let itmDate = new Date(info.date);
-                tile.getElementById("text-title").text    = info.name.toUpperCase();
-                tile.getElementById("text-subtitle").text = info.instructor;
-                tile.getElementById("text-L").text        = formatTo12hrTime(itmDate);
-                tile.getElementById("text-R").text        = info.desc;
-                // let clickPad = tile.getElementById("click-pad");
+                let startTime = formatTo12hrTime(itmDate);
+                let tileTitle = (info.name.length > 24) ?
+                    truncateString(info.name, 21) : info.name;
+                tile.getElementById("text-title").text    = tileTitle.toUpperCase();
+                tile.getElementById("text-subtitle").text = info.location;
+                tile.getElementById("text-L").text        = startTime;
+                tile.getElementById("text-R").text        = `${info.duration} mins`;
+                let clickPad = tile.getElementById("click-pad");
                 let diffMsecs = itmDate - date;
                 if (Math.floor((diffMsecs / 1000) / 60) < -6) {
                     tile.getElementById("text-title").style.fill    = "#6e6e6e";
@@ -96,14 +104,36 @@ function onMount() {
                     tile.getElementById("text-L").style.fill        = "#6e6e6e";
                     tile.getElementById("text-R").style.fill        = "#6e6e6e";
                     tile.getElementById("color").style.fill         = "#4f4f4f";
-                    // clickPad.onclick = undefined;
+                    clickPad.onclick = undefined;
                 } else {
                     tile.getElementById("text-title").style.fill    = "white";
                     tile.getElementById("text-subtitle").style.fill = "white";
                     tile.getElementById("text-L").style.fill        = "white";
                     tile.getElementById("text-R").style.fill        = "white";
                     tile.getElementById("color").style.fill         = info.color;
-                    // clickPad.onclick = (evt) => {return;}
+                    clickPad.onclick = (evt) => {
+                        let overlay = tile.getElementById("overlay");
+                        overlay.animate("enable");
+                        setTimeout(() => {
+                            debugLog("lm-tile: clicked!");
+                            let title = info.name;
+                            title = (title.length > 25) ? truncateString(title, 22) : title;
+                            let names = info.instructor1;
+                            names = (info.instructor2 !== undefined) ?
+                                    `${names} & ${info.instructor2}`: names;
+                            names = (names.length > 36) ? truncateString(names, 33) : names;
+                            let black = ["black", "#000000"];
+
+                            ClassDialog.Color.style.fill    =
+                                (black.indexOf(info.color) >= 0) ? "grey" : info.color;
+                            ClassDialog.Title.text          = title.toUpperCase();
+                            ClassDialog.Name.text           = names;
+                            ClassDialog.Label1.text         = startTime;
+                            ClassDialog.Label3.text         = info.location;
+                            ClassDialog.Label4.text         = info.duration;
+                            ClassDialog.show();
+                        }, 300);
+                    }
                 }
             }
         }
@@ -134,7 +164,10 @@ function onMount() {
     document.onkeypress = (evt) => {
         if (evt.key === "back") {
             evt.preventDefault();
-            if (SideMenu.isVisible()) {
+            if (ClassDialog.isVisible()) {
+                ClassDialog.hide();
+            }
+            else if (SideMenu.isVisible()) {
                 show(StatusBar.JumpToButton);
                 show(StatusBar.JumpToIcon);
                 SideMenu.hide();
@@ -190,7 +223,9 @@ function onMount() {
         sendValue("lm-fetch");
     }
     // message dialog button.
-    MessageDialog.OkButton.onactivate    = () => {MessageDialog.hide();}
+    MessageDialog.OkButton.onactivate    = MessageDialog.hide;
+    // class dialog button.
+    ClassDialog.CloseButton.onactivate   = ClassDialog.hide;
     // question dialog buttons. (not used)
     QuestionDialog.YesButton.onactivate  = () => {
         debugLog("Question Dialog: YES Clicked!");
@@ -200,10 +235,9 @@ function onMount() {
         QuestionDialog.hide();
     }
 
-    // Update StatusBar date.
+    // Update current date.
     let dateStr     = options.currentDate;
     let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
-    StatusBar.setDate(currentDate);
 
     // Display the loader non animated.
     LoadingScreen.Label.text = "Loading...";
@@ -211,11 +245,7 @@ function onMount() {
     show(LoadingScreen.Element);
 
     // Load current timetable after transition.
-    CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
-                           `${currentDate.getDay()}` +
-                           `${currentDate.getDate()}` +
-                           `${currentDate.getMonth()}.cbor`;
-    setTimeout(() => {loadTimetableFile(CurrentTimetableFile);}, 400);
+    setTimeout(() => {loadTimetableByDate(currentDate);}, 400);
 }
 
 // Clean-up function executed before the view is unloaded.
@@ -397,6 +427,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
             // request background update if the file modified time is more than 36hrs old.
             // then fetch data in the background.
             let timeDiff = Math.round(Math.abs(date - lastModified) / 36e5);
+            debugLog(`--->> File last updated ${timeDiff} hrs ago.`);
             if (timeDiff > 36) {
                 debugLog(`File ${fileName} outdated by ${timeDiff}hrs`);
                 OnFileRecievedUpdateGui = true;
@@ -455,12 +486,15 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
 
 function loadTimetableByDate(date) {
     StatusBar.setDate(date);
+    ClassDialog.Label2.text = `${DAYS_SHORT[date.getDay()]} ` +
+                              `${date.getDate()} ` +
+                              `${MONTHS_SHORT[date.getMonth()]}`;
     show(StatusBar.JumpToButton);
     show(StatusBar.JumpToIcon);
     SideMenu.hide();
     CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
                             `${date.getDay()}` +
                             `${date.getDate()}` +
-                            `${date.getMonth()}.cbor`
+                            `${date.getMonth()}.cbor`;
     loadTimetableFile(CurrentTimetableFile);
 }

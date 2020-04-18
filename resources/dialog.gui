@@ -39,3 +39,23 @@
             <set href="#text" attributeName="text-buffer" to="Ok" />
         </use>
 </symbol>
+
+<symbol id="class-dialog">
+    <animate attributeName="x" begin="enable" from="100%" to="0%" dur="0.3" easing="ease" />
+    <animate attributeName="x" begin="disable" from="0%" to="100%" dur="0.3" easing="ease"/>
+    <rect width="100%" height="100%" fill="black" />
+    <gradientRect/>
+    <text id="title">--</text>
+    <text x="50%" y="$-3" fill="grey" font-size="16" text-anchor="middle" >with</text>
+    <text id="name">--</text>
+    <rect id="color" width="80%" height="1" x="10%" y="$-4" fill="gold" />
+    <text class="label-text" id="label1" />
+    <text class="label-text" id="label2" />
+    <text class="label-text" id="label3" />
+    <text class="label-text" id="label4" />
+    <image id="icon-timer" href="./resources/images/btn_combo_timer_p.png" />
+    <text class="label-text" y="$+16" font-size="18" fill="grey">minutes</text>
+    <use id="btn-close" href="#square-button" y="100%-60" height="60" fill="fb-aqua">
+        <set href="#text" attributeName="text-buffer" to="Close" />
+    </use>
+</symbol>

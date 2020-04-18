@@ -34,17 +34,16 @@ export function fetchTimetableData(clubID, callbackFunc) {
                 let clsInfo = data.Classes[i];
                 let clsDate = new Date(clsInfo.StartDateTime);
                 let clsKey = `${clsDate.getDay()}${clsDate.getDate()}${clsDate.getMonth()}`;
-                let siteName = clsInfo.Site.SiteName;
-                if (siteName.length > 13) {
-                    siteName = siteName.substr(0, 12) + "...";
-                }
                 if (fltrs.includes(clsKey)) {
                     let grpCls = {
                         name: clsInfo.ClassName,
                         date: clsInfo.StartDateTime,
-                        instructor: clsInfo.MainInstructor.Name,
+                        instructor1: clsInfo.MainInstructor.Name,
+                        instructor2: (clsInfo.SecondaryInstructor !== null) ?
+                                      clsInfo.SecondaryInstructor.Name : undefined,
                         color: (clsInfo.Colour !== null) ? clsInfo.Colour : "black",
-                        desc: `${siteName} (${clsInfo.Duration}mins)`,
+                        duration: clsInfo.Duration,
+                        location: clsInfo.Site.SiteName,
                     };
                     timetable[clsKey.toString()].push(grpCls);
                 }

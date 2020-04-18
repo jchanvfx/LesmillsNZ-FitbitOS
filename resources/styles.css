@@ -8,7 +8,7 @@ text {
 #status-bar rect#background {
     width: 100%;
     height: 50;
-    fill: black;
+    fill: "black";
 }
 #status-bar rect#click-l {
     width: 40%;
@@ -171,29 +171,36 @@ text {
     fill: white;
 }
 #lm-tile text#text-title {
-    y: 30%;
+    y: 27;
     font-size: 22;
     font-family: System-Bold;
     text-length: 32;
 }
 #lm-tile text#text-subtitle{
-    y: 50%;
+    y: "$-4";
     font-size: 18;
     text-length: 32;
 }
 #lm-tile text#text-L{
-    x: 7;
-    y: 85%;
+    x: 6%+5;
+    y: "$+22";
     font-size: 20;
     text-anchor: start;
-    text-length: 8;
+    text-length: 10;
 }
 #lm-tile text#text-R{
-    x: 100%-7;
-    y: 85%;
+    x: 94%-5;
+    y: "$-22";
     font-size: 20;
     text-anchor: end;
-    text-length: 32;
+    text-length: 10;
+}
+#lm-tile rect#color {
+    x: 5%;
+    y: "$-10";
+    width: 90%;
+    height: 2;
+    fill: #545454;
 }
 #lm-tile rect#overlay {
     x: 4%;
@@ -212,4 +219,57 @@ text {
 }
 .lm-tile-cnr {
     fill: #363636;
+}
+
+/* Class Dialog */
+#class-dialog gradientRect {
+    y: -20%;
+    width: 100%;
+    height: 100%;
+    gradient-type: radial;
+    gradient-x1: 50%;
+    gradient-y1: 50%;
+    gradient-x2: 50%+120;
+    gradient-y2: 50%+120;
+    gradient-color1: #262626;
+    gradient-color2: "black";
+}
+#class-dialog .label-text{
+    x: 50%;
+    y: "$+3";
+    font-size: 20;
+    text-anchor: middle;
+    text-length: 32;
+}
+#class-dialog text#label1 {
+    y: "$+24"
+}
+#class-dialog text#label4 {
+    x: 50%-4;
+    y: "$+8";
+    font-size: 24;
+    text-anchor: start;
+    fill: "grey";
+}
+#class-dialog image#icon-timer {
+    x: 50%-26;
+    y: "$-44";
+    width: 20;
+    height: 20;
+    fill: "grey";
+}
+#class-dialog text#title {
+    x: 50%;
+    y: 40;
+    font-size: 22;
+    font-family: System-Bold;
+    text-anchor: middle;
+    text-length: 25;
+}
+#class-dialog text#name {
+    x: 50%;
+    y: "$+4";
+    font-size: 18;
+    text-anchor: middle;
+    text-length: 36;
 }

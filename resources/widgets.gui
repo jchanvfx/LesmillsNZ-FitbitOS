@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="/mnt/sysassets/widgets/dynamic_textarea.css"/>
     <link rel="import" href="/mnt/sysassets/widgets/dynamic_textarea.gui"/>
     <link rel="import" href="/mnt/sysassets/widgets/mixed_text_widget.gui"/>
+    <!-- Marquee Text -->
+    <link rel="import" href="/mnt/sysassets/widgets/marquee_text_widget.gui" />
     <!-- Loader Screen -->
     <symbol id="loading-screen" focusable="false">
         <gradientRect/>

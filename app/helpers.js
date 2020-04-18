@@ -97,6 +97,30 @@ export function createMessageDialogHelper(element) {
     };
 }
 
+export function createClassDialogHelper(element) {
+    return {
+        Element     : element,
+        Title       : element.getElementById("title"),
+        Name        : element.getElementById("name"),
+        Color       : element.getElementById("color"),
+        Label1      : element.getElementById("label1"),
+        Label2      : element.getElementById("label2"),
+        Label3      : element.getElementById("label3"),
+        Label4      : element.getElementById("label4"),
+        CloseButton : element.getElementById("btn-close"),
+        isVisible() {return isVisible(element);},
+        show(showButton=true) {
+            element.animate("enable");
+            element.style.display = "inline";
+            (showButton) ? show(this.CloseButton) : hide(this.CloseButton);
+        },
+        hide() {
+            element.animate("disable");
+            setTimeout(() => {element.style.display = "none";}, 300);
+        },
+    };
+}
+
 
 export function createLoadingScreenHelper(element) {
     return {
