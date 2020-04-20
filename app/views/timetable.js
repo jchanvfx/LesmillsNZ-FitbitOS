@@ -129,7 +129,7 @@ function onMount() {
                             ClassDialog.Title.text          = title.toUpperCase();
                             ClassDialog.Name.text           = names;
                             ClassDialog.Label1.text         = startTime;
-                            ClassDialog.Label3.text         = info.location;
+                            ClassDialog.Label2.text         = info.location;
                             ClassDialog.Label4.text         = info.duration;
                             ClassDialog.show();
                         }, 300);
@@ -486,7 +486,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
 
 function loadTimetableByDate(date) {
     StatusBar.setDate(date);
-    ClassDialog.Label2.text = `${DAYS_SHORT[date.getDay()]} ` +
+    ClassDialog.Label3.text = `${DAYS_SHORT[date.getDay()]} ` +
                               `${date.getDate()} ` +
                               `${MONTHS_SHORT[date.getMonth()]}`;
     show(StatusBar.JumpToButton);

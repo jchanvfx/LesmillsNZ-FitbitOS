@@ -231,7 +231,7 @@ text {
     gradient-y1: 50%;
     gradient-x2: 50%+120;
     gradient-y2: 50%+120;
-    gradient-color1: #262626;
+    gradient-color1: #0c1c38;
     gradient-color2: "black";
 }
 #class-dialog .label-text{
@@ -242,21 +242,21 @@ text {
     text-length: 32;
 }
 #class-dialog text#label1 {
-    y: "$+24"
+    y: "$+24";
 }
 #class-dialog text#label4 {
     x: 50%-4;
     y: "$+8";
     font-size: 24;
     text-anchor: start;
-    fill: "grey";
+    fill: "fb-yellow";
 }
 #class-dialog image#icon-timer {
     x: 50%-26;
     y: "$-44";
     width: 20;
     height: 20;
-    fill: "grey";
+    fill: "fb-yellow";
 }
 #class-dialog text#title {
     x: 50%;
