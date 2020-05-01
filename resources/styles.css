@@ -150,9 +150,10 @@ text {
     font-family: System-Regular;
 }
 .side-menu-header text#footer-label {
-    x: 10;
+    x: 50%;
     y: 50%+2;
-    fill: "fb-gray";
+    fill: "fb-dark-gray";
+    text-anchor: middle;
     text-length: 16;
 }
 .side-menu-header text#timetable-label {
@@ -231,7 +232,7 @@ text {
     gradient-y1: 50%;
     gradient-x2: 50%+120;
     gradient-y2: 50%+120;
-    gradient-color1: #0c1c38;
+    gradient-color1: #303030;
     gradient-color2: "black";
 }
 #class-dialog .label-text{

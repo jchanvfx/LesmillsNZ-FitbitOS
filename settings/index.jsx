@@ -39,7 +39,7 @@ function settingsComponent(props) {
                         addr :"86-90 Lambton Quay, Wellington"},
                     {name:"LES MILLS AT HOME",
                         value:"LMAH",
-                        addr :"Instagram LIVE, @lesmillsnz"},
+                        addr :"Instagram @lesmillsnz / TVNZ"},
                     {name:"TAKAPUNA",
                         value:"06",
                         addr :"Cnr Lake Road &, Como St,Shore City, Takapuna"},
