@@ -3,7 +3,7 @@
         x="50%"
         y="100%-46"
         font-family="System-Bold"
-        fill="fb-aqua"
+        fill="tomato"
         font-size="20"
         font-weight="bold"
         text-anchor="middle">loading...</text>
@@ -14,5 +14,5 @@
         fill="fb-light-gray"
         font-size="18"
         font-weight="bold"
-        text-anchor="middle">Les Mills Timetable</text>
+        text-anchor="middle">Timetable Data</text>
 </svg>

@@ -55,7 +55,16 @@
     <text class="label-text" id="label4" />
     <image id="icon-timer" href="./resources/images/btn_combo_timer_p.png" />
     <text class="label-text" y="$+16" font-size="18" fill="fb-yellow">minutes</text>
-    <use id="btn-close" href="#square-button" y="100%-60" height="60" fill="fb-aqua">
-        <set href="#text" attributeName="text-buffer" to="Close" />
+
+    <use id="btn-close" href="#combo-button-lower-right" fill="tomato">
+        <set
+            href="combo-button-icon"
+            attributeName="href"
+            to="./resources/images/btn_combo_x_press_p.png"/>
+        <set
+            href="combo-button-icon-press"
+            attributeName="href"
+            to="./resources/images/btn_combo_x_p.png"/>
+        <set href="combo-button-stroke" attributeName="display" to="inline"/>
     </use>
 </symbol>

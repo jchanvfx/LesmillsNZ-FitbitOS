@@ -1,6 +1,6 @@
 {
   "name": "lm_timetable",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "private": true,
   "license": "MIT",
   "devDependencies": {
@@ -10,9 +10,9 @@
   "fitbit": {
     "appUUID": "8f60152d-38d3-4fea-9a76-f0db013ec51b",
     "appType": "app",
-    "appDisplayName": "Classes",
+    "appDisplayName": "Timetable",
     "iconFile": "resources/icon.png",
-    "wipeColor": "#38f8df",
+    "wipeColor": "#f83846",
     "requestedPermissions": [
       "access_internet"
     ],
