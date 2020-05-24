@@ -404,7 +404,7 @@ function jumpToLatestClass() {
 }
 
 function loadTimetableFile(fileName, jumpToIndex=true) {
-    let clubName = AppSettings.getValue("club");
+    let clubName = AppSettings.getValue("club") || "";
     LoadingScreen.Label.text = "Loading Timetable...";
     LoadingScreen.SubLabel.text = clubName.toUpperCase();
     LoadingScreen.show();
