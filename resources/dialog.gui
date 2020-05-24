@@ -54,7 +54,7 @@
     <text class="label-text" id="label3" />
     <text class="label-text" id="label4" />
     <image id="icon-timer" href="./resources/images/btn_combo_timer_p.png" />
-    <text class="label-text" y="$+16" font-size="18" fill="fb-yellow">minutes</text>
+    <text class="label-text" y="$+16" font-size="18" fill="#fae13c">minutes</text>
 
     <use id="btn-close" href="#combo-button-lower-right" fill="tomato">
         <set

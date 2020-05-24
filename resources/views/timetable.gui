@@ -41,6 +41,25 @@
                 opacity="0"
             />
         </symbol>
+
+        <symbol id="filter-label">
+            <rect width="100%" height="100%" fill="#ff4931" />
+            <text
+                x="50%" y="$-8"
+                font-size="20"
+                font-family="System-Bold"
+                text-anchor="middle"
+                fill="white"
+            >REMOVE CLASS FILTER</text>
+            <rect
+                id="filter-touch"
+                pointer-events="all"
+                x="0" y="0"
+                width="100%"
+                height="100%"
+                opacity="0" />
+        </symbol>
+
     </defs>
     <!-- Trasition Anim START -->
     <g>

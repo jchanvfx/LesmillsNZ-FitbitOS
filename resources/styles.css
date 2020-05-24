@@ -56,7 +56,7 @@ text {
     y: 3;
     width: 35;
     height: 40;
-    fill: "fb-aqua";
+    fill: #ff4931;
 }
 #status-bar image#no-phone {
     x: 50%+10;
@@ -70,7 +70,7 @@ text {
     y: 26;
     width: 73;
     height: 18;
-    fill: "fb-aqua";
+    fill: "#fae13c";
 }
 
 /* Loader Overlay */
@@ -250,14 +250,14 @@ text {
     y: "$+8";
     font-size: 24;
     text-anchor: start;
-    fill: "fb-yellow";
+    fill: "#fae13c";
 }
 #class-dialog image#icon-timer {
     x: 50%-26;
     y: "$-44";
     width: 20;
     height: 20;
-    fill: "fb-yellow";
+    fill: "#fae13c";
 }
 #class-dialog text#title {
     x: 50%;

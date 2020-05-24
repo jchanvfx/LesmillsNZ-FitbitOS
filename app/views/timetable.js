@@ -188,7 +188,20 @@ function onMount() {
     messaging.peerSocket.onclose    = () => {
         debugLog("App Socket Closed"); show(StatusBar.PhoneIcon);}
     // status bar buttons.
-    StatusBar.JumpToButton.onclick  = () => {jumpToLatestClass();}
+    StatusBar.JumpToButton.onclick  = () => {
+        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+            MessageDialog.Header.text = "Connection Lost";
+            MessageDialog.Message.text =
+                "Phone connection required for internet access.";
+            MessageDialog.show(true);
+            return;
+        }
+        OnFileRecievedUpdateGui = true;
+        LoadingScreen.Label.text = "Requesting Data...";
+        LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
+        LoadingScreen.show();
+        sendValue("lm-fetch");
+    }
     StatusBar.MenuButton.onclick    = () => {
         if (SideMenu.isVisible()) {
             show(StatusBar.JumpToButton);
@@ -391,8 +404,9 @@ function jumpToLatestClass() {
 }
 
 function loadTimetableFile(fileName, jumpToIndex=true) {
+    let clubName = AppSettings.getValue("club");
     LoadingScreen.Label.text = "Loading Timetable...";
-    LoadingScreen.SubLabel.text = AppSettings.getValue("club");
+    LoadingScreen.SubLabel.text = clubName.toUpperCase();
     LoadingScreen.show();
 
     hide(TimetableList);
