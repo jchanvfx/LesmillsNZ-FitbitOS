@@ -56,7 +56,7 @@ text {
     y: 3;
     width: 35;
     height: 40;
-    fill: #ff4931;
+    fill: #6bb9c4;
 }
 #status-bar image#no-phone {
     x: 50%+10;
@@ -107,14 +107,15 @@ text {
 #loading-screen text {
     x: 50%;
     y: 80%;
+    fill: #4ebeff;
     font-size: 20;
     text-anchor: middle;
-    fill: #4ebeff;
     text-length: 32;
 }
 #loading-screen text#sub-text{
     y: 90%-8;
-    font-size: 16;
+    fill: "fb-aqua";
+    font-size: 18;
     font-family: System-Bold;
 }
 #loading-screen gradientRect {
@@ -169,7 +170,7 @@ text {
     text-anchor: middle;
     font-family: System-Regular;
     font-weight: regular;
-    fill: white;
+    fill: "white";
 }
 #lm-tile text#text-title {
     y: 27;
@@ -204,11 +205,11 @@ text {
     fill: #545454;
 }
 #lm-tile rect#overlay {
-    x: 4%;
-    y: 10%;
-    width: 92%;
-    height: 80%;
-    fill: #404040;
+    x: 3;
+    y: 3;
+    width: 100%-6;
+    height: 100%-6;
+    fill: #7a7a7a;
     opacity: 0;
 }
 #lm-tile rect#background {
@@ -238,17 +239,17 @@ text {
 #class-dialog .label-text{
     x: 50%;
     y: "$+3";
-    font-size: 20;
+    font-size: 24;
     text-anchor: middle;
     text-length: 32;
 }
 #class-dialog text#label1 {
-    y: "$+24";
+    y: "$+30";
+    font-family: System-Bold;
 }
 #class-dialog text#label4 {
     x: 50%-4;
     y: "$+8";
-    font-size: 24;
     text-anchor: start;
     fill: "#fae13c";
 }
@@ -257,7 +258,7 @@ text {
     y: "$-44";
     width: 20;
     height: 20;
-    fill: "#fae13c";
+    fill: #fae13c;
 }
 #class-dialog text#title {
     x: 50%;

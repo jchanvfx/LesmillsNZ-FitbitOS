@@ -8,7 +8,7 @@ import { inbox } from "file-transfer"
 import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
 
 import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../../common/config"
-import { debugLog, toTitleCase, truncateString } from "../utils"
+import { debugLog, toTitleCase, truncateString, zeroPad } from "../utils"
 import {
     DAYS_SHORT, MONTHS_SHORT,
     date, date1, date2, formatTo12hrTime
@@ -434,9 +434,9 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
 
             // update last sync label.
             SyncText.text = `Last Synced: ` +
-                            `${lastModified.getDate()} ` +
-                            `${MONTHS_SHORT[lastModified.getMonth()]} - ` +
-                            `${formatTo12hrTime(lastModified)}`;
+                            `${DAYS_SHORT[lastModified.getDay()]} ` +
+                            `${lastModified.getDate()}/` +
+                            `${zeroPad(lastModified.getMonth())}`;
 
             // request background update if the file modified time is more than 36hrs old.
             // then fetch data in the background.

@@ -18,17 +18,17 @@
                 <text id="timetable-label" />
             </use>
             <use id="timetable-itm1" href="#scrollview-item" height="62">
-                <use id="timetable-btn1" href="#square-button" y="2" height="62" fill="grey">
+                <use id="timetable-btn1" href="#square-button" y="2" height="62" fill="#6bb9c4">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
             <use id="timetable-itm2" href="#scrollview-item" height="62">
-                <use id="timetable-btn2" href="#square-button" y="$" height="62" fill="grey">
+                <use id="timetable-btn2" href="#square-button" y="$" height="62" fill="#6bb9c4">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
             <use id="timetable-itm3" href="#scrollview-item" height="62">
-                <use id="timetable-btn3" href="#square-button" y="$" height="62" fill="grey">
+                <use id="timetable-btn3" href="#square-button" y="$" height="62" fill="#6bb9c4">
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
