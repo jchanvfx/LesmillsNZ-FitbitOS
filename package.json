@@ -1,6 +1,6 @@
 {
   "name": "lm_timetable",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "license": "MIT",
   "devDependencies": {
@@ -19,7 +19,8 @@
     "buildTargets": [
       "mira",
       "meson",
-      "gemini"
+      "gemini",
+      "higgs"
     ],
     "i18n": {},
     "defaultLanguage": "en-US"
