@@ -177,6 +177,12 @@ function onMount() {
                 QuestionDialog.hide();
             }
             else {me.exit();}
+        } else if (evt.key === "up") {
+            if (SideMenu.isVisible()) return;
+            if (ClassDialog.isVisible()) return;
+            if (QuestionDialog.isVisible()) return;
+            StatusBar.JumpToButton.animate("enable");
+            reloadCurrentTimetable();
         }
     }
     // data inbox
@@ -189,18 +195,7 @@ function onMount() {
         debugLog("App Socket Closed"); show(StatusBar.PhoneIcon);}
     // status bar buttons.
     StatusBar.JumpToButton.onclick  = () => {
-        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
-            MessageDialog.Header.text = "Connection Lost";
-            MessageDialog.Message.text =
-                "Phone connection required for internet access.";
-            MessageDialog.show(true);
-            return;
-        }
-        OnFileRecievedUpdateGui = true;
-        LoadingScreen.Label.text = "Requesting Data...";
-        LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
-        LoadingScreen.show();
-        sendValue("lm-fetch");
+        reloadCurrentTimetable();
     }
     StatusBar.MenuButton.onclick    = () => {
         if (SideMenu.isVisible()) {
@@ -220,20 +215,9 @@ function onMount() {
     // sync button.
     SideMenu.SyncButton.onactivate = () => {
         SideMenu.hide();
-        if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
-            MessageDialog.Header.text = "Connection Lost";
-            MessageDialog.Message.text =
-                "Phone connection required for internet access.";
-            MessageDialog.show(true);
-            return;
-        }
         show(StatusBar.JumpToButton);
         show(StatusBar.JumpToIcon);
-        OnFileRecievedUpdateGui = true;
-        LoadingScreen.Label.text = "Requesting Data...";
-        LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
-        LoadingScreen.show();
-        sendValue("lm-fetch");
+        reloadCurrentTimetable();
     }
     // message dialog button.
     MessageDialog.OkButton.onactivate    = MessageDialog.hide;
@@ -511,4 +495,19 @@ function loadTimetableByDate(date) {
                             `${date.getDate()}` +
                             `${date.getMonth()}.cbor`;
     loadTimetableFile(CurrentTimetableFile);
+}
+
+function reloadCurrentTimetable() {
+    if (messaging.peerSocket.readyState === messaging.peerSocket.CLOSED) {
+        MessageDialog.Header.text = "Connection Lost";
+        MessageDialog.Message.text =
+            "Phone connection required for internet access.";
+        MessageDialog.show(true);
+        return;
+    }
+    OnFileRecievedUpdateGui = true;
+    LoadingScreen.Label.text = "Requesting Data...";
+    LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
+    LoadingScreen.show();
+    sendValue("lm-fetch");
 }
