@@ -32,6 +32,7 @@
                 final="freeze"/>
             <arc id="arc1" />
         </g>
+        <image id="icon" href="./resources/images/lm-logo.png"/>
         <text id="text" >loading...</text>
         <text id="sub-text" />
     </symbol>
