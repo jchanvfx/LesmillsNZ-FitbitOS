@@ -9,10 +9,10 @@
         text-anchor="middle">loading...</text>
     <text
         x="50%"
-        y="100%-23"
+        y="$+2"
         font-family="System-Regular"
         fill="fb-light-gray"
         font-size="20"
         font-weight="bold"
-        text-anchor="middle">Timetable Classes</text>
+        text-anchor="middle">Lesmills Timetable</text>
 </svg>

@@ -75,39 +75,46 @@ text {
 
 /* Loader Overlay */
 #loading-screen arc {
-    width: 100;
-    height: 100;
+    width: 120;
+    height: 120;
 }
-#loading-screen arc#arc1{
-    x: -50;
-    y: -50;
+#loading-screen arc#arc1 {
+    x: -60;
+    y: -60;
     fill: #fae13c;
-    arc-width: 5;
+    arc-width: 6;
     start-angle: 0;
     sweep-angle: 60;
 }
-#loading-screen arc#arc2{
-    width: 90;
-    height: 90;
-    x: 50%-45;
-    y: 50%-45;
-    fill: "fb-aqua";
+#loading-screen arc#arc2 {
+    width: 100;
+    height: 100;
+    x: 50%-50;
+    y: 50%-50;
+    fill: #fae13c;
     arc-width: 2;
     start-angle: 0;
     sweep-angle: 360;
 }
-#loading-screen arc#arc3{
-    x: 50%-50;
-    y: 50%-50;
+#loading-screen arc#arc3 {
+    x: 50%-60;
+    y: 50%-60;
     fill: #11435d;
-    arc-width: 8;
+    arc-width: 6;
     start-angle: 0;
     sweep-angle: 360;
 }
+#loading-screen image#icon {
+    x: 50%-30;
+    y: 50%-15;
+    width: 60;
+    height: 30;
+    fill: #c3c3c3;
+}
 #loading-screen text {
     x: 50%;
-    y: 80%;
-    fill: #4ebeff;
+    y: "$+72";
+    fill: #6bb9c4;
     font-size: 20;
     text-anchor: middle;
     text-length: 32;
