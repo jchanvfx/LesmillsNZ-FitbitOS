@@ -32,6 +32,16 @@
                     <set href="#text" attributeName="text-length" to="12" />
                 </use>
             </use>
+            <use id="timetable-itm4" href="#scrollview-item" height="62">
+                <use id="timetable-btn4" href="#square-button" y="$" height="62" fill="#6bb9c4">
+                    <set href="#text" attributeName="text-length" to="12" />
+                </use>
+            </use>
+            <use id="timetable-itm5" href="#scrollview-item" height="62">
+                <use id="timetable-btn5" href="#square-button" y="$" height="62" fill="#6bb9c4">
+                    <set href="#text" attributeName="text-length" to="12" />
+                </use>
+            </use>
 
             <use href="#scrollview-item" height="20">
                 <rect x="10" y="$+10" width="100%-20" height="1" fill="fb-dark-gray" />
