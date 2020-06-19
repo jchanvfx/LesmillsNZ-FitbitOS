@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { DAYS_SHORT, MONTHS, formatTo12hrTime, date } from "./datelib"
+import { DAYS_SHORT, MONTHS, formatTo12hrTime, date } from "../common/datelib"
 
 // visibility functions.
 export function show(element) {element.style.display = "inline"}
@@ -37,6 +37,8 @@ export function createSideMenuHelper(element) {
         SubButton1      : element.getElementById("timetable-btn1"),
         SubButton2      : element.getElementById("timetable-btn2"),
         SubButton3      : element.getElementById("timetable-btn3"),
+        SubButton4      : element.getElementById("timetable-btn4"),
+        SubButton5      : element.getElementById("timetable-btn5"),
         SyncButton      : element.getElementById("sync-btn"),
         Footer          : element.getElementById("footer-label"),
         isVisible() {return isVisible(element);},

@@ -5,6 +5,7 @@ import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
 import { DATA_FILE_PREFIX, WORKOUTS_FILE } from "../common/config"
+import { date, date1, date2, date3, date4 } from "../common/datelib"
 
 // check permissions
 if (!companion.permissions.granted("access_internet")) {
@@ -44,22 +45,11 @@ function timetableCallback(data) {
     let clubSettings = settingsStorage.getItem("clubID");
     let selectedClub = JSON.parse(clubSettings).values[0];
     let clubName = selectedClub.name;
-
-    let today = new Date();
-    let date1 = new Date(today);
-    let date2 = new Date(today);
-    date1.setDate(today.getDate() + 1);
-    date2.setDate(today.getDate() + 2);
-
-    let keys = [
-        `${today.getDay()}${today.getDate()}${today.getMonth()}`,
-        `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`,
-        `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`,
-    ];
-    for (let i = 0; i < keys.length; i++) {
-        let dayKey      = keys[i];
-        let fileName    = `${DATA_FILE_PREFIX}${dayKey}.cbor`;
-        sendData("lm-dataQueued", data[dayKey.toString()], fileName, clubName);
+    let dates = [date, date1, date2, date3, date4];
+    for (let i = 0; i < dates.length; i++) {
+        let dKey      = `${dates[i].getDay()}${dates[i].getDate()}${dates[i].getMonth()}`;
+        let fileName  = `${DATA_FILE_PREFIX}${dKey}.cbor`;
+        sendData("lm-dataQueued", data[dKey.toString()], fileName, clubName);
     }
 }
 // fetch fitness classes and send data to device.

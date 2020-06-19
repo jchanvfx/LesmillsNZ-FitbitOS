@@ -1,8 +1,12 @@
 export const date = new Date();
 export const date1 = new Date();
-export const date2 = new Date();
 date1.setDate(date1.getDate() + 1);
+export const date2 = new Date();
 date2.setDate(date2.getDate() + 2);
+export const date3 = new Date();
+date3.setDate(date3.getDate() + 3);
+export const date4 = new Date();
+date4.setDate(date4.getDate() + 4);
 
 export const DAYS = [
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",

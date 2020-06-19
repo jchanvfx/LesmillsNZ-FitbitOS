@@ -1,3 +1,5 @@
+import { date, date1, date2, date3, date4 } from "../common/datelib"
+
 // Timetable web API
 const urlAPI = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi";
 
@@ -13,23 +15,19 @@ export function fetchTimetableData(clubID, callbackFunc) {
     return fetch(urlAPI, fetchData)
         .then(response => response.json())
         .then(data => {
-            let today = new Date();
-            let date1 = new Date(today);
-            let date2 = new Date(today);
-            date1.setDate(today.getDate() + 1);
-            date2.setDate(today.getDate() + 2);
-
-            let dKey  = `${today.getDay()}${today.getDate()}${today.getMonth()}`;
-            let dKey1 = `${date1.getDay()}${date1.getDate()}${date1.getMonth()}`;
-            let dKey2 = `${date2.getDay()}${date2.getDate()}${date2.getMonth()}`;
-            let fltrs = [dKey, dKey1, dKey2];
-
+            let dates = [date, date1, date2, date3, date4];
+            let fltrs = [];
             let timetable = {};
-            timetable['fetched'] = today.toJSON();
-            timetable[dKey.toString()]  = [];
-            timetable[dKey1.toString()] = [];
-            timetable[dKey2.toString()] = [];
-            // retrive and query 3 days of data.
+            timetable['fetched'] = date.toJSON();
+            // build the date keys.
+            for (let i = 0; i < dates.length; i++) {
+                let dkey = `${dates[i].getDay()}` +
+                           `${dates[i].getDate()}` +
+                           `${dates[i].getMonth()}`;
+                fltrs.push(dkey);
+                timetable[dkey.toString()] = [];
+            }
+            // retrive and query 5 days of data.
             for (let i = 0; i < data.Classes.length; i++) {
                 let clsInfo = data.Classes[i];
                 let clsDate = new Date(clsInfo.StartDateTime);
