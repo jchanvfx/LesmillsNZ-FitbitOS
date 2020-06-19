@@ -11,8 +11,9 @@ import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../../common/config"
 import { debugLog, toTitleCase, truncateString, zeroPad } from "../utils"
 import {
     DAYS_SHORT, MONTHS_SHORT,
-    date, date1, date2, formatTo12hrTime
-} from "../datelib"
+    date, date1, date2, date3, date4,
+    formatTo12hrTime
+} from "../../common/datelib"
 import {
     show, hide,
     createLoadingScreenHelper,
@@ -115,7 +116,6 @@ function onMount() {
                         let overlay = tile.getElementById("overlay");
                         overlay.animate("enable");
                         setTimeout(() => {
-                            debugLog("lm-tile: clicked!");
                             let title = info.name;
                             title = (title.length > 25) ? truncateString(title, 22) : title;
                             let names = info.instructor1;
@@ -144,15 +144,22 @@ function onMount() {
     // Configure SideMenu button labels.
     let clubName = AppSettings.getValue("club") || "Club Not Set!";
     SideMenu.SubLabel.text   = truncateString(clubName, 26);
-    SideMenu.SubButton1.text = `${DAYS_SHORT[date.getDay()]} ` +
-                               `${date.getDate()} ` +
-                               `${MONTHS_SHORT[date.getMonth()]}`;
-    SideMenu.SubButton2.text = `${DAYS_SHORT[date1.getDay()]} ` +
-                               `${date1.getDate()} ` +
-                               `${MONTHS_SHORT[date1.getMonth()]}`;
-    SideMenu.SubButton3.text = `${DAYS_SHORT[date2.getDay()]} ` +
-                               `${date2.getDate()} ` +
-                               `${MONTHS_SHORT[date2.getMonth()]}`;
+    let subButtons = [SideMenu.SubButton1,
+                      SideMenu.SubButton2,
+                      SideMenu.SubButton3,
+                      SideMenu.SubButton4,
+                      SideMenu.SubButton5];
+    let dates = [date, date1, date2, date3, date4];
+    let i = dates.length, x = -1;
+    while (i--) {
+        x++;
+        let dateObj = dates[x];
+        subButtons[x].text = `${DAYS_SHORT[dateObj.getDay()]} ` +
+                             `${dateObj.getDate()} ` +
+                             `${MONTHS_SHORT[dateObj.getMonth()]}`;
+        // wire up the button here.
+        subButtons[x].onactivate = () => {loadTimetableByDate(dateObj);}
+    }
     SideMenu.Footer.text     = "v" + BUILD_VER;
     hide(SideMenu.Element);
 
@@ -208,10 +215,6 @@ function onMount() {
             SideMenu.show();
         }
     }
-    // timetable schedule buttons.
-    SideMenu.SubButton1.onactivate = () => {loadTimetableByDate(date);}
-    SideMenu.SubButton2.onactivate = () => {loadTimetableByDate(date1);}
-    SideMenu.SubButton3.onactivate = () => {loadTimetableByDate(date2);}
     // sync button.
     SideMenu.SyncButton.onactivate = () => {
         SideMenu.hide();
@@ -352,17 +355,21 @@ function sendValue(key, data=null) {
 
 // clean up old local files.
 function cleanUpFiles() {
-    let keepList = [
-        `${DATA_FILE_PREFIX}${date.getDay()}${date.getDate()}${date.getMonth()}.cbor`,
-        `${DATA_FILE_PREFIX}${date1.getDay()}${date1.getDate()}${date1.getMonth()}.cbor`,
-        `${DATA_FILE_PREFIX}${date2.getDay()}${date2.getDate()}${date2.getMonth()}.cbor`,
-    ];
+    let dates = [date, date1, date2, date3, date4];
+    let keepList = [];
+    let i = dates.length;
+    while (i--) {
+        keepList.push(`${DATA_FILE_PREFIX}` +
+                     `${dates[i].getDay()}` +
+                     `${dates[i].getDate()}` +
+                     `${dates[i].getMonth()}.cbor`);
+    }
     if (keepList.indexOf(CurrentTimetableFile) < 0) {
         keepList.push(CurrentTimetableFile);
     }
     let dirIter;
     let listDir = listDirSync("/private/data");
-    while((dirIter = listDir.next()) && !dirIter.done) {
+    while ((dirIter = listDir.next()) && !dirIter.done) {
         if (dirIter.value === undefined) {continue;}
         // ECMAScript 5.1 doesn't support "String.startsWith()" and "Array.includes()"
         if (dirIter.value.indexOf(DATA_FILE_PREFIX) === 0) {
