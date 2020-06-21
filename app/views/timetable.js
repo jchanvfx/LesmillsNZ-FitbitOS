@@ -18,13 +18,13 @@ import {
 } from "../../common/datelib"
 import {
     show, hide,
-    createLoadingScreenHelper,
-    createMessageDialogHelper,
-    createQuestionDialogHelper,
-    createClassDialogHelper,
-    createStatusBarHelper,
-    createSideMenuHelper,
-    createSettingsHelper,
+    loadingScreenController,
+    messageDialogController,
+    questionDialogController,
+    classDialogController,
+    statusBarController,
+    sideMenuController,
+    settingsController,
 } from "../helpers"
 
 let TimetableList;
@@ -51,14 +51,14 @@ export function init(_views, _options) {
     options = _options || {};
 
     TimetableList   = document.getElementById("lm-class-list");
-    LoadingScreen   = createLoadingScreenHelper(document.getElementById("loading-screen"));
-    MessageDialog   = createMessageDialogHelper(document.getElementById("message-dialog"));
-    ClassDialog     = createClassDialogHelper(document.getElementById("class-dialog"));
-    QuestionDialog  = createQuestionDialogHelper(document.getElementById("question-dialog"));
-    StatusBar       = createStatusBarHelper(document.getElementById("status-bar"));
-    SideMenu        = createSideMenuHelper(document.getElementById("menu-screen"));
+    LoadingScreen   = loadingScreenController(document.getElementById("loading-screen"));
+    MessageDialog   = messageDialogController(document.getElementById("message-dialog"));
+    ClassDialog     = classDialogController(document.getElementById("class-dialog"));
+    QuestionDialog  = questionDialogController(document.getElementById("question-dialog"));
+    StatusBar       = statusBarController(document.getElementById("status-bar"));
+    SideMenu        = sideMenuController(document.getElementById("menu-screen"));
     SyncText        = SideMenu.Element.getElementById("sync-message");
-    AppSettings     = createSettingsHelper(SETTINGS_FILE);
+    AppSettings     = settingsController(SETTINGS_FILE);
 
     onMount();
     debugLog("Timetable :: initialize!");

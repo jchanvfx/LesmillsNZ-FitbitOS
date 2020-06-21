@@ -7,7 +7,7 @@ export function hide(element) {element.style.display = "none"}
 export function isVisible(element) {return element.style.display === "inline";}
 
 // helper objects.
-export function createStatusBarHelper(element) {
+export function statusBarController(element) {
     return {
         Element         : element,
         DateLabel1      : element.getElementById("date1"),
@@ -30,7 +30,7 @@ export function createStatusBarHelper(element) {
     };
 }
 
-export function createSideMenuHelper(element) {
+export function sideMenuController(element) {
     return {
         Element         : element,
         SubLabel        : element.getElementById("timetable-label"),
@@ -53,7 +53,7 @@ export function createSideMenuHelper(element) {
     };
 }
 
-export function createQuestionDialogHelper(element) {
+export function questionDialogController(element) {
     return {
         Element     : element,
         HeaderSmall : element.getElementById('header-small'),
@@ -84,7 +84,7 @@ export function createQuestionDialogHelper(element) {
     };
 }
 
-export function createMessageDialogHelper(element) {
+export function messageDialogController(element) {
     return {
         Element     : element,
         Header      : element.getElementById("#mixedtext"),
@@ -99,7 +99,7 @@ export function createMessageDialogHelper(element) {
     };
 }
 
-export function createClassDialogHelper(element) {
+export function classDialogController(element) {
     return {
         Element     : element,
         Title       : element.getElementById("title"),
@@ -124,7 +124,7 @@ export function createClassDialogHelper(element) {
 }
 
 
-export function createLoadingScreenHelper(element) {
+export function loadingScreenController(element) {
     return {
         Element  : element,
         Label    : element.getElementById("text"),
@@ -143,7 +143,7 @@ export function createLoadingScreenHelper(element) {
     };
 }
 
-export function createSettingsHelper(settingsFile) {
+export function settingsController(settingsFile) {
     return {
         setValue(key, value) {
             let data = this.load();
