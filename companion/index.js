@@ -4,7 +4,7 @@ import { encode } from "cbor";
 import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
-import { DATA_FILE_PREFIX, WORKOUTS_FILE } from "../common/config"
+import { DATA_FILE_PREFIX } from "../common/config"
 import { date, date1, date2, date3, date4 } from "../common/datelib"
 
 // check permissions
@@ -54,15 +54,6 @@ function timetableCallback(data) {
         sendData("lm-dataQueued", data[dKey.toString()], fileName, clubName);
     }
 }
-// fetch fitness classes and send data to device.
-function fitnessClassesCallback(data) {
-    if (data.length !== 0) {
-        sendData("lm-classesQueued", data, `${WORKOUTS_FILE}`);
-    } else {
-        sendValue("lm-noClasses");
-    }
-}
-
 
 // ----------------------------------------------------------------------------
 
@@ -75,7 +66,6 @@ settingsStorage.onchange = (evt) => {
             let clubName        = selectedClub.name;
             sendValue("lm-clubChanged", clubName);
             lesMills.fetchTimetableData(clubID, timetableCallback);
-            lesMills.fetchClasses(clubID, fitnessClassesCallback);
             break;
         default:
             return;
@@ -92,26 +82,6 @@ messaging.peerSocket.onmessage = (evt) => {
                 let clubName        = selectedClub.name;
                 lesMills.fetchTimetableData(clubID, timetableCallback);
                 sendValue("lm-fetchReply", clubName);
-            } else {
-                sendValue("lm-noClub");
-            }
-            break;
-        case "lm-classes":
-            if (clubSettings != null) {
-                let selectedClub    = JSON.parse(clubSettings).values[0];
-                let clubID          = selectedClub.value;
-                let clubName        = selectedClub.name;
-                lesMills.fetchClasses(clubID, fitnessClassesCallback);
-                sendValue("lm-classesReply", clubName);
-            } else {
-                sendValue("lm-noClub");
-            }
-            break;
-        case "lm-sync":
-            if (clubSettings != null) {
-                let selectedClub    = JSON.parse(clubSettings).values[0];
-                let clubName        = selectedClub.name;
-                sendValue("lm-syncReply", clubName);
             } else {
                 sendValue("lm-noClub");
             }

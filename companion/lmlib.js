@@ -3,7 +3,7 @@ import { date, date1, date2, date3, date4 } from "../common/datelib"
 // Timetable web API
 const urlAPI = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi";
 
-// Fetch timetable data from the website.
+// Fetch timetable from database.
 export function fetchTimetableData(clubID, callbackFunc) {
     let fetchData = {
         method: "POST",
@@ -15,6 +15,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
     return fetch(urlAPI, fetchData)
         .then(response => response.json())
         .then(data => {
+            // retrive up to 5 days of data.
             let dates = [date, date1, date2, date3, date4];
             let fltrs = [];
             let timetable = {};
@@ -27,7 +28,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
                 fltrs.push(dkey);
                 timetable[dkey.toString()] = [];
             }
-            // retrive and query 5 days of data.
+            // extract and sort data from the json blob.
             for (let i = 0; i < data.Classes.length; i++) {
                 let clsInfo = data.Classes[i];
                 let clsDate = new Date(clsInfo.StartDateTime);
@@ -47,62 +48,12 @@ export function fetchTimetableData(clubID, callbackFunc) {
                 }
             }
             // sort data by class times.
+            // (save processing power on fitbit device)
             for (let i = 0; i < fltrs.length; i++) {
                 timetable[fltrs[i]].sort((a, b) => (a.date > b.date) ? 1 : -1);
             }
             // execute callback.
             callbackFunc(timetable);
-        })
-        .catch(err => {
-            console.log(`Failure: ${err}`);
-        });
-}
-
-// Fetch fitness classes from website.
-export function fetchClasses(clubID, callbackFunc) {
-    let fetchData = {
-        method: "POST",
-        headers: new Headers({
-            "Content-type": "application/json; charset=UTF-8"
-        }),
-        body: JSON.stringify({Club: clubID}),
-    };
-    return fetch(urlAPI, fetchData)
-        .then(response => response.json())
-        .then(data => {
-            let fitnessClasses  = [];
-            let fitnessColors   = [];
-            for (let i = 0; i < data.Classes.length; i++) {
-                let clsInfo     = data.Classes[i];
-                let clsColor    = clsInfo.Colour;
-                let clsName     = clsInfo.ClassName;
-                clsName = clsName.toUpperCase();
-                clsName = clsName.replace(/VIRTUAL|30|45/g, "");
-                clsName = clsName.replace(/^\s+|\s+$/g, "");
-                if (clsName.endsWith("INTRO")) {
-                    clsName = clsName.slice(0, -" INTRO".length);
-                }
-                if (fitnessClasses.includes(clsName)) {
-                    let idx = fitnessClasses.indexOf(clsName);
-                    if (fitnessColors[idx] === null && clsColor !== null) {
-                        fitnessColors[idx] = clsColor;
-                    }
-                    continue;
-                }
-                fitnessClasses.push(clsName);
-                fitnessColors.push(clsColor);
-            }
-
-            let classesData = [];
-            for (let i = 0; i < fitnessClasses.length; i++) {
-                let color = (fitnessColors[i] !== null) ? fitnessColors[i] : "black";
-                let workout = fitnessClasses[i];
-                classesData.push({name:workout, color:color});
-            }
-            classesData.sort((a, b) => (a.name > b.name) ? 1 : -1)
-
-            // execute callback.
-            callbackFunc(classesData);
         })
         .catch(err => {
             console.log(`Failure: ${err}`);
