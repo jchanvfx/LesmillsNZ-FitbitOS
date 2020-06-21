@@ -5,7 +5,9 @@ import * as messaging from "messaging";
 import { me } from "appbit";
 import { display } from "display";
 import { inbox } from "file-transfer"
-import { existsSync, listDirSync, readFileSync, statSync, unlinkSync } from "fs";
+import {
+    existsSync, listDirSync, readFileSync, statSync, unlinkSync
+} from "fs";
 
 import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../../common/config"
 import { debugLog, toTitleCase, truncateString, zeroPad } from "../utils"

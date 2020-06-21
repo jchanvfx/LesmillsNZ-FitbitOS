@@ -47,8 +47,10 @@ function timetableCallback(data) {
     let clubName = selectedClub.name;
     let dates = [date, date1, date2, date3, date4];
     for (let i = 0; i < dates.length; i++) {
-        let dKey      = `${dates[i].getDay()}${dates[i].getDate()}${dates[i].getMonth()}`;
-        let fileName  = `${DATA_FILE_PREFIX}${dKey}.cbor`;
+        let dKey = `${dates[i].getDay()}` +
+                   `${dates[i].getDate()}` +
+                   `${dates[i].getMonth()}`;
+        let fileName = `${DATA_FILE_PREFIX}${dKey}.cbor`;
         sendData("lm-dataQueued", data[dKey.toString()], fileName, clubName);
     }
 }
