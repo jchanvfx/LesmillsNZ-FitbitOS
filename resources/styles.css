@@ -205,9 +205,9 @@ text {
     text-length: 10;
 }
 #lm-tile rect#color {
-    x: 5%;
+    x: 15;
     y: "$-10";
-    width: 90%;
+    width: 100%-30;
     height: 2;
     fill: #545454;
 }
