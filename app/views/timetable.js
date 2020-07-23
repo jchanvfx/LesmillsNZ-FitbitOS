@@ -103,7 +103,7 @@ function onMount() {
                 let diffMsecs = itmDate - date;
                 if (Math.floor((diffMsecs / 1000) / 60) < -6) {
                     tile.getElementById("text-title").style.fill    = "#6e6e6e";
-                    tile.getElementById("text-subtitle").style.fill = "#4f4f4f";
+                    tile.getElementById("text-subtitle").style.fill = "#6e6e6e";
                     tile.getElementById("text-L").style.fill        = "#6e6e6e";
                     tile.getElementById("text-R").style.fill        = "#6e6e6e";
                     tile.getElementById("color").style.fill         = "#4f4f4f";
