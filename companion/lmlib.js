@@ -3,6 +3,21 @@ import { date, date1, date2, date3, date4 } from "../common/datelib"
 // Timetable web API
 const urlAPI = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi";
 
+// Default class colors.
+const defaultColors = {
+    BODYATTACK  : "#FFB81C",
+    BODYBALANCE : "#C5E86C",
+    BODYCOMBAT  : "#787121",
+    BODYJAM     : "#FEDD00",
+    BODYPUMP    : "#E4002B",
+    BODYSTEP    : "#008C95",
+    CXWORX      : "#E35205",
+    RPM         : "#00A9E0",
+    "SH'BAM"    : "#D0006F",
+    SPRINT      : "#FEDD00",
+    TONE        : "#8246AF"
+};
+
 // Fetch timetable from database.
 export function fetchTimetableData(clubID, callbackFunc) {
     let fetchData = {
@@ -33,6 +48,17 @@ export function fetchTimetableData(clubID, callbackFunc) {
                 let clsInfo = data.Classes[i];
                 let clsDate = new Date(clsInfo.StartDateTime);
                 let clsKey = `${clsDate.getDay()}${clsDate.getDate()}${clsDate.getMonth()}`;
+
+                // set the class default color.
+                let color = clsInfo.Colour;
+                let title = clsInfo.ClassName.toUpperCase();
+                for (let key in defaultColors) {
+                    if (title.indexOf(key) !== -1) {
+                        color = defaultColors[key];
+                        break;
+                    }
+                }
+
                 if (fltrs.includes(clsKey)) {
                     let grpCls = {
                         name: clsInfo.ClassName,
@@ -40,7 +66,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
                         instructor1: clsInfo.MainInstructor.Name,
                         instructor2: (clsInfo.SecondaryInstructor !== null) ?
                                       clsInfo.SecondaryInstructor.Name : undefined,
-                        color: (clsInfo.Colour !== null) ? clsInfo.Colour : "black",
+                        color: (color !== null) ? color : "black",
                         duration: clsInfo.Duration,
                         location: clsInfo.Site.SiteName,
                     };
