@@ -44,12 +44,14 @@ export function fetchTimetableData(clubID, callbackFunc) {
                 timetable[dkey.toString()] = [];
             }
             // extract and sort data from the json blob.
+            let exclColors = ["#000", "#000000", "black", null];
             for (let i = 0; i < data.Classes.length; i++) {
                 let clsInfo = data.Classes[i];
                 let clsDate = new Date(clsInfo.StartDateTime);
                 let clsKey = `${clsDate.getDay()}${clsDate.getDate()}${clsDate.getMonth()}`;
 
-                // set the class default color.
+                // set the class default color and filter out the color "black" or "null"
+                // because by default the background is black.
                 let color = clsInfo.Colour;
                 let title = clsInfo.ClassName.toUpperCase();
                 for (let key in defaultColors) {
@@ -58,6 +60,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
                         break;
                     }
                 }
+                color = (exclColors.includes(color)) ? "#848484" : color;
 
                 if (fltrs.includes(clsKey)) {
                     let grpCls = {
@@ -66,7 +69,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
                         instructor1: clsInfo.MainInstructor.Name,
                         instructor2: (clsInfo.SecondaryInstructor !== null) ?
                                       clsInfo.SecondaryInstructor.Name : undefined,
-                        color: (color !== null) ? color : "black",
+                        color: color,
                         duration: clsInfo.Duration,
                         location: clsInfo.Site.SiteName,
                     };

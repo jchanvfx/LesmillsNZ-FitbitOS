@@ -40,18 +40,23 @@
     <symbol id="status-bar">
         <rect id="background"/>
         <image id="menu-btn" href="./resources/images/menu_btn.png" />
-        <text id="date1">---</text><text id="today">(today)</text>
-        <text id="date2">--</text>
-        <text id="time">--:--</text>
         <image id="no-phone" href="./resources/images/no_phone.png" />
-        <image id="jump-to" href="./resources/images/jump_to.png" />
-        <circle id="click-l" pointer-events="all" r="70" cx="5" cy="0" fill="#fae13c" opacity="0">
+        <text id="time">--:--</text>
+        <text id="date">--</text>
+        <image id="jump-to" href="./resources/images/update.png" />
+        <circle id="click-l" pointer-events="all" r="60" cx="10" cy="20"
+                fill="#fae13c" opacity="0">
             <animate attributeName="opacity" begin="click;enable"
                      from="1" to="0" dur="0.3" final="restore" />
+            <animate attributeName="r" begin="click;enable"
+                     from="40" to="75" dur="0.4" final="restore" />
         </circle>
-        <circle id="click-r" pointer-events="all" r="70" cx="100%-5" cy="0" fill="#fae13c" opacity="0">
+        <circle id="click-r" pointer-events="all" r="60" cx="100%-10" cy="20"
+                fill="#fae13c" opacity="0">
             <animate attributeName="opacity" begin="click;enable"
                      from="1" to="0" dur="0.3" final="restore" />
+            <animate attributeName="r" begin="click;enable"
+                     from="40" to="75" dur="0.4" final="restore" />
         </circle>
     </symbol>
     <!-- Dialog -->

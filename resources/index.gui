@@ -9,17 +9,15 @@
     <text
         x="50%"
         y="100%-48"
-        font-family="System-Bold"
+        font-family="Colfax-Regular"
         fill="fb-aqua"
-        font-size="22"
-        font-weight="bold"
+        font-size="20"
         text-anchor="middle">loading...</text>
     <text
         x="50%"
         y="$+2"
-        font-family="System-Regular"
+        font-family="Colfax-Regular"
         fill="fb-light-gray"
-        font-size="20"
-        font-weight="bold"
-        text-anchor="middle">Les Mills Timetable</text>
+        font-size="18"
+        text-anchor="middle">www.lesmills.co.nz</text>
 </svg>

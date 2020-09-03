@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { DAYS_SHORT, MONTHS, formatTo12hrTime, date } from "../common/datelib"
+import { DAYS_SHORT, MONTHS_SHORT, formatTo12hrTime } from "../common/datelib"
 
 // visibility functions.
 export function show(element) {element.style.display = "inline"}
@@ -10,18 +10,16 @@ export function isVisible(element) {return element.style.display === "inline";}
 export function statusBarController(element) {
     return {
         Element         : element,
-        DateLabel1      : element.getElementById("date1"),
-        DateLabel2      : element.getElementById("date2"),
+        DateLabel       : element.getElementById("date"),
         TimeLabel       : element.getElementById("time"),
         MenuButton      : element.getElementById("click-l"),
         JumpToButton    : element.getElementById("click-r"),
         JumpToIcon      : element.getElementById("jump-to"),
         PhoneIcon       : element.getElementById("no-phone"),
         setDate(dateObj) {
-            let today = element.getElementById("today");
-            (date.getDay() === dateObj.getDay()) ? show(today) : hide(today);
-            this.DateLabel1.text = DAYS_SHORT[dateObj.getDay()];
-            this.DateLabel2.text = `${dateObj.getDate()} ${MONTHS[dateObj.getMonth()]}`;
+            this.DateLabel.text = `${DAYS_SHORT[dateObj.getDay()]} ` +
+                                  `${dateObj.getDate()} ` +
+                                  `${MONTHS_SHORT[dateObj.getMonth()]}`;
             this.TimeLabel.text  = formatTo12hrTime(dateObj);
         },
         setTime(dateObj) {
