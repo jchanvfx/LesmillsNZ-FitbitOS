@@ -23,18 +23,20 @@ text {
 }
 #status-bar text {
     y: 20;
-    font-size: 20;
-    font-family: Colfax-Regular;
+    font-family: Colfax-Medium;
     text-anchor: middle;
-    fill: #d6d6d6;
 }
 #status-bar text#time {
     x: 50%;
+    font-size: 20;
+    fill: #d6d6d6;
     text-length: 7;
 }
 #status-bar text#date {
     x: 50%;
-    y: "$";
+    y: "$-1";
+    font-size: 18;
+    fill: "fb-light-gray";
     text-length: 16;
 }
 #status-bar image#menu-btn {
@@ -102,6 +104,7 @@ text {
     y: "$+72";
     fill: #6bb9c4;
     font-size: 20;
+    font-family: Colfax-Regular;
     text-anchor: middle;
     text-length: 32;
 }
@@ -109,7 +112,7 @@ text {
     y: "$+2";
     fill: "fb-aqua";
     font-size: 18;
-    font-family: System-Bold;
+    font-family: Colfax-Medium;
 }
 #loading-screen gradientRect {
     width: 100%;
@@ -148,7 +151,7 @@ text {
     y: 0;
     width: 25;
     height: 25;
-    fill: "#fae13c";
+    fill: #fae13c;
 }
 .side-menu-gradient {
     width: 100%;

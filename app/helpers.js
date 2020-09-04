@@ -18,8 +18,8 @@ export function statusBarController(element) {
         PhoneIcon       : element.getElementById("no-phone"),
         setDate(dateObj) {
             this.DateLabel.text = `${DAYS_SHORT[dateObj.getDay()]} ` +
-                                  `${dateObj.getDate()} ` +
-                                  `${MONTHS_SHORT[dateObj.getMonth()]}`;
+                                  `(${dateObj.getDate()} ` +
+                                  `${MONTHS_SHORT[dateObj.getMonth()]})`;
             this.TimeLabel.text  = formatTo12hrTime(dateObj);
         },
         setTime(dateObj) {
