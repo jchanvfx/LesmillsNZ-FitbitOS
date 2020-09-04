@@ -106,7 +106,8 @@ function onMount() {
                     tile.getElementById("text-subtitle").style.fill = "#6e6e6e";
                     tile.getElementById("text-L").style.fill        = "#6e6e6e";
                     tile.getElementById("text-R").style.fill        = "#6e6e6e";
-                    tile.getElementById("color").style.fill         = "#4f4f4f";
+                    tile.getElementById("color").style.fill         = "#000000";
+                    tile.getElementById("color-G").style.fill       = "#272727";
                     clickPad.onclick = undefined;
                 } else {
                     tile.getElementById("text-title").style.fill    = "white";
@@ -114,6 +115,7 @@ function onMount() {
                     tile.getElementById("text-L").style.fill        = "white";
                     tile.getElementById("text-R").style.fill        = "white";
                     tile.getElementById("color").style.fill         = info.color;
+                    tile.getElementById("color-G").style.fill       = info.color;
                     clickPad.onclick = (evt) => {
                         let overlay = tile.getElementById("overlay");
                         overlay.animate("enable");
@@ -124,10 +126,8 @@ function onMount() {
                             names = (info.instructor2 !== undefined) ?
                                     `${names} & ${info.instructor2}`: names;
                             names = (names.length > 36) ? truncateString(names, 33) : names;
-                            let black = ["black", "#000000"];
 
-                            ClassDialog.Color.style.fill    =
-                                (black.indexOf(info.color) >= 0) ? "grey" : info.color;
+                            ClassDialog.Color.style.fill    = info.color;
                             ClassDialog.Title.text          = title.toUpperCase();
                             ClassDialog.Name.text           = names;
                             ClassDialog.Label1.text         = startTime;

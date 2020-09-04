@@ -23,33 +23,21 @@ text {
 }
 #status-bar text {
     y: 20;
-    font-size: 20;
-    font-family: System-Regular;
-    font-weight: regular;
-    fill: #d6d6d6;
-}
-#status-bar text#today {
-    x: "$+4";
-    fill: "dimgrey";
-    text-anchor: start;
-    font-size: 16;
-    font-family: System-Bold;
-}
-#status-bar text#date1 {
-    x: 45;
-    text-anchor: start;
-    text-length: 16;
-}
-#status-bar text#date2 {
-    x: 45;
-    y: 43;
-    text-anchor: start;
-    text-length: 16;
+    font-family: Colfax-Medium;
+    text-anchor: middle;
 }
 #status-bar text#time {
-    x: 100%-10;
-    text-anchor: end;
+    x: 50%;
+    font-size: 20;
+    fill: #d6d6d6;
     text-length: 7;
+}
+#status-bar text#date {
+    x: 50%;
+    y: "$-1";
+    font-size: 18;
+    fill: "fb-light-gray";
+    text-length: 16;
 }
 #status-bar image#menu-btn {
     x: 2;
@@ -59,17 +47,17 @@ text {
     fill: #6bb9c4;
 }
 #status-bar image#no-phone {
-    x: 50%+10;
+    x: "$+16";
     y: 12;
     width: 26;
     height: 26;
     fill: "fb-red";
 }
 #status-bar image#jump-to {
-    x: 100%-83;
-    y: 26;
-    width: 73;
-    height: 18;
+    x: 100%-36;
+    y: 10;
+    width: 30;
+    height: 28;
     fill: #6bb9c4;
 }
 
@@ -116,6 +104,7 @@ text {
     y: "$+72";
     fill: #6bb9c4;
     font-size: 20;
+    font-family: Colfax-Regular;
     text-anchor: middle;
     text-length: 32;
 }
@@ -123,7 +112,7 @@ text {
     y: "$+2";
     fill: "fb-aqua";
     font-size: 18;
-    font-family: System-Bold;
+    font-family: Colfax-Medium;
 }
 #loading-screen gradientRect {
     width: 100%;
@@ -138,18 +127,6 @@ text {
 }
 
 /* Side Menu */
-.side-menu-header rect {
-    x: 12;
-    y: 0;
-    width: 100%-24;
-    height: 24;
-    fill: #3f3f3f;
-}
-.side-menu-header circle {
-    r: 12;
-    cy: 12;
-    fill: #3f3f3f;
-}
 .side-menu-header text {
     x: 28;
     y: "$+1";
@@ -165,7 +142,21 @@ text {
     text-length: 16;
 }
 .side-menu-header text#timetable-label {
+    x: "$+4";
+    y: "$-5";
     text-length: 26;
+}
+.side-menu-header image#timetable-icon {
+    x: 4;
+    y: 0;
+    width: 25;
+    height: 25;
+    fill: #fae13c;
+}
+.side-menu-gradient {
+    width: 100%;
+    height: 25;
+    fill: "fb-aqua";
 }
 
 /* Tile Item */
@@ -204,6 +195,12 @@ text {
     text-anchor: end;
     text-length: 10;
 }
+#lm-tile image#color-G {
+    x: 0;
+    y: 50%-16;
+    width: 100%;
+    height: 25;
+}
 #lm-tile rect#color {
     x: 15;
     y: "$-10";
@@ -224,22 +221,24 @@ text {
     y: 2;
     width: 100%-6;
     height: 100%-4;
-    fill: #363636;
+    /* seems like OLED screens can't go darker */
+    fill: #212121;
 }
 .lm-tile-cnr {
-    fill: #363636;
+    /* seems like OLED screens can't go darker */
+    fill: #212121;
 }
 
 /* Class Dialog */
 #class-dialog gradientRect {
-    y: -20%;
+    y: 0;
     width: 100%;
     height: 100%;
     gradient-type: radial;
     gradient-x1: 50%;
     gradient-y1: 50%;
-    gradient-x2: 50%+120;
-    gradient-y2: 50%+120;
+    gradient-x2: 50%+160;
+    gradient-y2: 50%+160;
     gradient-color1: #303030;
     gradient-color2: "black";
 }

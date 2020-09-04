@@ -21,6 +21,7 @@
             <rect x="100%-13" y="100%-12" width="10" height="10" fill="black" />
             <circle r="10" cx="100%-13" cy="100%-12" class="lm-tile-cnr" />
             <!-- title -->
+            <image id="color-G" href="./resources/images/tile_grad.png"/>
             <text id="text-title" />
             <text id="text-subtitle" />
             <rect id="color" />

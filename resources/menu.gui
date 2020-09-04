@@ -6,17 +6,27 @@
         <use id="side-menu-scroll" href="#scrollview">
 
             <use href="#scrollview-item" height="15">
-                <rect x="10" y="2" width="100%-20" height="1" fill="fb-dark-gray" />
+                <image href="./resources/images/tile_grad_flipped.png"
+                    class="side-menu-gradient"
+                    height="15"
+                    fill="fb-light-gray"
+                />
             </use>
 
             <!-- Timetable -->
             <use id="timetable-itm-label" href="#scrollview-item" height="25" class="side-menu-header">
-                <circle cx="100%-14" />
-                <circle cx="14" />
-                <rect />
-                <circle r="6" cx="14" fill="#fae13c" />
+                <image id="timetable-icon" href="./resources/images/location.png"/>
                 <text id="timetable-label" />
             </use>
+
+            <use href="#scrollview-item" height="15">
+                <image
+                    href="./resources/images/tile_grad.png"
+                    class="side-menu-gradient"
+                    height="15"
+                />
+            </use>
+
             <use id="timetable-itm1" href="#scrollview-item" height="62">
                 <use id="timetable-btn1" href="#square-button" y="2" height="62" fill="#6bb9c4">
                     <set href="#text" attributeName="text-length" to="12" />
@@ -44,14 +54,18 @@
             </use>
 
             <use href="#scrollview-item" height="20">
-                <rect x="10" y="$+10" width="100%-20" height="1" fill="fb-dark-gray" />
+                <image
+                    href="./resources/images/tile_grad_flipped.png"
+                    class="side-menu-gradient"
+                    height="20"
+                />
             </use>
 
             <!-- Reload Screen -->
             <use id="sync-itm" href="#scrollview-item" height="68">
-                <use id="sync-btn" href="#square-button-icon" y="2" height="62" fill="#fae13c">
+                <use id="sync-btn" href="#square-button-icon" y="2" height="62" fill="#6bb9c4">
                     <set href="#text" attributeName="text-buffer" to="Reload" />
-                    <set href="#image" attributeName="href" to="./resources/images/refresh.png" />
+                    <set href="#image" attributeName="href" to="./resources/images/update.png" />
                 </use>
             </use>
             <use href="#scrollview-item" height="30">
@@ -67,6 +81,11 @@
                 <rect x="10" y="$+10" width="100%-20" height="1" fill="fb-dark-gray" />
             </use>
             <use href="#scrollview-item" height="25" class="side-menu-header">
+                <image
+                    href="./resources/images/tile_grad.png"
+                    class="side-menu-gradient"
+                    height="25"
+                />
                 <text id="footer-label" />
             </use>
         </use>
