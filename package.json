@@ -1,11 +1,11 @@
 {
   "name": "lm_timetable",
-  "version": "0.3.7",
+  "version": "0.3.8",
   "private": true,
   "license": "MIT",
   "devDependencies": {
-    "@fitbit/sdk": "^4.1.0",
-    "@fitbit/sdk-cli": "^1.7.1"
+    "@fitbit/sdk": "^4.2.1",
+    "@fitbit/sdk-cli": "^1.7.3"
   },
   "fitbit": {
     "appUUID": "8f60152d-38d3-4fea-9a76-f0db013ec51b",
@@ -31,6 +31,6 @@
   },
   "dependencies": {
     "add": "^2.0.6",
-    "npm": "^6.14.5"
+    "npm": "^6.14.8"
   }
 }

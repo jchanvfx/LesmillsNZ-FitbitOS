@@ -13,7 +13,7 @@ import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../../common/config"
 import { debugLog, toTitleCase, truncateString, zeroPad } from "../utils"
 import {
     DAYS_SHORT, MONTHS_SHORT,
-    date, date1, date2, date3, date4,
+    date, date1, date2, date3, date4, date5, date6,
     formatTo12hrTime
 } from "../../common/datelib"
 import {
@@ -150,8 +150,10 @@ function onMount() {
                       SideMenu.SubButton2,
                       SideMenu.SubButton3,
                       SideMenu.SubButton4,
-                      SideMenu.SubButton5];
-    let dates = [date, date1, date2, date3, date4];
+                      SideMenu.SubButton5,
+                      SideMenu.SubButton6,
+                      SideMenu.SubButton7];
+    let dates = [date, date1, date2, date3, date4, date5, date6];
     let i = dates.length, x = -1;
     while (i--) {
         x++;

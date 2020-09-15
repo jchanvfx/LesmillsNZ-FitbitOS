@@ -1,4 +1,6 @@
-import { date, date1, date2, date3, date4 } from "../common/datelib"
+import {
+    date, date1, date2, date3, date4, date5, date6
+} from "../common/datelib"
 
 // Timetable web API
 const urlAPI = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi";
@@ -30,8 +32,8 @@ export function fetchTimetableData(clubID, callbackFunc) {
     return fetch(urlAPI, fetchData)
         .then(response => response.json())
         .then(data => {
-            // retrive up to 5 days of data.
-            let dates = [date, date1, date2, date3, date4];
+            // retrive up to 7 days of data.
+            let dates = [date, date1, date2, date3, date4, date5, date6];
             let fltrs = [];
             let timetable = {};
             timetable['fetched'] = date.toJSON();
@@ -43,17 +45,25 @@ export function fetchTimetableData(clubID, callbackFunc) {
                 fltrs.push(dkey);
                 timetable[dkey.toString()] = [];
             }
+
             // extract and sort data from the json blob.
+            let emojiRegex = /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g;
             let exclColors = ["#000", "#000000", "black", null];
+
             for (let i = 0; i < data.Classes.length; i++) {
                 let clsInfo = data.Classes[i];
                 let clsDate = new Date(clsInfo.StartDateTime);
                 let clsKey = `${clsDate.getDay()}${clsDate.getDate()}${clsDate.getMonth()}`;
 
+                // sanitize emoji characters from class name as Fitbit OS fonts don't support it.
+                let clsName = clsInfo.ClassName;
+                clsName = clsName.replace(emojiRegex, "");
+                clsName = clsName.replace(/\s{2,}/g, " ");
+
                 // set the class default color and filter out the color "black" or "null"
                 // because by default the background is black.
                 let color = clsInfo.Colour;
-                let title = clsInfo.ClassName.toUpperCase();
+                let title = clsName.toUpperCase();
                 for (let key in defaultColors) {
                     if (title.indexOf(key) !== -1) {
                         color = defaultColors[key];
@@ -64,7 +74,7 @@ export function fetchTimetableData(clubID, callbackFunc) {
 
                 if (fltrs.includes(clsKey)) {
                     let grpCls = {
-                        name: clsInfo.ClassName,
+                        name: clsName,
                         date: clsInfo.StartDateTime,
                         instructor1: clsInfo.MainInstructor.Name,
                         instructor2: (clsInfo.SecondaryInstructor !== null) ?

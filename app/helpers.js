@@ -37,6 +37,8 @@ export function sideMenuController(element) {
         SubButton3      : element.getElementById("timetable-btn3"),
         SubButton4      : element.getElementById("timetable-btn4"),
         SubButton5      : element.getElementById("timetable-btn5"),
+        SubButton6      : element.getElementById("timetable-btn6"),
+        SubButton7      : element.getElementById("timetable-btn7"),
         SyncButton      : element.getElementById("sync-btn"),
         Footer          : element.getElementById("footer-label"),
         isVisible() {return isVisible(element);},

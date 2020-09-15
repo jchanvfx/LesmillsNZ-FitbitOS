@@ -7,6 +7,10 @@ export const date3 = new Date();
 date3.setDate(date3.getDate() + 3);
 export const date4 = new Date();
 date4.setDate(date4.getDate() + 4);
+export const date5 = new Date();
+date5.setDate(date5.getDate() + 5);
+export const date6 = new Date();
+date6.setDate(date6.getDate() + 6);
 
 export const DAYS = [
     "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday",
