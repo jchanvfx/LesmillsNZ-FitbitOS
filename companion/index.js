@@ -5,7 +5,9 @@ import { outbox } from "file-transfer";
 import { me as companion } from "companion";
 import { settingsStorage } from "settings";
 import { DATA_FILE_PREFIX } from "../common/config"
-import { date, date1, date2, date3, date4 } from "../common/datelib"
+import {
+    date, date1, date2, date3, date4, date5, date6
+} from "../common/datelib"
 
 // check permissions
 if (!companion.permissions.granted("access_internet")) {
@@ -41,11 +43,12 @@ function sendData(key, data, filename, message=null) {
     }
 }
 // fetch timetable and send data to device
+// (splits the timtable data into separate files by days before transfer)
 function timetableCallback(data) {
     let clubSettings = settingsStorage.getItem("clubID");
     let selectedClub = JSON.parse(clubSettings).values[0];
     let clubName = selectedClub.name;
-    let dates = [date, date1, date2, date3, date4];
+    let dates = [date, date1, date2, date3, date4, date5, date6];
     for (let i = 0; i < dates.length; i++) {
         let dKey = `${dates[i].getDay()}` +
                    `${dates[i].getDate()}` +

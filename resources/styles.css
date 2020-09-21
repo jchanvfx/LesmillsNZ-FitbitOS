@@ -254,18 +254,23 @@ text {
     font-family: System-Bold;
 }
 #class-dialog text#label4 {
-    x: 50%-4;
+    x: 50%-5;
     y: "$+8";
-    font-family: System-Bold;
     text-anchor: start;
     fill: #00FA9A;
 }
+#class-dialog text#label-timer {
+    y: "$+16";
+    font-size: 20;
+    fill: #00FA9A;
+}
 #class-dialog image#icon-timer {
-    x: 50%-26;
+    x: 50%-28;
     y: "$-44";
     width: 20;
     height: 20;
     fill: #00FA9A;
+    href: "./resources/images/btn_combo_timer_p.png";
 }
 #class-dialog text#title {
     x: 50%;
