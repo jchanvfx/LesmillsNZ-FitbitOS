@@ -1,20 +1,20 @@
 <svg>
   <defs>
     <link rel="stylesheet" href="styles.css" />
-    <link rel="import" href="/mnt/sysassets/widgets_common.gui" />
+    <link rel="import" href="/mnt/sysassets/widgets_common.defs" />
     <!-- Views -->
-    <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.gui" />
-    <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.gui" />
-    <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.gui" />
+    <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.defs" />
+    <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.defs" />
+    <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.defs" />
     <!-- Buttons -->
-    <link rel="import" href="/mnt/sysassets/widgets/combo_button_widget.gui" />
-    <link rel="import" href="/mnt/sysassets/widgets/square_button_widget.gui" />
+    <link rel="import" href="/mnt/sysassets/widgets/combo_button_widget.defs" />
+    <link rel="import" href="/mnt/sysassets/widgets/square_button_widget.defs" />
     <!-- Dynamic Textarea -->
     <link rel="stylesheet" href="/mnt/sysassets/widgets/dynamic_textarea.css"/>
-    <link rel="import" href="/mnt/sysassets/widgets/dynamic_textarea.gui"/>
-    <link rel="import" href="/mnt/sysassets/widgets/mixed_text_widget.gui"/>
+    <link rel="import" href="/mnt/sysassets/widgets/dynamic_textarea.defs"/>
+    <link rel="import" href="/mnt/sysassets/widgets/mixed_text_widget.defs"/>
     <!-- Marquee Text -->
-    <link rel="import" href="/mnt/sysassets/widgets/marquee_text_widget.gui" />
+    <link rel="import" href="/mnt/sysassets/widgets/marquee_text_widget.defs" />
     <!-- Loader Screen -->
     <symbol id="loading-screen" focusable="false">
         <gradientRect/>
@@ -60,8 +60,8 @@
         </circle>
     </symbol>
     <!-- Dialog -->
-    <link rel="import" href="dialog.gui" />
+    <link rel="import" href="dialog.defs" />
     <!-- Side Menu -->
-    <link rel="import" href="menu.gui" />
+    <link rel="import" href="menu.defs" />
   </defs>
 </svg>
