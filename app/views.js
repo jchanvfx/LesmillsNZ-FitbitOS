@@ -12,7 +12,7 @@ import document from "document";
 export function init(_views, _prefix) {
     let views = _views;
     let viewsPrefix = _prefix;
-    const viewsSuffix = ".gui";
+    const viewsSuffix = ".view";
     let viewSelected;
     let viewReturn;
 

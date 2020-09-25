@@ -104,7 +104,6 @@ text {
     y: "$+72";
     fill: #6bb9c4;
     font-size: 20;
-    font-family: Colfax-Regular;
     text-anchor: middle;
     text-length: 32;
 }
@@ -112,7 +111,6 @@ text {
     y: "$+2";
     fill: "fb-aqua";
     font-size: 18;
-    font-family: Colfax-Medium;
 }
 #loading-screen gradientRect {
     width: 100%;

@@ -3,5 +3,6 @@
 .idea
 
 # node.js
+package-lock.json
 build
 node_modules
