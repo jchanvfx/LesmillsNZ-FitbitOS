@@ -40,25 +40,25 @@ text {
     text-length: 16;
 }
 #status-bar image#menu-btn {
-    x: 2;
-    y: 3;
-    width: 35;
-    height: 40;
-    fill: #6bb9c4;
+    x: 36;
+    y: 18;
+    width: 22;
+    height: 25;
+    fill: "black";
 }
 #status-bar image#no-phone {
-    x: "$+16";
-    y: 12;
-    width: 26;
-    height: 26;
+    x: "$+28";
+    y: 18;
+    width: 22;
+    height: 22;
     fill: "fb-red";
 }
 #status-bar image#jump-to {
-    x: 100%-36;
-    y: 10;
-    width: 30;
-    height: 28;
-    fill: #6bb9c4;
+    x: 100%-58;
+    y: 22;
+    width: 22;
+    height: 20;
+    fill: "black";
 }
 
 /* Loader Overlay */

@@ -1,20 +1,17 @@
 <svg>
   <defs>
+    <!-- styling -->
     <link rel="stylesheet" href="styles.css" />
-    <link rel="import" href="/mnt/sysassets/widgets_common.defs" />
-    <!-- Views -->
+    <link rel="stylesheet" href="/mnt/sysassets/colors_typography.css" />
+    <!-- system widgets -->
+    <link rel="import" href="/mnt/sysassets/system_widget.defs" />
     <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.defs" />
+    <!-- list widgets -->
+    <link rel="import" href="/mnt/sysassets/widgets/scrollbar.defs" />
     <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.defs" />
     <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.defs" />
-    <!-- Buttons -->
-    <link rel="import" href="/mnt/sysassets/widgets/combo_button_widget.defs" />
-    <link rel="import" href="/mnt/sysassets/widgets/square_button_widget.defs" />
-    <!-- Dynamic Textarea -->
-    <link rel="stylesheet" href="/mnt/sysassets/widgets/dynamic_textarea.css"/>
-    <link rel="import" href="/mnt/sysassets/widgets/dynamic_textarea.defs"/>
-    <link rel="import" href="/mnt/sysassets/widgets/mixed_text_widget.defs"/>
-    <!-- Marquee Text -->
-    <link rel="import" href="/mnt/sysassets/widgets/marquee_text_widget.defs" />
+    <!-- button widgets -->
+    <link rel="import" href="/mnt/sysassets/widgets/text_button.defs" />
     <!-- Loader Screen -->
     <symbol id="loading-screen" focusable="false">
         <gradientRect/>
@@ -39,25 +36,27 @@
     <!-- Status Bar -->
     <symbol id="status-bar">
         <rect id="background"/>
+        <circle r="50" cx="30" cy="8" fill="#5b677a" />
+        <circle id="click-l" pointer-events="all" r="50" cx="30" cy="8"
+                fill="#6bb9c4" opacity="0">
+            <animate attributeName="opacity" begin="click;enable"
+                     from="1" to="0" dur="0.3" final="restore" />
+            <animate attributeName="r" begin="click;enable"
+                     from="50" to="75" dur="0.4" final="restore" />
+        </circle>
+        <circle r="50" cx="100%-30" cy="8" fill="#5b677a" />
+        <circle id="click-r" pointer-events="all" r="50" cx="100%-30" cy="8"
+                fill="#6bb9c4" opacity="0">
+            <animate attributeName="opacity" begin="click;enable"
+                     from="1" to="0" dur="0.3" final="restore" />
+            <animate attributeName="r" begin="click;enable"
+                     from="50" to="75" dur="0.4" final="restore" />
+        </circle>
         <image id="menu-btn" href="./resources/images/menu_btn.png" />
         <image id="no-phone" href="./resources/images/no_phone.png" />
+        <image id="jump-to" href="./resources/images/update.png" />
         <text id="time">--:--</text>
         <text id="date">--</text>
-        <image id="jump-to" href="./resources/images/update.png" />
-        <circle id="click-l" pointer-events="all" r="60" cx="10" cy="20"
-                fill="#fae13c" opacity="0">
-            <animate attributeName="opacity" begin="click;enable"
-                     from="1" to="0" dur="0.3" final="restore" />
-            <animate attributeName="r" begin="click;enable"
-                     from="40" to="75" dur="0.4" final="restore" />
-        </circle>
-        <circle id="click-r" pointer-events="all" r="60" cx="100%-10" cy="20"
-                fill="#fae13c" opacity="0">
-            <animate attributeName="opacity" begin="click;enable"
-                     from="1" to="0" dur="0.3" final="restore" />
-            <animate attributeName="r" begin="click;enable"
-                     from="40" to="75" dur="0.4" final="restore" />
-        </circle>
     </symbol>
     <!-- Dialog -->
     <link rel="import" href="dialog.defs" />

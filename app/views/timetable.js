@@ -20,7 +20,6 @@ import {
     show, hide,
     loadingScreenController,
     messageDialogController,
-    questionDialogController,
     classDialogController,
     statusBarController,
     sideMenuController,
@@ -30,7 +29,6 @@ import {
 let TimetableList;
 let LoadingScreen;
 let MessageDialog;
-let QuestionDialog;
 let ClassDialog;
 let StatusBar;
 let SideMenu;
@@ -44,225 +42,200 @@ let ConectionRetryCount;
 let LM_TIMETABLE = [];
 
 // screen entry point.
-let views;
-let options;
-export function init(_views, _options) {
-    views   = _views;
-    options = _options || {};
+export function TimetableViewCtrl() {
+    this.name;
+    this.navigate;
+    this.onMount = (kwargs) => {
+        let options = kwargs || {};
+        TimetableList   = document.getElementById("lm-class-list");
+        LoadingScreen   = loadingScreenController(document.getElementById("loading-screen"));
+        MessageDialog   = messageDialogController(document.getElementById("message-dialog"));
+        ClassDialog     = classDialogController(document.getElementById("class-dialog"));
+        StatusBar       = statusBarController(document.getElementById("status-bar"));
+        SideMenu        = sideMenuController(document.getElementById("menu-screen"));
+        SyncText        = SideMenu.Element.getElementById("sync-message");
+        AppSettings     = settingsController(SETTINGS_FILE);
 
-    TimetableList   = document.getElementById("lm-class-list");
-    LoadingScreen   = loadingScreenController(document.getElementById("loading-screen"));
-    MessageDialog   = messageDialogController(document.getElementById("message-dialog"));
-    ClassDialog     = classDialogController(document.getElementById("class-dialog"));
-    QuestionDialog  = questionDialogController(document.getElementById("question-dialog"));
-    StatusBar       = statusBarController(document.getElementById("status-bar"));
-    SideMenu        = sideMenuController(document.getElementById("menu-screen"));
-    SyncText        = SideMenu.Element.getElementById("sync-message");
-    AppSettings     = settingsController(SETTINGS_FILE);
+        // // initialize.
+        OnFileRecievedUpdateGui = false;
+        ConectionRetryCount = -1;
+        SyncText.text = "Last Synced: N/A";
 
-    onMount();
-    debugLog("Timetable :: initialize!");
-    return onUnMount;
-}
+        (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
+            hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
 
-function onMount() {
-    OnFileRecievedUpdateGui = false;
-    ConectionRetryCount = -1;
-    SyncText.text = "Last Synced: N/A";
+        // Configure TimetableList.
+        TimetableList.delegate = {
+            getTileInfo: index => {
+                let tileInfo = LM_TIMETABLE[index];
+                return {
+                    index: index,
+                    type: "lm-pool",
+                    name: tileInfo.name,
+                    instructor1: tileInfo.instructor1,
+                    instructor2: tileInfo.instructor2,
+                    date: tileInfo.date,
+                    duration: tileInfo.duration,
+                    color: tileInfo.color,
+                    location: tileInfo.location
+                };
+            },
+            configureTile: (tile, info) => {
+                if (info.type == "lm-pool") {
+                    let itmDate = new Date(info.date);
+                    let startTime = formatTo12hrTime(itmDate);
+                    let tileTitle = (info.name.length > 24) ?
+                        truncateString(info.name, 21) : info.name;
+                    tile.getElementById("text-title").text    = tileTitle.toUpperCase();
+                    tile.getElementById("text-subtitle").text = info.location;
+                    tile.getElementById("text-L").text        = startTime;
+                    tile.getElementById("text-R").text        = `${info.duration} mins`;
+                    let clickPad = tile.getElementById("click-pad");
+                    let diffMsecs = itmDate - date;
+                    if (Math.floor((diffMsecs / 1000) / 60) < -6) {
+                        tile.getElementById("text-title").style.fill    = "#6e6e6e";
+                        tile.getElementById("text-subtitle").style.fill = "#6e6e6e";
+                        tile.getElementById("text-L").style.fill        = "#6e6e6e";
+                        tile.getElementById("text-R").style.fill        = "#6e6e6e";
+                        tile.getElementById("color").style.fill         = "#000000";
+                        tile.getElementById("color-G").style.fill       = "#272727";
+                        clickPad.onclick = undefined;
+                    } else {
+                        tile.getElementById("text-title").style.fill    = "white";
+                        tile.getElementById("text-subtitle").style.fill = "white";
+                        tile.getElementById("text-L").style.fill        = "white";
+                        tile.getElementById("text-R").style.fill        = "white";
+                        tile.getElementById("color").style.fill         = info.color;
+                        tile.getElementById("color-G").style.fill       = info.color;
+                        clickPad.onclick = (evt) => {
+                            let overlay = tile.getElementById("overlay");
+                            overlay.animate("enable");
+                            setTimeout(() => {
+                                let title = info.name;
+                                title = (title.length > 25) ? truncateString(title, 22) : title;
+                                let names = info.instructor1;
+                                names = (info.instructor2 !== undefined) ?
+                                        `${names} & ${info.instructor2}`: names;
+                                names = (names.length > 36) ? truncateString(names, 33) : names;
 
-    (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
-        hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
-
-    // Configure TimetableList.
-    TimetableList.delegate = {
-        getTileInfo: index => {
-            let tileInfo = LM_TIMETABLE[index];
-            return {
-                index: index,
-                type: "lm-pool",
-                name: tileInfo.name,
-                instructor1: tileInfo.instructor1,
-                instructor2: tileInfo.instructor2,
-                date: tileInfo.date,
-                duration: tileInfo.duration,
-                color: tileInfo.color,
-                location: tileInfo.location
-            };
-        },
-        configureTile: (tile, info) => {
-            if (info.type == "lm-pool") {
-                let itmDate = new Date(info.date);
-                let startTime = formatTo12hrTime(itmDate);
-                let tileTitle = (info.name.length > 24) ?
-                    truncateString(info.name, 21) : info.name;
-                tile.getElementById("text-title").text    = tileTitle.toUpperCase();
-                tile.getElementById("text-subtitle").text = info.location;
-                tile.getElementById("text-L").text        = startTime;
-                tile.getElementById("text-R").text        = `${info.duration} mins`;
-                let clickPad = tile.getElementById("click-pad");
-                let diffMsecs = itmDate - date;
-                if (Math.floor((diffMsecs / 1000) / 60) < -6) {
-                    tile.getElementById("text-title").style.fill    = "#6e6e6e";
-                    tile.getElementById("text-subtitle").style.fill = "#6e6e6e";
-                    tile.getElementById("text-L").style.fill        = "#6e6e6e";
-                    tile.getElementById("text-R").style.fill        = "#6e6e6e";
-                    tile.getElementById("color").style.fill         = "#000000";
-                    tile.getElementById("color-G").style.fill       = "#272727";
-                    clickPad.onclick = undefined;
-                } else {
-                    tile.getElementById("text-title").style.fill    = "white";
-                    tile.getElementById("text-subtitle").style.fill = "white";
-                    tile.getElementById("text-L").style.fill        = "white";
-                    tile.getElementById("text-R").style.fill        = "white";
-                    tile.getElementById("color").style.fill         = info.color;
-                    tile.getElementById("color-G").style.fill       = info.color;
-                    clickPad.onclick = (evt) => {
-                        let overlay = tile.getElementById("overlay");
-                        overlay.animate("enable");
-                        setTimeout(() => {
-                            let title = info.name;
-                            title = (title.length > 25) ? truncateString(title, 22) : title;
-                            let names = info.instructor1;
-                            names = (info.instructor2 !== undefined) ?
-                                    `${names} & ${info.instructor2}`: names;
-                            names = (names.length > 36) ? truncateString(names, 33) : names;
-
-                            ClassDialog.Color.style.fill    = info.color;
-                            ClassDialog.Title.text          = title.toUpperCase();
-                            ClassDialog.Name.text           = names;
-                            ClassDialog.Label1.text         = startTime;
-                            ClassDialog.Label2.text         = info.location;
-                            ClassDialog.Label4.text         = info.duration;
-                            ClassDialog.show();
-                        }, 300);
+                                ClassDialog.Color.style.fill    = info.color;
+                                ClassDialog.Title.text          = title.toUpperCase();
+                                ClassDialog.Name.text           = names;
+                                ClassDialog.Label1.text         = startTime;
+                                ClassDialog.Label2.text         = info.location;
+                                ClassDialog.Label4.text         = info.duration;
+                                ClassDialog.show();
+                            }, 300);
+                        }
                     }
                 }
             }
         }
-    }
-    // TimetableList.length must be set AFTER TimetableList.delegate
-    TimetableList.length = LM_TIMETABLE.length;
+        // TimetableList.length must be set AFTER TimetableList.delegate
+        TimetableList.length = LM_TIMETABLE.length;
 
-    // Configure SideMenu button labels.
-    let clubName = AppSettings.getValue("club") || "Club Not Set!";
-    SideMenu.SubLabel.text   = truncateString(clubName, 26);
-    let subButtons = [SideMenu.SubButton1,
-                      SideMenu.SubButton2,
-                      SideMenu.SubButton3,
-                      SideMenu.SubButton4,
-                      SideMenu.SubButton5,
-                      SideMenu.SubButton6,
-                      SideMenu.SubButton7];
-    let dates = [date, date1, date2, date3, date4, date5, date6];
-    let i = dates.length, x = -1;
-    while (i--) {
-        x++;
-        let dateObj = dates[x];
-        subButtons[x].text = `${DAYS_SHORT[dateObj.getDay()]} ` +
-                             `${dateObj.getDate()} ` +
-                             `${MONTHS_SHORT[dateObj.getMonth()]}`;
-        // wire up the button here.
-        subButtons[x].onactivate = () => {loadTimetableByDate(dateObj);}
-    }
-    SideMenu.Footer.text     = "v" + BUILD_VER;
-    hide(SideMenu.Element);
+        // Configure SideMenu button labels.
+        let clubName = AppSettings.getValue("club") || "Club Not Set!";
+        SideMenu.SubLabel.text   = truncateString(clubName, 26);
+        let subButtons = [SideMenu.SubButton1,
+                          SideMenu.SubButton2,
+                          SideMenu.SubButton3,
+                          SideMenu.SubButton4,
+                          SideMenu.SubButton5,
+                          SideMenu.SubButton6,
+                          SideMenu.SubButton7];
+        let dates = [date, date1, date2, date3, date4, date5, date6];
+        let i = dates.length, x = -1;
+        while (i--) {
+            x++;
+            let dateObj = dates[x];
+            subButtons[x].text = `${DAYS_SHORT[dateObj.getDay()]} ` +
+                                 `${dateObj.getDate()} ` +
+                                 `${MONTHS_SHORT[dateObj.getMonth()]}`;
+            // wire up the button here.
+            subButtons[x].onactivate = () => {loadTimetableByDate(dateObj);}
+        }
+        SideMenu.Footer.text     = "v" + BUILD_VER;
+        hide(SideMenu.Element);
 
-    // Wire up events.
-    clock.granularity = "minutes";
-    clock.ontick = (evt) => {StatusBar.setTime(evt.date);}
+        // Wire up events.
+        clock.granularity = "minutes";
+        clock.ontick = (evt) => {StatusBar.setTime(evt.date);}
 
-    // key press
-    document.onkeypress = (evt) => {
-        if (evt.key === "back") {
-            evt.preventDefault();
-            if (ClassDialog.isVisible()) {
-                ClassDialog.hide();
+        // key press
+        document.onkeypress = (evt) => {
+            if (evt.key === "back") {
+                evt.preventDefault();
+                if (ClassDialog.isVisible()) {
+                    ClassDialog.hide();
+                }
+                else if (SideMenu.isVisible()) {
+                    show(StatusBar.JumpToButton);
+                    show(StatusBar.JumpToIcon);
+                    SideMenu.hide();
+                }
+                else {me.exit();}
             }
-            else if (SideMenu.isVisible()) {
+        }
+        // data inbox
+        inbox.onnewfile = onDataRecieved;
+        // messaging
+        messaging.peerSocket.onmessage  = onMessageRecieved;
+        messaging.peerSocket.onopen     = () => {
+            debugLog("App Socket Open"); hide(StatusBar.PhoneIcon);}
+        messaging.peerSocket.onclose    = () => {
+            debugLog("App Socket Closed"); show(StatusBar.PhoneIcon);}
+        // status bar buttons.
+        StatusBar.JumpToButton.onclick  = () => {
+            reloadCurrentTimetable();
+        }
+        StatusBar.MenuButton.onclick    = () => {
+            if (SideMenu.isVisible()) {
                 show(StatusBar.JumpToButton);
                 show(StatusBar.JumpToIcon);
                 SideMenu.hide();
+            } else {
+                hide(StatusBar.JumpToButton);
+                hide(StatusBar.JumpToIcon);
+                SideMenu.show();
             }
-            else if (QuestionDialog.isVisible()) {
-                QuestionDialog.setHeader("");
-                QuestionDialog.hide();
-            }
-            else {me.exit();}
-        } else if (evt.key === "up") {
-            if (SideMenu.isVisible()) return;
-            if (ClassDialog.isVisible()) return;
-            if (QuestionDialog.isVisible()) return;
-            StatusBar.JumpToButton.animate("enable");
-            reloadCurrentTimetable();
         }
-    }
-    // data inbox
-    inbox.onnewfile = onDataRecieved;
-    // messaging
-    messaging.peerSocket.onmessage  = onMessageRecieved;
-    messaging.peerSocket.onopen     = () => {
-        debugLog("App Socket Open"); hide(StatusBar.PhoneIcon);}
-    messaging.peerSocket.onclose    = () => {
-        debugLog("App Socket Closed"); show(StatusBar.PhoneIcon);}
-    // status bar buttons.
-    StatusBar.JumpToButton.onclick  = () => {
-        reloadCurrentTimetable();
-    }
-    StatusBar.MenuButton.onclick    = () => {
-        if (SideMenu.isVisible()) {
-            show(StatusBar.JumpToButton);
-            show(StatusBar.JumpToIcon);
-            SideMenu.hide();
-        } else {
-            hide(StatusBar.JumpToButton);
-            hide(StatusBar.JumpToIcon);
-            SideMenu.show();
-        }
-    }
-    // sync button.
-    SideMenu.SyncButton.onactivate = () => {
-        SideMenu.hide();
-        show(StatusBar.JumpToButton);
-        show(StatusBar.JumpToIcon);
-        reloadCurrentTimetable();
-    }
-    // message dialog button.
-    MessageDialog.OkButton.onactivate    = MessageDialog.hide;
-    // class dialog button.
-    ClassDialog.CloseButton.onactivate   = ClassDialog.hide;
-    // question dialog buttons. (not used)
-    QuestionDialog.YesButton.onactivate  = () => {
-        debugLog("Question Dialog: YES Clicked!");
-    }
-    QuestionDialog.NoButton.onactivate   = () => {
-        debugLog("Question Dialog: NO Clicked!");
-        QuestionDialog.hide();
-    }
+        // // sync button.
+        // SideMenu.SyncButton.onactivate = () => {
+        //     SideMenu.hide();
+        //     show(StatusBar.JumpToButton);
+        //     show(StatusBar.JumpToIcon);
+        //     reloadCurrentTimetable();
+        // }
+        // // message dialog button.
+        // MessageDialog.OkButton.onactivate    = MessageDialog.hide;
+        // // class dialog button.
+        // ClassDialog.CloseButton.onactivate   = ClassDialog.hide;
 
-    // Update current date.
-    let dateStr     = options.currentDate;
-    let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
+        // // Update current date.
+        // let dateStr     = options.currentDate;
+        // let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
 
-    // Display the loader non animated.
-    LoadingScreen.Label.text = "Loading...";
-    LoadingScreen.SubLabel.text = clubName.toUpperCase();
-    show(LoadingScreen.Element);
+        // // Display the loader non animated.
+        // LoadingScreen.Label.text = "Loading...";
+        // LoadingScreen.SubLabel.text = clubName.toUpperCase();
+        // show(LoadingScreen.Element);
 
-    // Load current timetable after transition.
-    setTimeout(() => {loadTimetableByDate(currentDate);}, 400);
-}
+        // // Load current timetable after transition.
+        // setTimeout(() => {loadTimetableByDate(currentDate);}, 400);
 
-// Clean-up function executed before the view is unloaded.
-// No need to unsubscribe from DOM events, it's done automatically.
-function onUnMount() {
-    debugLog(">>> unMounted - Timetable");
-    LM_TIMETABLE.length             = 0;
-    clock.granularity               = "off";
-    clock.ontick                    = undefined;
-    messaging.peerSocket.onopen     = undefined;
-    messaging.peerSocket.onclose    = undefined;
-    messaging.peerSocket.onmessage  = undefined;
-    inbox.onnewfile                 = undefined;
+        debugLog(`>>> :: initialize view! - ${this.name}`);
+    };
+    this.onUnMount = () => {
+        LM_TIMETABLE.length             = 0;
+        clock.granularity               = "off";
+        clock.ontick                    = undefined;
+        messaging.peerSocket.onopen     = undefined;
+        messaging.peerSocket.onclose    = undefined;
+        messaging.peerSocket.onmessage  = undefined;
+        inbox.onnewfile                 = undefined;
+        debugLog(`>>> :: unmounted view! - ${this.name}`);
+    };
 }
 
 // ----------------------------------------------------------------------------

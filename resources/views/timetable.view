@@ -44,7 +44,7 @@
         </symbol>
     </defs>
     <!-- Trasition Anim START -->
-    <g>
+    <!-- <g> -->
     <!-- LesMills Virtual Tile -->
     <section y="50" height="100%-50">
         <use id="lm-class-list" href="#tile-list" display="none">
@@ -76,11 +76,9 @@
     <use id="status-bar" href="#status-bar" />
     <!-- Class Dialog -->
     <use id="class-dialog" href="#class-dialog" display="none" />
-    <!-- Question Dialog -->
-    <use id="question-dialog" href="#question-dialog" display="none"/>
     <!-- Trasition Anim END -->
-    <animateTransform
+    <!-- <animateTransform
         attributeType="translate" begin="load" easing="ease"
         from="-100%, 0%" to="0, 0" dur="0.4" final="keep" />
-    </g>
+    </g> -->
 </svg>

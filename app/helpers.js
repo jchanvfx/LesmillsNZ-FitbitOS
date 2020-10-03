@@ -1,10 +1,14 @@
 import { readFileSync, writeFileSync, existsSync } from "fs";
-import { DAYS_SHORT, MONTHS_SHORT, formatTo12hrTime } from "../common/datelib"
+import {
+    DAYS_SHORT, MONTHS_SHORT, formatTo12hrTime
+} from "../common/datelib"
 
 // visibility functions.
 export function show(element) {element.style.display = "inline"}
 export function hide(element) {element.style.display = "none"}
-export function isVisible(element) {return element.style.display === "inline";}
+export function isVisible(element) {
+    return element.style.display === "inline";
+}
 
 // helper objects.
 export function statusBarController(element) {
@@ -49,37 +53,6 @@ export function sideMenuController(element) {
         hide() {
             element.animate("disable");
             setTimeout(() => {element.style.display = "none";}, 300);
-        },
-    };
-}
-
-export function questionDialogController(element) {
-    return {
-        Element     : element,
-        HeaderSmall : element.getElementById('header-small'),
-        Header      : element.getElementById('mixedtext'),
-        Message     : element.getElementById('mixedtext').getElementById("copy"),
-        YesButton   : element.getElementById("btn-right"),
-        NoButton    : element.getElementById("btn-left"),
-        isVisible() {return isVisible(element);},
-        show() {element.style.display = "inline";},
-        hide() {element.style.display = "none";},
-        setHeader (text) {
-            if (text.length > 12) {
-                this.Header.text = "";
-                this.HeaderSmall.text = text;
-                this.HeaderSmall.style.display = "inline";
-            } else {
-                this.Header.text = text;
-                this.HeaderSmall.text = "";
-                this.HeaderSmall.style.display = "none";
-            }
-        },
-        getHeader() {
-            if (this.HeaderSmall.style.display === "inline") {
-                return this.HeaderSmall.text;
-            }
-            return this.Header.text;
         },
     };
 }
