@@ -62,7 +62,7 @@ export function TimetableViewCtrl() {
         SyncText.text = "Last Synced: N/A";
 
         (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
-            hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
+            StatusBar.hidePhone() : StatusBar.showPhone();
 
         // Configure TimetableList.
         TimetableList.delegate = {
@@ -153,7 +153,7 @@ export function TimetableViewCtrl() {
                                  `${dateObj.getDate()} ` +
                                  `${MONTHS_SHORT[dateObj.getMonth()]}`;
             // wire up the button here.
-            subButtons[x].onactivate = () => {loadTimetableByDate(dateObj);}
+            subButtons[x].onclick = () => {loadTimetableByDate(dateObj);}
         }
         SideMenu.Footer.text     = "v" + BUILD_VER;
         hide(SideMenu.Element);
@@ -170,8 +170,7 @@ export function TimetableViewCtrl() {
                     ClassDialog.hide();
                 }
                 else if (SideMenu.isVisible()) {
-                    show(StatusBar.JumpToButton);
-                    show(StatusBar.JumpToIcon);
+                    StatusBar.showRefreshButton();
                     SideMenu.hide();
                 }
                 else {me.exit();}
@@ -182,47 +181,47 @@ export function TimetableViewCtrl() {
         // messaging
         messaging.peerSocket.onmessage  = onMessageRecieved;
         messaging.peerSocket.onopen     = () => {
-            debugLog("App Socket Open"); hide(StatusBar.PhoneIcon);}
+            debugLog("App Socket Open"); StatusBar.hidePhone();}
         messaging.peerSocket.onclose    = () => {
-            debugLog("App Socket Closed"); show(StatusBar.PhoneIcon);}
+            debugLog("App Socket Closed"); StatusBar.showPhone();}
         // status bar buttons.
-        StatusBar.JumpToButton.onclick  = () => {
+        StatusBar.RefreshButton.onclick  = () => {
+            StatusBar.RefreshButtonAnim.animate("enable");
             reloadCurrentTimetable();
         }
         StatusBar.MenuButton.onclick    = () => {
+            StatusBar.MenuButtonAnim.animate("enable");
             if (SideMenu.isVisible()) {
-                show(StatusBar.JumpToButton);
-                show(StatusBar.JumpToIcon);
+                StatusBar.showRefreshButton();
                 SideMenu.hide();
             } else {
-                hide(StatusBar.JumpToButton);
-                hide(StatusBar.JumpToIcon);
+                StatusBar.hideRefreshButton();
                 SideMenu.show();
             }
         }
-        // // sync button.
-        // SideMenu.SyncButton.onactivate = () => {
-        //     SideMenu.hide();
-        //     show(StatusBar.JumpToButton);
-        //     show(StatusBar.JumpToIcon);
-        //     reloadCurrentTimetable();
-        // }
-        // // message dialog button.
-        // MessageDialog.OkButton.onactivate    = MessageDialog.hide;
-        // // class dialog button.
-        // ClassDialog.CloseButton.onactivate   = ClassDialog.hide;
+        // sync button.
+        SideMenu.SyncButton.onclick = () => {
+            SideMenu.hide();
+            StatusBar.showRefreshButton();
+            reloadCurrentTimetable();
+        }
+        // message dialog button.
+        MessageDialog.OkButton.onclick    = MessageDialog.hide;
+        // class dialog button.
+        ClassDialog.CloseButton.onclick   = ClassDialog.hide;
 
-        // // Update current date.
-        // let dateStr     = options.currentDate;
-        // let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
+        // Update current date.
+        let dateStr     = options.currentDate;
+        let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
+        StatusBar.setDate(currentDate);
 
         // // Display the loader non animated.
-        // LoadingScreen.Label.text = "Loading...";
-        // LoadingScreen.SubLabel.text = clubName.toUpperCase();
-        // show(LoadingScreen.Element);
+        LoadingScreen.Label.text = "Loading...";
+        LoadingScreen.SubLabel.text = clubName.toUpperCase();
+        show(LoadingScreen.Element);
 
-        // // Load current timetable after transition.
-        // setTimeout(() => {loadTimetableByDate(currentDate);}, 400);
+        // Load current timetable after transition.
+        setTimeout(() => {loadTimetableByDate(currentDate);}, 400);
 
         debugLog(`>>> :: initialize view! - ${this.name}`);
     };
@@ -247,7 +246,7 @@ function onMessageRecieved(evt) {
         case "lm-noClub":
             debugLog("Timetable :: no club selected.");
             LoadingScreen.hide();
-            SideMenu.SubLabel.text   = "Club Not Set";
+            SideMenu.SubLabel.text    = "Club Not Set";
             MessageDialog.Header.text = "Club Not Set";
             MessageDialog.Message.text =
                 "Select a club location from the phone app settings.";
@@ -310,7 +309,7 @@ function onDataRecieved() {
         }
     }
     (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
-        hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
+        StatusBar.hidePhone() : StatusBar.showPhone();
 }
 
 
@@ -322,9 +321,9 @@ function sendValue(key, data=null) {
         } else {
             messaging.peerSocket.send({key: key, value: data});
         }
-        hide(StatusBar.PhoneIcon);
+        StatusBar.hidePhone();
     } else {
-        show(StatusBar.PhoneIcon);
+        StatusBar.showPhone();
     }
 }
 
@@ -416,7 +415,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
                 sendValue("lm-fetch");
             } else {
                 (messaging.peerSocket.readyState === messaging.peerSocket.OPEN) ?
-                    hide(StatusBar.PhoneIcon) : show(StatusBar.PhoneIcon);
+                    StatusBar.hidePhone() : StatusBar.showPhone();
             }
 
             display.poke();
@@ -471,8 +470,7 @@ function loadTimetableByDate(date) {
     ClassDialog.Label3.text = `${DAYS_SHORT[date.getDay()]} ` +
                               `${date.getDate()} ` +
                               `${MONTHS_SHORT[date.getMonth()]}`;
-    show(StatusBar.JumpToButton);
-    show(StatusBar.JumpToIcon);
+    StatusBar.showRefreshButton();
     SideMenu.hide();
     CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
                             `${date.getDay()}` +

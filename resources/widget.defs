@@ -12,6 +12,24 @@
     <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.defs" />
     <!-- button widgets -->
     <link rel="import" href="/mnt/sysassets/widgets/text_button.defs" />
+    <symbol id="round-button">
+        <rect id="bg" x="3" y="2" width="100%-6" height="100%-4" fill="#494b4f" />
+        <!-- tl -->
+        <rect x="3" y="2" width="10" height="10" fill="black" />
+        <circle id="tl" r="8" cx="11" cy="10" fill="#494b4f" />
+        <!-- tr -->
+        <rect x="100%-13" y="2" width="10" height="10" fill="black" />
+        <circle id="tr" r="8" cx="100%-11" cy="10" fill="#494b4f" />
+        <!-- bl -->
+        <rect x="3" y="100%-12" width="10" height="10" fill="black" />
+        <circle id="bl" r="8" cx="11" cy="100%-10" fill="#494b4f" />
+        <!-- br -->
+        <rect x="100%-13" y="100%-12" width="10" height="10" fill="black" />
+        <circle id="br" r="8" cx="100%-11" cy="100%-10" fill="#494b4f" />
+        <!-- text -->
+        <text id="text" x="50%" text-anchor="middle" fill="white" />
+        <rect id="click" width="100%" height="100%" opacity="0" pointer-events="all" />
+    </symbol>
     <!-- Loader Screen -->
     <symbol id="loading-screen" focusable="false">
         <gradientRect/>
@@ -36,27 +54,34 @@
     <!-- Status Bar -->
     <symbol id="status-bar">
         <rect id="background"/>
-        <circle r="50" cx="30" cy="8" fill="#5b677a" />
-        <circle id="click-l" pointer-events="all" r="50" cx="30" cy="8"
+        <circle id="no-phone-bg" />
+        <image id="no-phone-icon" />
+
+        <circle id="click-l-bg" r="50" cx="30" cy="8" fill="#5b677a" />
+        <circle id="click-l-anim" r="50" cx="30" cy="8"
                 fill="#6bb9c4" opacity="0">
             <animate attributeName="opacity" begin="click;enable"
                      from="1" to="0" dur="0.3" final="restore" />
             <animate attributeName="r" begin="click;enable"
-                     from="50" to="75" dur="0.4" final="restore" />
+                     from="50" to="80" dur="0.4" final="restore" />
         </circle>
-        <circle r="50" cx="100%-30" cy="8" fill="#5b677a" />
-        <circle id="click-r" pointer-events="all" r="50" cx="100%-30" cy="8"
+        <image id="menu-btn" />
+
+        <circle id="click-r-bg" r="50" cx="100%-30" cy="8" fill="#5b677a" />
+        <circle id="click-r-anim" r="50" cx="100%-30" cy="8"
                 fill="#6bb9c4" opacity="0">
             <animate attributeName="opacity" begin="click;enable"
                      from="1" to="0" dur="0.3" final="restore" />
             <animate attributeName="r" begin="click;enable"
-                     from="50" to="75" dur="0.4" final="restore" />
+                     from="50" to="80" dur="0.4" final="restore" />
         </circle>
-        <image id="menu-btn" href="./resources/images/menu_btn.png" />
-        <image id="no-phone" href="./resources/images/no_phone.png" />
-        <image id="jump-to" href="./resources/images/update.png" />
+        <image id="refresh-btn" />
+
         <text id="time">--:--</text>
         <text id="date">--</text>
+        <rect id="click-l" pointer-events="all" />
+        <rect id="click-r" pointer-events="all" />
+
     </symbol>
     <!-- Dialog -->
     <link rel="import" href="dialog.defs" />

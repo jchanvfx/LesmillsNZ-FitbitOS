@@ -1,13 +1,28 @@
 <symbol id="message-dialog">
         <rect width="100%" height="100%" fill="black" />
-        <use id="mixedtext" href="#dynamic-textarea" height="100%" fill="#fae13c" />
+        <text
+            id="header"
+            x="50%"
+            y="50%-40"
+            text-anchor="middle"
+            text-length="24"
+            fill="#ffc400" />
+        <textarea
+            id="text"
+            x="30"
+            y="50%-26"
+            width="100%-60"
+            font-size="24"
+            text-length="128"
+            fill="white" />
         <use
             id="btn-ok"
             href="#text-button"
             class="text-button bottom"
-            fill="#fae13c"
+            fill="#ffc400"
             display="none">
             <set href="#text" attributeName="text-buffer" to="Ok" />
+            <set href="#text" attributeName="fill" to="black" />
         </use>
 </symbol>
 

@@ -14,12 +14,14 @@ text {
     width: 40%;
     height: 60;
     opacity: 0;
+    fill: "white";
 }
 #status-bar rect#click-r {
     x: 60%;
     width: 40%;
     height: 60;
     opacity: 0;
+    fill: "white";
 }
 #status-bar text {
     y: 20;
@@ -39,26 +41,35 @@ text {
     fill: "fb-light-gray";
     text-length: 16;
 }
-#status-bar image#menu-btn {
-    x: 36;
-    y: 18;
-    width: 22;
-    height: 25;
-    fill: "black";
+#status-bar circle#no-phone-bg {
+    r: 80;
+    cx: 55;
+    cy: -20;
+    fill: #420c09;
 }
-#status-bar image#no-phone {
-    x: "$+28";
+#status-bar image#no-phone-icon {
+    x: "$-54";
     y: 18;
     width: 22;
     height: 22;
-    fill: "fb-red";
+    fill: #eb4034;
+    href: "./resources/images/no_phone.png";
 }
-#status-bar image#jump-to {
+#status-bar image#menu-btn {
+    x: 36;
+    y: 20;
+    width: 22;
+    height: 25;
+    fill: "black";
+    href: "./resources/images/menu_btn.png";
+}
+#status-bar image#refresh-btn {
     x: 100%-58;
     y: 22;
     width: 22;
     height: 20;
     fill: "black";
+    href: "./resources/images/update.png";
 }
 
 /* Loader Overlay */
@@ -135,21 +146,22 @@ text {
 .side-menu-header text#footer-label {
     x: 50%;
     y: 50%+2;
-    fill: "fb-dark-gray";
+    fill: #fae13c;
     text-anchor: middle;
     text-length: 16;
 }
 .side-menu-header text#timetable-label {
-    x: "$+4";
+    x: "$+8";
     y: "$-5";
     text-length: 26;
 }
 .side-menu-header image#timetable-icon {
-    x: 4;
+    x: 35;
     y: 0;
     width: 25;
     height: 25;
     fill: #fae13c;
+    href: "./resources/images/location.png";
 }
 .side-menu-gradient {
     width: 100%;
@@ -159,6 +171,8 @@ text {
 
 /* Tile Item */
 #lm-tile {
+    x: 10;
+    width: 100%-20;
     height: 95;
 }
 #lm-tile text {
@@ -195,7 +209,7 @@ text {
 }
 #lm-tile image#color-G {
     x: 0;
-    y: 50%-16;
+    y: 50%-12;
     width: 100%;
     height: 25;
 }
