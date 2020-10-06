@@ -10,16 +10,16 @@
             <rect id="background"/>
             <!-- tl -->
             <rect x="3" y="2" width="10" height="10" fill="black" />
-            <circle r="10" cx="13" cy="12" class="lm-tile-cnr" />
+            <circle id="tl" r="10" cx="13" cy="12" class="lm-tile-cnr" />
             <!-- tr -->
             <rect x="100%-13" y="2" width="10" height="10" fill="black" />
-            <circle r="10" cx="100%-13" cy="12" class="lm-tile-cnr" />
+            <circle id="tr" r="10" cx="100%-13" cy="12" class="lm-tile-cnr" />
             <!-- bl -->
             <rect x="3" y="100%-12" width="10" height="10" fill="black" />
-            <circle r="10" cx="13" cy="100%-12" class="lm-tile-cnr" />
+            <circle id="bl" r="10" cx="13" cy="100%-12" class="lm-tile-cnr" />
             <!-- br -->
             <rect x="100%-13" y="100%-12" width="10" height="10" fill="black" />
-            <circle r="10" cx="100%-13" cy="100%-12" class="lm-tile-cnr" />
+            <circle id="br" r="10" cx="100%-13" cy="100%-12" class="lm-tile-cnr" />
             <!-- title -->
             <image id="color-G" href="./resources/images/tile_grad.png"/>
             <text id="text-title" />

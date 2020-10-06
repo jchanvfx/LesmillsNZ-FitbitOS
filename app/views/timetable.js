@@ -38,6 +38,7 @@ let AppSettings;
 let CurrentTimetableFile;
 let OnFileRecievedUpdateGui;
 let ConectionRetryCount;
+let TileSelected;
 
 let LM_TIMETABLE = [];
 
@@ -56,7 +57,8 @@ export function TimetableViewCtrl() {
         SyncText        = SideMenu.Element.getElementById("sync-message");
         AppSettings     = settingsController(SETTINGS_FILE);
 
-        // // initialize.
+        // initialize.
+        TileSelected = false;
         OnFileRecievedUpdateGui = false;
         ConectionRetryCount = -1;
         SyncText.text = "Last Synced: N/A";
@@ -82,6 +84,26 @@ export function TimetableViewCtrl() {
             },
             configureTile: (tile, info) => {
                 if (info.type == "lm-pool") {
+                    let elms = [
+                        "text-title", "text-subtitle", "text-L", "text-R",
+                        "background", "tr", "tl", "color"];
+
+                    // hide elements for the very last tile.
+                    if (info.index === LM_TIMETABLE.length-1) {
+                        for (let i = 0; i < elms.length; i++) {
+                            hide(tile.getElementById(elms[i]));
+                        }
+                        tile.getElementById("color-G").href = "./resources/images/tile_last.png";
+                        tile.getElementById("color-G").style.fill = "fb-aqua";
+                        tile.getElementById("click-pad").onclick = undefined;
+                        return;
+                    }
+
+                    // populate tile
+                    for (let i = 0; i < elms.length; i++) {
+                        show(tile.getElementById(elms[i]));
+                    }
+                    tile.getElementById("color-G").href = "./resources/images/tile_grad.png";
                     let itmDate = new Date(info.date);
                     let startTime = formatTo12hrTime(itmDate);
                     let tileTitle = (info.name.length > 24) ?
@@ -108,6 +130,8 @@ export function TimetableViewCtrl() {
                         tile.getElementById("color").style.fill         = info.color;
                         tile.getElementById("color-G").style.fill       = info.color;
                         clickPad.onclick = (evt) => {
+                            if (TileSelected) {return;}
+                            TileSelected = true;
                             let overlay = tile.getElementById("overlay");
                             overlay.animate("enable");
                             setTimeout(() => {
@@ -185,7 +209,7 @@ export function TimetableViewCtrl() {
         messaging.peerSocket.onclose    = () => {
             debugLog("App Socket Closed"); StatusBar.showPhone();}
         // status bar buttons.
-        StatusBar.RefreshButton.onclick  = () => {
+        StatusBar.RefreshButton.onclick = () => {
             StatusBar.RefreshButtonAnim.animate("enable");
             reloadCurrentTimetable();
         }
@@ -206,12 +230,15 @@ export function TimetableViewCtrl() {
             reloadCurrentTimetable();
         }
         // message dialog button.
-        MessageDialog.OkButton.onclick    = MessageDialog.hide;
+        MessageDialog.OkButton.onclick = MessageDialog.hide;
         // class dialog button.
-        ClassDialog.CloseButton.onclick   = ClassDialog.hide;
+        ClassDialog.CloseButton.onclick = () => {
+            TileSelected = false;
+            ClassDialog.hide();
+        };
 
         // Update current date.
-        let dateStr     = options.currentDate;
+        let dateStr = options.currentDate;
         let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
         StatusBar.setDate(currentDate);
 
@@ -394,6 +421,8 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
     LM_TIMETABLE.length = 0;
     if (existsSync(`/private/data/${fileName}`)) {
         LM_TIMETABLE = readFileSync(fileName, "cbor");
+        // add a blank item for the last tile.
+        LM_TIMETABLE.push({});
     }
 
     TimetableList.length = LM_TIMETABLE.length;
