@@ -170,7 +170,7 @@ export function TimetableViewCtrl() {
                     ClassDialog.hide();
                 }
                 else if (SideMenu.isVisible()) {
-                    StatusBar.showRefreshButton();
+                    StatusBar.enableRefreshButton();
                     SideMenu.hide();
                 }
                 else {me.exit();}
@@ -192,17 +192,17 @@ export function TimetableViewCtrl() {
         StatusBar.MenuButton.onclick    = () => {
             StatusBar.MenuButtonAnim.animate("enable");
             if (SideMenu.isVisible()) {
-                StatusBar.showRefreshButton();
+                StatusBar.enableRefreshButton();
                 SideMenu.hide();
             } else {
-                StatusBar.hideRefreshButton();
+                StatusBar.disableRefreshButton();
                 SideMenu.show();
             }
         }
         // sync button.
         SideMenu.SyncButton.onclick = () => {
             SideMenu.hide();
-            StatusBar.showRefreshButton();
+            StatusBar.enableRefreshButton();
             reloadCurrentTimetable();
         }
         // message dialog button.
@@ -226,13 +226,25 @@ export function TimetableViewCtrl() {
         debugLog(`>>> :: initialize view! - ${this.name}`);
     };
     this.onUnMount = () => {
-        LM_TIMETABLE.length             = 0;
+        // unlink the callbacks.
         clock.granularity               = "off";
         clock.ontick                    = undefined;
         messaging.peerSocket.onopen     = undefined;
         messaging.peerSocket.onclose    = undefined;
         messaging.peerSocket.onmessage  = undefined;
         inbox.onnewfile                 = undefined;
+        LM_TIMETABLE.length             = 0;
+
+        // clean up references here just in case.
+        TimetableList   = undefined;
+        LoadingScreen   = undefined;
+        MessageDialog   = undefined;
+        ClassDialog     = undefined;
+        StatusBar       = undefined;
+        SideMenu        = undefined;
+        SyncText        = undefined;
+        AppSettings     = undefined;
+
         debugLog(`>>> :: unmounted view! - ${this.name}`);
     };
 }
@@ -452,7 +464,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
             LoadingScreen.hide();
             MessageDialog.Header.text = "No Classes";
             MessageDialog.Message.text = "Couldn't retrive any classes for this date.";
-            MessageDialog.show(true);
+            MessageDialog.show(false);
             return;
         }
     }
@@ -470,7 +482,7 @@ function loadTimetableByDate(date) {
     ClassDialog.Label3.text = `${DAYS_SHORT[date.getDay()]} ` +
                               `${date.getDate()} ` +
                               `${MONTHS_SHORT[date.getMonth()]}`;
-    StatusBar.showRefreshButton();
+    StatusBar.enableRefreshButton();
     SideMenu.hide();
     CurrentTimetableFile = `${DATA_FILE_PREFIX}` +
                             `${date.getDay()}` +

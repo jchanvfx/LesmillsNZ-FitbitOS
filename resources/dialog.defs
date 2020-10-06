@@ -42,7 +42,13 @@
     <image id="icon-timer" />
     <text class="label-text" id="label-timer">minutes</text>
 
-    <use id="btn-close" href="#text-button" class="text-button bottom" fill="tomato">
-        <set href="#text" attributeName="text-buffer" to="<< Back" />
-    </use>
+    <rect id="btn-close-bg" y="100%-65" width="100%" height="65" fill="tomato" />
+    <text x="50%" y="$-28" fill="black" font-size="28" text-anchor="middle">Close</text>
+    <rect
+        id="btn-close"
+        pointer-events="all"
+        y="100%-65"
+        width="100%"
+        height="65"
+        opacity="0" />
 </symbol>
