@@ -25,7 +25,7 @@ text {
 }
 #status-bar text {
     y: 20;
-    font-family: Colfax-Medium;
+    /* font-family: Colfax-Medium; */
     text-anchor: middle;
 }
 #status-bar text#time {
