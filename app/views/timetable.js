@@ -84,18 +84,20 @@ export function TimetableViewCtrl() {
             },
             configureTile: (tile, info) => {
                 if (info.type == "lm-pool") {
-                    let elms = [
-                        "text-title", "text-subtitle", "text-L", "text-R",
-                        "background", "tr", "tl", "color"];
-
+                    let elms = ["background", "color", "text-L", "text-R",
+                                "tl", "tr", "text-subtitle"];
                     // hide elements for the very last tile.
                     if (info.index === LM_TIMETABLE.length-1) {
                         for (let i = 0; i < elms.length; i++) {
                             hide(tile.getElementById(elms[i]));
                         }
+                        tile.getElementById("text-title").text = "Back to Top";
+                        tile.getElementById("text-title").style.fill = "fb-aqua";
                         tile.getElementById("color-G").href = "./resources/images/tile_last.png";
                         tile.getElementById("color-G").style.fill = "fb-aqua";
-                        tile.getElementById("click-pad").onclick = undefined;
+                        tile.getElementById("click-pad").onclick = () => {
+                            TimetableList.value = 0;
+                        };
                         return;
                     }
 
@@ -134,6 +136,7 @@ export function TimetableViewCtrl() {
                             TileSelected = true;
                             let overlay = tile.getElementById("overlay");
                             overlay.animate("enable");
+                            setTimeout(() => {TileSelected = false;}, 450);
                             setTimeout(() => {
                                 let title = info.name;
                                 title = (title.length > 25) ? truncateString(title, 22) : title;
@@ -233,7 +236,6 @@ export function TimetableViewCtrl() {
         MessageDialog.OkButton.onclick = MessageDialog.hide;
         // class dialog button.
         ClassDialog.CloseButton.onclick = () => {
-            TileSelected = false;
             ClassDialog.hide();
         };
 
@@ -370,7 +372,7 @@ function sendValue(key, data=null) {
 
 // clean up old local files.
 function cleanUpFiles() {
-    let dates = [date, date1, date2, date3, date4];
+    let dates = [date, date1, date2, date3, date4, date5, date6];
     let keepList = [];
     let i = dates.length;
     while (i--) {
