@@ -20,7 +20,6 @@ import {
     show, hide,
     loadingScreenController,
     messageDialogController,
-    questionDialogController,
     classDialogController,
     statusBarController,
     sideMenuController,
@@ -30,7 +29,6 @@ import {
 let TimetableList;
 let LoadingScreen;
 let MessageDialog;
-let QuestionDialog;
 let ClassDialog;
 let StatusBar;
 let SideMenu;
@@ -40,6 +38,7 @@ let AppSettings;
 let CurrentTimetableFile;
 let OnFileRecievedUpdateGui;
 let ConectionRetryCount;
+let TileSelected;
 
 let LM_TIMETABLE = [];
 
@@ -54,7 +53,6 @@ export function init(_views, _options) {
     LoadingScreen   = loadingScreenController(document.getElementById("loading-screen"));
     MessageDialog   = messageDialogController(document.getElementById("message-dialog"));
     ClassDialog     = classDialogController(document.getElementById("class-dialog"));
-    QuestionDialog  = questionDialogController(document.getElementById("question-dialog"));
     StatusBar       = statusBarController(document.getElementById("status-bar"));
     SideMenu        = sideMenuController(document.getElementById("menu-screen"));
     SyncText        = SideMenu.Element.getElementById("sync-message");
@@ -66,6 +64,7 @@ export function init(_views, _options) {
 }
 
 function onMount() {
+    TileSelected = false;
     OnFileRecievedUpdateGui = false;
     ConectionRetryCount = -1;
     SyncText.text = "Last Synced: N/A";
@@ -117,8 +116,11 @@ function onMount() {
                     tile.getElementById("color").style.fill         = info.color;
                     tile.getElementById("color-G").style.fill       = info.color;
                     clickPad.onclick = (evt) => {
+                        if (TileSelected) {return;}
+                        TileSelected = true;
                         let overlay = tile.getElementById("overlay");
                         overlay.animate("enable");
+                        setTimeout(() => {TileSelected = false;}, 450);
                         setTimeout(() => {
                             let title = info.name;
                             title = (title.length > 25) ? truncateString(title, 22) : title;
@@ -183,15 +185,10 @@ function onMount() {
                 show(StatusBar.JumpToIcon);
                 SideMenu.hide();
             }
-            else if (QuestionDialog.isVisible()) {
-                QuestionDialog.setHeader("");
-                QuestionDialog.hide();
-            }
             else {me.exit();}
         } else if (evt.key === "up") {
             if (SideMenu.isVisible()) return;
             if (ClassDialog.isVisible()) return;
-            if (QuestionDialog.isVisible()) return;
             StatusBar.JumpToButton.animate("enable");
             reloadCurrentTimetable();
         }
@@ -230,14 +227,6 @@ function onMount() {
     MessageDialog.OkButton.onactivate    = MessageDialog.hide;
     // class dialog button.
     ClassDialog.CloseButton.onactivate   = ClassDialog.hide;
-    // question dialog buttons. (not used)
-    QuestionDialog.YesButton.onactivate  = () => {
-        debugLog("Question Dialog: YES Clicked!");
-    }
-    QuestionDialog.NoButton.onactivate   = () => {
-        debugLog("Question Dialog: NO Clicked!");
-        QuestionDialog.hide();
-    }
 
     // Update current date.
     let dateStr     = options.currentDate;
@@ -359,7 +348,7 @@ function sendValue(key, data=null) {
 
 // clean up old local files.
 function cleanUpFiles() {
-    let dates = [date, date1, date2, date3, date4];
+    let dates = [date, date1, date2, date3, date4, date5, date6];
     let keepList = [];
     let i = dates.length;
     while (i--) {

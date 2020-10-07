@@ -53,37 +53,6 @@ export function sideMenuController(element) {
     };
 }
 
-export function questionDialogController(element) {
-    return {
-        Element     : element,
-        HeaderSmall : element.getElementById('header-small'),
-        Header      : element.getElementById('mixedtext'),
-        Message     : element.getElementById('mixedtext').getElementById("copy"),
-        YesButton   : element.getElementById("btn-right"),
-        NoButton    : element.getElementById("btn-left"),
-        isVisible() {return isVisible(element);},
-        show() {element.style.display = "inline";},
-        hide() {element.style.display = "none";},
-        setHeader (text) {
-            if (text.length > 12) {
-                this.Header.text = "";
-                this.HeaderSmall.text = text;
-                this.HeaderSmall.style.display = "inline";
-            } else {
-                this.Header.text = text;
-                this.HeaderSmall.text = "";
-                this.HeaderSmall.style.display = "none";
-            }
-        },
-        getHeader() {
-            if (this.HeaderSmall.style.display === "inline") {
-                return this.HeaderSmall.text;
-            }
-            return this.Header.text;
-        },
-    };
-}
-
 export function messageDialogController(element) {
     return {
         Element     : element,
@@ -111,10 +80,9 @@ export function classDialogController(element) {
         Label4      : element.getElementById("label4"),
         CloseButton : element.getElementById("btn-close"),
         isVisible() {return isVisible(element);},
-        show(showButton=true) {
+        show() {
             element.animate("enable");
             element.style.display = "inline";
-            (showButton) ? show(this.CloseButton) : hide(this.CloseButton);
         },
         hide() {
             element.animate("disable");

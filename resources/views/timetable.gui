@@ -76,8 +76,6 @@
     <use id="status-bar" href="#status-bar" />
     <!-- Class Dialog -->
     <use id="class-dialog" href="#class-dialog" display="none" />
-    <!-- Question Dialog -->
-    <use id="question-dialog" href="#question-dialog" display="none"/>
     <!-- Trasition Anim END -->
     <animateTransform
         attributeType="translate" begin="load" easing="ease"

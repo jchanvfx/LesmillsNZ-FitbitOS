@@ -137,7 +137,7 @@ text {
 .side-menu-header text#footer-label {
     x: 50%;
     y: 50%+2;
-    fill: "fb-dark-gray";
+    fill: #fae13c;
     text-anchor: middle;
     text-length: 16;
 }
