@@ -95,9 +95,7 @@ export function TimetableViewCtrl() {
                         tile.getElementById("text-title").style.fill = "fb-aqua";
                         tile.getElementById("color-G").href = "./resources/images/tile_last.png";
                         tile.getElementById("color-G").style.fill = "fb-aqua";
-                        tile.getElementById("click-pad").onclick = () => {
-                            TimetableList.value = 0;
-                        };
+                        tile.getElementById("click-pad").onclick = jumpToLatestClass;
                         return;
                     }
 
@@ -509,6 +507,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
 }
 
 function loadTimetableByDate(date) {
+    StatusBar.setTime(new Date());
     StatusBar.setDate(date);
     ClassDialog.Label3.text = `${DAYS_SHORT[date.getDay()]} ` +
                               `${date.getDate()} ` +
