@@ -80,7 +80,7 @@
             </use>
             <use href="#scrollview-item" height="30">
                 <text id="sync-message"
-                      x="10" y="18"
+                      x="50%" y="18"
                       font-size="20"
                       text-length="32"
                       text-anchor="middle"
