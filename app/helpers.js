@@ -20,7 +20,6 @@ export function statusBarController(element) {
             this.DateLabel.text = `${DAYS_SHORT[dateObj.getDay()]} ` +
                                   `(${dateObj.getDate()} ` +
                                   `${MONTHS_SHORT[dateObj.getMonth()]})`;
-            this.TimeLabel.text  = formatTo12hrTime(dateObj);
         },
         setTime(dateObj) {
             this.TimeLabel.text  = formatTo12hrTime(dateObj);

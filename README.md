@@ -12,6 +12,6 @@ This app is NOT officially part of Les Mills I made this app so I can convenient
 
 **Command Reference:**
 
-``npm install fitbit``
+``npm add @fitbit/sdk``
 
 ``npm add @fitbit/sdk-cli``

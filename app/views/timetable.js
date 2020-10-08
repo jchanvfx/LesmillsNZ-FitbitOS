@@ -483,6 +483,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
 }
 
 function loadTimetableByDate(date) {
+    StatusBar.setTime(new Date());
     StatusBar.setDate(date);
     ClassDialog.Label3.text = `${DAYS_SHORT[date.getDay()]} ` +
                               `${date.getDate()} ` +

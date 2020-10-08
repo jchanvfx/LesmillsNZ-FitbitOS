@@ -83,6 +83,7 @@
                       x="10" y="18"
                       font-size="20"
                       text-length="32"
+                      text-anchor="middle"
                       fill="cadetblue" />
             </use>
 
