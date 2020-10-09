@@ -1,13 +1,11 @@
 import * as messaging from "messaging";
 import * as lesMills from "./lmlib";
-import { encode } from "cbor";
-import { outbox } from "file-transfer";
-import { me as companion } from "companion";
-import { settingsStorage } from "settings";
-import { DATA_FILE_PREFIX } from "../common/config"
-import {
-    date, date1, date2, date3, date4, date5, date6
-} from "../common/datelib"
+import {encode} from "cbor";
+import {outbox} from "file-transfer";
+import {me as companion} from "companion";
+import {settingsStorage} from "settings";
+import {DATA_FILE_PREFIX} from "../common/config"
+import {date, date1, date2, date3, date4, date5, date6} from "../common/datelib"
 
 // check permissions
 if (!companion.permissions.granted("access_internet")) {

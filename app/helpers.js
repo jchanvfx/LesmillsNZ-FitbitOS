@@ -1,7 +1,5 @@
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import {
-    DAYS_SHORT, MONTHS_SHORT, formatTo12hrTime
-} from "../common/datelib"
+import {existsSync, readFileSync, writeFileSync} from "fs";
+import {DAYS_SHORT, formatTo12hrTime, MONTHS_SHORT} from "../common/datelib"
 
 
 // visibility functions.

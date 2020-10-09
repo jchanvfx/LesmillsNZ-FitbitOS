@@ -2,28 +2,34 @@ import document from "document";
 import clock from "clock";
 import * as messaging from "messaging";
 
-import { me } from "appbit";
-import { display } from "display";
-import { inbox } from "file-transfer"
-import {
-    existsSync, listDirSync, readFileSync, statSync, unlinkSync
-} from "fs";
+import {me} from "appbit";
+import {display} from "display";
+import {inbox} from "file-transfer"
+import {existsSync, listDirSync, readFileSync, statSync, unlinkSync} from "fs";
 
-import { DATA_FILE_PREFIX, SETTINGS_FILE, BUILD_VER } from "../../common/config"
-import { debugLog, toTitleCase, truncateString, zeroPad } from "../utils"
+import {BUILD_VER, DATA_FILE_PREFIX, IMAGES_PATH, SETTINGS_FILE} from "../../common/config"
+import {debugLog, toTitleCase, truncateString, zeroPad} from "../utils"
 import {
-    DAYS_SHORT, MONTHS_SHORT,
-    date, date1, date2, date3, date4, date5, date6,
-    formatTo12hrTime
+    date,
+    date1,
+    date2,
+    date3,
+    date4,
+    date5,
+    date6,
+    DAYS_SHORT,
+    formatTo12hrTime,
+    MONTHS_SHORT
 } from "../../common/datelib"
 import {
-    show, hide,
+    classDialogController,
+    hide,
     loadingScreenController,
     messageDialogController,
-    classDialogController,
-    statusBarController,
-    sideMenuController,
     settingsController,
+    show,
+    sideMenuController,
+    statusBarController,
 } from "../helpers"
 
 let TimetableList;
@@ -83,7 +89,7 @@ export function TimetableViewCtrl() {
                 };
             },
             configureTile: (tile, info) => {
-                if (info.type == "lm-pool") {
+                if (info.type === "lm-pool") {
                     let elms = ["background", "color", "text-L", "text-R",
                                 "tl", "tr", "text-subtitle"];
                     // hide elements for the very last tile.
@@ -93,7 +99,7 @@ export function TimetableViewCtrl() {
                         }
                         tile.getElementById("text-title").text = "Back to Top";
                         tile.getElementById("text-title").style.fill = "fb-aqua";
-                        tile.getElementById("color-G").href = "./resources/images/tile_last.png";
+                        tile.getElementById("color-G").href = `${IMAGES_PATH}/tile_last.png`;
                         tile.getElementById("color-G").style.fill = "fb-aqua";
                         tile.getElementById("click-pad").onclick = jumpToLatestClass;
                         return;
@@ -103,7 +109,7 @@ export function TimetableViewCtrl() {
                     for (let i = 0; i < elms.length; i++) {
                         show(tile.getElementById(elms[i]));
                     }
-                    tile.getElementById("color-G").href = "./resources/images/tile_grad.png";
+                    tile.getElementById("color-G").href = `${IMAGES_PATH}/tile_grad.png`;
                     let itmDate = new Date(info.date);
                     let startTime = formatTo12hrTime(itmDate);
                     let tileTitle = (info.name.length > 24) ?

@@ -1,5 +1,5 @@
 import document from "document";
-import { DEBUG_MODE, VIEW_GUI_PATH } from "../common/config"
+import {DEBUG_MODE, VIEW_GUI_PATH} from "../common/config"
 
 export function AppController() {
     this._views;

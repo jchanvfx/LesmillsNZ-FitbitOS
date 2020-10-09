@@ -1,5 +1,5 @@
-import { AppController } from "./utils";
-import { TimetableViewCtrl } from "./views/timetable"
+import {AppController} from "./utils";
+import {TimetableViewCtrl} from "./views/timetable"
 
 
 const controller = new AppController();

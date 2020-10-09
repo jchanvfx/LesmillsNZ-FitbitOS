@@ -225,7 +225,7 @@ text {
     y: 3;
     width: 100%-6;
     height: 100%-6;
-    fill: #7a7a7a;
+    fill: "fb-aqua";
     opacity: 0;
 }
 #lm-tile rect#background {
