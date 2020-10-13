@@ -54,6 +54,13 @@
     <!-- Status Bar -->
     <symbol id="status-bar">
         <rect id="background"/>
+        <image
+            x="0" y="0"
+            width="100%" height="81"
+            opacity="0.85"
+            fill="black"
+            href="./resources/images/status_bg.png"
+        />
         <circle id="no-phone-bg" />
         <image id="no-phone-icon" />
 
