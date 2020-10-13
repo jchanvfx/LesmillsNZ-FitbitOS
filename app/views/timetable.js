@@ -236,6 +236,10 @@ export function TimetableViewCtrl() {
             StatusBar.enableRefreshButton();
             reloadCurrentTimetable();
         }
+        // quit button.
+        SideMenu.QuitButton.onclick = () => {
+            me.exit();
+        }
         // message dialog button.
         MessageDialog.OkButton.onclick = MessageDialog.hide;
         // class dialog button.

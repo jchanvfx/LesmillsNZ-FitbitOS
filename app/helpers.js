@@ -94,6 +94,7 @@ export function sideMenuController(element) {
         SubButton6      : new Button(element.getElementById("timetable-btn6")),
         SubButton7      : new Button(element.getElementById("timetable-btn7")),
         SyncButton      : new Button(element.getElementById("sync-btn")),
+        QuitButton      : new Button(element.getElementById("quit-btn")),
         Footer          : element.getElementById("footer-label"),
         isVisible() {return isVisible(element);},
         show() {

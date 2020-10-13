@@ -72,7 +72,7 @@
             </use>
 
             <!-- Reload Screen -->
-            <use id="sync-itm" href="#scrollview-item" height="56">
+            <use id="sync-itm" href="#scrollview-item" height="54">
                 <use id="sync-btn" href="#round-button" x="20" width="100%-40">
                     <set href="#text" attributeName="text-length" to="12" />
                     <set href="#text" attributeName="text-buffer" to="Reload" />
@@ -85,6 +85,19 @@
                       text-length="32"
                       text-anchor="middle"
                       fill="cadetblue" />
+            </use>
+
+            <!-- Quit Button -->
+            <use id="quit-itm" href="#scrollview-item" height="54">
+                <use id="quit-btn" href="#round-button" x="20" width="100%-40">
+                    <set href="#text" attributeName="text-length" to="12" />
+                    <set href="#text" attributeName="text-buffer" to="Quit" />
+                    <set href="#bg" attributeName="fill" to="#692f37" />
+                    <set href="#tr" attributeName="fill" to="#692f37" />
+                    <set href="#tl" attributeName="fill" to="#692f37" />
+                    <set href="#br" attributeName="fill" to="#692f37" />
+                    <set href="#bl" attributeName="fill" to="#692f37" />
+                </use>
             </use>
 
             <!-- Footer -->

@@ -31,14 +31,14 @@ text {
 #status-bar text#time {
     x: 50%;
     font-size: 20;
-    fill: #d6d6d6;
+    fill: "white";
     text-length: 7;
 }
 #status-bar text#date {
     x: 50%;
     y: "$-1";
     font-size: 18;
-    fill: "fb-light-gray";
+    fill: #dedede;
     text-length: 16;
 }
 #status-bar circle#no-phone-bg {
