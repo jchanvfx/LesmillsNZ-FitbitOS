@@ -90,6 +90,34 @@ function onMount() {
         },
         configureTile: (tile, info) => {
             if (info.type == "lm-pool") {
+                let clickPad = tile.getElementById("click-pad");
+                let elms = ["background", "tl", "tr", "bl", "br"];
+                // hide elements for the very last tile.
+                if (info.index === LM_TIMETABLE.length-1) {
+                    for (let i = 0; i < elms.length; i++) {
+                        hide(tile.getElementById(elms[i]));
+                    }
+                    tile.getElementById("text-title").style.fill    = "fb-aqua";
+                    tile.getElementById("text-title").text          = "Back to Top";
+                    tile.getElementById("text-subtitle").style.fill = "#a8a8a8";
+                    tile.getElementById("text-subtitle").text       = "no more classes";
+                    tile.getElementById("color").style.fill         = "#00a3a3";
+                    tile.getElementById("color-G").style.fill       = "fb-aqua";
+                    tile.getElementById("text-L").text              = ">>>";
+                    tile.getElementById("text-R").text              = "<<<";
+                    clickPad.onclick = () => {
+                        let overlay = tile.getElementById("overlay");
+                        overlay.animate("enable");
+                        setTimeout(jumpToLatestClass, 300);
+                    };
+                    return;
+                }
+
+                // populate tile
+                for (let i = 0; i < elms.length; i++) {
+                    show(tile.getElementById(elms[i]));
+                }
+
                 let itmDate = new Date(info.date);
                 let startTime = formatTo12hrTime(itmDate);
                 let tileTitle = (info.name.length > 24) ?
@@ -98,7 +126,6 @@ function onMount() {
                 tile.getElementById("text-subtitle").text = info.location;
                 tile.getElementById("text-L").text        = startTime;
                 tile.getElementById("text-R").text        = `${info.duration} mins`;
-                let clickPad = tile.getElementById("click-pad");
                 let diffMsecs = itmDate - date;
                 if (Math.floor((diffMsecs / 1000) / 60) < -6) {
                     tile.getElementById("text-title").style.fill    = "#6e6e6e";
@@ -399,6 +426,8 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
     LM_TIMETABLE.length = 0;
     if (existsSync(`/private/data/${fileName}`)) {
         LM_TIMETABLE = readFileSync(fileName, "cbor");
+        // add a blank item for the last tile.
+        LM_TIMETABLE.push({});
     }
 
     TimetableList.length = LM_TIMETABLE.length;
