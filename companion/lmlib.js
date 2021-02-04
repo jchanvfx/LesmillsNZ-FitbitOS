@@ -1,6 +1,4 @@
-import {
-    date, date1, date2, date3, date4, date5, date6
-} from "../common/datelib"
+import {date, date1, date2, date3, date4, date5, date6} from "../common/datelib"
 
 // Timetable web API
 const urlAPI = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi";

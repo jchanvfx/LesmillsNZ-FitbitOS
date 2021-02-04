@@ -1,21 +1,43 @@
-import { readFileSync, writeFileSync, existsSync } from "fs";
-import { DAYS_SHORT, MONTHS_SHORT, formatTo12hrTime } from "../common/datelib"
+import {existsSync, readFileSync, writeFileSync} from "fs";
+import {DAYS_SHORT, formatTo12hrTime, MONTHS_SHORT} from "../common/datelib"
+
 
 // visibility functions.
 export function show(element) {element.style.display = "inline"}
 export function hide(element) {element.style.display = "none"}
-export function isVisible(element) {return element.style.display === "inline";}
+export function isVisible(element) {
+    return element.style.display === "inline";
+}
 
 // helper objects.
 export function statusBarController(element) {
+    let clickR_color = element.getElementById("click-r-bg").style.fill;
     return {
-        Element         : element,
-        DateLabel       : element.getElementById("date"),
-        TimeLabel       : element.getElementById("time"),
-        MenuButton      : element.getElementById("click-l"),
-        JumpToButton    : element.getElementById("click-r"),
-        JumpToIcon      : element.getElementById("jump-to"),
-        PhoneIcon       : element.getElementById("no-phone"),
+        Element           : element,
+        DateLabel         : element.getElementById("date"),
+        TimeLabel         : element.getElementById("time"),
+        MenuButton        : element.getElementById("click-l"),
+        MenuButtonAnim    : element.getElementById("click-l-anim"),
+        RefreshButton     : element.getElementById("click-r"),
+        RefreshButtonAnim : element.getElementById("click-r-anim"),
+        showPhone() {
+            show(element.getElementById("no-phone-icon"));
+            show(element.getElementById("no-phone-bg"));
+        },
+        hidePhone() {
+            hide(element.getElementById("no-phone-icon"));
+            hide(element.getElementById("no-phone-bg"));
+        },
+        enableRefreshButton() {
+            element.getElementById("refresh-btn").style.opacity = 1;
+            element.getElementById("click-r-bg").style.opacity = 1;
+            show(element.getElementById("click-r"));
+        },
+        disableRefreshButton() {
+            element.getElementById("refresh-btn").style.opacity = 0.4;
+            element.getElementById("click-r-bg").style.opacity = 0.4;
+            hide(element.getElementById("click-r"));
+        },
         setDate(dateObj) {
             this.DateLabel.text = `${DAYS_SHORT[dateObj.getDay()]} ` +
                                   `(${dateObj.getDate()} ` +
@@ -28,17 +50,51 @@ export function statusBarController(element) {
 }
 
 export function sideMenuController(element) {
+    // custom button controller for rounded button.
+    function Button(element, clickedColor="fb-aqua") {
+        let ids = ["bg", "tl", "tr", "bl", "br"];
+        let color = element.getElementById("bg").style.fill;
+        element.getElementById('click').onmousedown = () => {
+            for (let i = 0; i < ids.length; i++) {
+                element.getElementById(ids[i]).style.fill = clickedColor;
+            }
+            element.getElementById("text").style.fill = "black";
+        };
+        element.getElementById('click').onmouseup = () => {
+            for (let i = 0; i < ids.length; i++) {
+                element.getElementById(ids[i]).style.fill = color;
+            }
+            element.getElementById("text").style.fill = "white";
+        };
+        Object.defineProperty(this, "onclick", {
+            get: function get() {
+                element.getElementById('click').onclick;
+            },
+            set: function set(value) {
+                element.getElementById('click').onclick = value;
+            }
+        });
+        Object.defineProperty(this, "text", {
+            get: function get() {
+                element.getElementById('text').text;
+            },
+            set: function set(value) {
+                element.getElementById('text').text = value;
+            }
+        });
+    };
     return {
         Element         : element,
         SubLabel        : element.getElementById("timetable-label"),
-        SubButton1      : element.getElementById("timetable-btn1"),
-        SubButton2      : element.getElementById("timetable-btn2"),
-        SubButton3      : element.getElementById("timetable-btn3"),
-        SubButton4      : element.getElementById("timetable-btn4"),
-        SubButton5      : element.getElementById("timetable-btn5"),
-        SubButton6      : element.getElementById("timetable-btn6"),
-        SubButton7      : element.getElementById("timetable-btn7"),
-        SyncButton      : element.getElementById("sync-btn"),
+        SubButton1      : new Button(element.getElementById("timetable-btn1")),
+        SubButton2      : new Button(element.getElementById("timetable-btn2")),
+        SubButton3      : new Button(element.getElementById("timetable-btn3")),
+        SubButton4      : new Button(element.getElementById("timetable-btn4")),
+        SubButton5      : new Button(element.getElementById("timetable-btn5")),
+        SubButton6      : new Button(element.getElementById("timetable-btn6")),
+        SubButton7      : new Button(element.getElementById("timetable-btn7")),
+        SyncButton      : new Button(element.getElementById("sync-btn")),
+        QuitButton      : new Button(element.getElementById("quit-btn")),
         Footer          : element.getElementById("footer-label"),
         isVisible() {return isVisible(element);},
         show() {
@@ -55,8 +111,8 @@ export function sideMenuController(element) {
 export function messageDialogController(element) {
     return {
         Element     : element,
-        Header      : element.getElementById("#mixedtext"),
-        Message     : element.getElementById("#mixedtext").getElementById("copy"),
+        Header      : element.getElementById("header"),
+        Message     : element.getElementById("text"),
         OkButton    : element.getElementById("btn-ok"),
         isVisible() {return isVisible(element);},
         show(showButton=false) {
@@ -68,6 +124,17 @@ export function messageDialogController(element) {
 }
 
 export function classDialogController(element) {
+    // close button controller.
+    function CloseButton(buttonElmement) {
+        let bg = element.getElementById("btn-close-bg");
+        let color = element.getElementById("btn-close-bg").style.fill;
+        buttonElmement.onmousedown = () => {bg.style.fill = "#ff9c8a";};
+        buttonElmement.onmouseup = () => {bg.style.fill = color;};
+        Object.defineProperty(this, "onclick", {
+            get: function get() {buttonElmement.onclick;},
+            set: function set(value) {buttonElmement.onclick = value;}
+        });
+    };
     return {
         Element     : element,
         Title       : element.getElementById("title"),
@@ -77,7 +144,7 @@ export function classDialogController(element) {
         Label2      : element.getElementById("label2"),
         Label3      : element.getElementById("label3"),
         Label4      : element.getElementById("label4"),
-        CloseButton : element.getElementById("btn-close"),
+        CloseButton : new CloseButton(element.getElementById("btn-close")),
         isVisible() {return isVisible(element);},
         show() {
             element.animate("enable");

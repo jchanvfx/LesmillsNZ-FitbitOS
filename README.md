@@ -10,8 +10,6 @@ Link to app: https://gallery.fitbit.com/details/8f60152d-38d3-4fea-9a76-f0db013e
 
 This app is NOT officially part of Les Mills I made this app so I can conveniently display class times without the need of taking out my phone.
 
-**Command Reference:**
+**Fitbit SDK:**
 
-``npm add @fitbit/sdk``
-
-``npm add @fitbit/sdk-cli``
+``npm add @fitbit/sdk; npm add @fitbit/sdk-cli``

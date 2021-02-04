@@ -1,0 +1,98 @@
+<svg>
+  <defs>
+    <!-- styling -->
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/mnt/sysassets/colors_typography.css" />
+    <!-- system widgets -->
+    <link rel="import" href="/mnt/sysassets/system_widget.defs" />
+    <link rel="import" href="/mnt/sysassets/widgets/baseview_widget.defs" />
+    <!-- list widgets -->
+    <link rel="import" href="/mnt/sysassets/widgets/scrollbar.defs" />
+    <link rel="import" href="/mnt/sysassets/widgets/tile_list_widget.defs" />
+    <link rel="import" href="/mnt/sysassets/widgets/scrollview_widget.defs" />
+    <!-- button widgets -->
+    <link rel="import" href="/mnt/sysassets/widgets/text_button.defs" />
+    <symbol id="round-button">
+        <rect id="bg" x="3" y="2" width="100%-6" height="100%-4" fill="#494b4f" />
+        <!-- tl -->
+        <rect x="3" y="2" width="10" height="10" fill="black" />
+        <circle id="tl" r="8" cx="11" cy="10" fill="#494b4f" />
+        <!-- tr -->
+        <rect x="100%-13" y="2" width="10" height="10" fill="black" />
+        <circle id="tr" r="8" cx="100%-11" cy="10" fill="#494b4f" />
+        <!-- bl -->
+        <rect x="3" y="100%-12" width="10" height="10" fill="black" />
+        <circle id="bl" r="8" cx="11" cy="100%-10" fill="#494b4f" />
+        <!-- br -->
+        <rect x="100%-13" y="100%-12" width="10" height="10" fill="black" />
+        <circle id="br" r="8" cx="100%-11" cy="100%-10" fill="#494b4f" />
+        <!-- text -->
+        <text id="text" x="50%" text-anchor="middle" fill="white" />
+        <rect id="click" width="100%" height="100%" opacity="0" pointer-events="all" />
+    </symbol>
+    <!-- Loader Screen -->
+    <symbol id="loading-screen" focusable="false">
+        <gradientRect/>
+        <arc id="arc3" />
+        <arc id="arc2" />
+        <g id="animation" transform="translate(50%, 50%)">
+            <animateTransform
+                attributeType="rotate"
+                begin="enable"
+                end="disable"
+                dur="3"
+                from="0"
+                to="360"
+                repeatCount="indefinite"
+                final="freeze"/>
+            <arc id="arc1" />
+        </g>
+        <image id="icon" href="./resources/images/lm-logo.png"/>
+        <text id="text" >loading...</text>
+        <text id="sub-text" />
+    </symbol>
+    <!-- Status Bar -->
+    <symbol id="status-bar">
+        <rect id="background"/>
+        <image
+            x="0" y="0"
+            width="100%" height="81"
+            opacity="0.85"
+            fill="black"
+            href="./resources/images/status_bg.png"
+        />
+        <circle id="no-phone-bg" />
+        <image id="no-phone-icon" />
+
+        <circle id="click-l-bg" r="50" cx="30" cy="8" fill="#5b677a" />
+        <circle id="click-l-anim" r="50" cx="30" cy="8"
+                fill="#6bb9c4" opacity="0">
+            <animate attributeName="opacity" begin="click;enable"
+                     from="1" to="0" dur="0.3" final="restore" />
+            <animate attributeName="r" begin="click;enable"
+                     from="50" to="80" dur="0.4" final="restore" />
+        </circle>
+        <image id="menu-btn" />
+
+        <circle id="click-r-bg" r="50" cx="100%-30" cy="8" fill="#5b677a" />
+        <circle id="click-r-anim" r="50" cx="100%-30" cy="8"
+                fill="#6bb9c4" opacity="0">
+            <animate attributeName="opacity" begin="click;enable"
+                     from="1" to="0" dur="0.3" final="restore" />
+            <animate attributeName="r" begin="click;enable"
+                     from="50" to="80" dur="0.4" final="restore" />
+        </circle>
+        <image id="refresh-btn" />
+
+        <text id="time">--:--</text>
+        <text id="date">--</text>
+        <rect id="click-l" pointer-events="all" />
+        <rect id="click-r" pointer-events="all" />
+
+    </symbol>
+    <!-- Dialog -->
+    <link rel="import" href="dialog.defs" />
+    <!-- Side Menu -->
+    <link rel="import" href="menu.defs" />
+  </defs>
+</svg>

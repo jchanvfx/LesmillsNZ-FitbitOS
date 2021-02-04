@@ -1,10 +1,10 @@
 {
   "name": "lm_timetable",
-  "version": "0.3.13",
+  "version": "0.4.0",
   "private": true,
   "license": "MIT",
   "devDependencies": {
-    "@fitbit/sdk": "^4.2.1",
+    "@fitbit/sdk": "^5.0.1",
     "@fitbit/sdk-cli": "^1.7.3"
   },
   "fitbit": {
@@ -17,10 +17,8 @@
       "access_internet"
     ],
     "buildTargets": [
-      "mira",
-      "meson",
-      "gemini",
-      "higgs"
+      "atlas",
+      "vulcan"
     ],
     "i18n": {},
     "defaultLanguage": "en-US"
@@ -31,6 +29,7 @@
   },
   "dependencies": {
     "add": "^2.0.6",
+    "fitbit": "0.0.7",
     "npm": "^6.14.8"
   }
 }

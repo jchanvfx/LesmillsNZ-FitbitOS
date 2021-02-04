@@ -1,18 +1,13 @@
-import { init } from "./views";
+import {AppController} from "./utils";
+import {TimetableViewCtrl} from "./views/timetable"
 
-/**
- * Definition for each view in the resources/views folder, and the associated
- * JavaScript module is lazily loaded alongside its view.
- */
-const views = init(
-    [
-        ["timetable", () => import("./views/timetable")],
-        // ["test", () => import("./views/test")],
-    ],
-    "./resources/views/"
-);
+
+const controller = new AppController();
+controller.init({
+    "timetable" : new TimetableViewCtrl(),
+});
 
 // Select the first view after 1 second
 setTimeout(() => {
-    views.navigate("timetable");
+    controller.navigate("timetable");
 }, 1000);
