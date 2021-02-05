@@ -74,18 +74,28 @@ text {
 
 /* Loader Overlay */
 #loading-screen arc {
-    width: 120;
-    height: 120;
+    width: 140;
+    height: 140;
 }
-#loading-screen arc#arc1 {
+#loading-screen arc#arcKey1 {
+    x: -70;
+    y: -70;
+    fill: "fb-aqua";
+    arc-width: 6;
+    start-angle: 360;
+    sweep-angle: 180;
+}
+#loading-screen arc#arcKey2 {
     x: -60;
     y: -60;
-    fill: #fae13c;
-    arc-width: 6;
+    width: 120;
+    height: 120;
+    fill: "fb-aqua";
+    arc-width: 3;
     start-angle: 0;
-    sweep-angle: 60;
+    sweep-angle: 180;
 }
-#loading-screen arc#arc2 {
+#loading-screen arc#arc1 {
     width: 100;
     height: 100;
     x: 50%-50;
@@ -95,11 +105,11 @@ text {
     start-angle: 0;
     sweep-angle: 360;
 }
-#loading-screen arc#arc3 {
-    x: 50%-60;
-    y: 50%-60;
+#loading-screen arc#arc2 {
+    x: 50%-70;
+    y: 50%-70;
     fill: #11435d;
-    arc-width: 6;
+    arc-width: 3;
     start-angle: 0;
     sweep-angle: 360;
 }
@@ -112,7 +122,7 @@ text {
 }
 #loading-screen text {
     x: 50%;
-    y: "$+72";
+    y: "$+80";
     fill: #6bb9c4;
     font-size: 20;
     text-anchor: middle;
@@ -146,7 +156,7 @@ text {
 .side-menu-header text#footer-label {
     x: 50%;
     y: 50%+2;
-    fill: #fae13c;
+    fill: #696969;
     text-anchor: middle;
     text-length: 16;
 }
@@ -283,6 +293,14 @@ text {
     height: 20;
     fill: #00FA9A;
     href: "./resources/images/btn_combo_timer_p.png";
+}
+#class-dialog image#icon-end {
+    x: 50%-20;
+    y: "$-20";
+    width: 44;
+    height: 44;
+    fill: #DAA520;
+    href: "./resources/images/btn_combo_end_p.png";
 }
 #class-dialog text#title {
     x: 50%;
