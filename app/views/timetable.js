@@ -118,16 +118,15 @@ export function TimetableViewCtrl() {
                     tile.getElementById("text-subtitle").text = info.location;
                     tile.getElementById("text-L").text        = startTime;
                     tile.getElementById("text-R").text        = `${info.duration} mins`;
-                    let clickPad = tile.getElementById("click-pad");
                     let diffMsecs = itmDate - date;
-                    if (Math.floor((diffMsecs / 1000) / 60) < -6) {
+                    let isFinished = Math.floor((diffMsecs / 1000) / 60) < -6;
+                    if (isFinished) {
                         tile.getElementById("text-title").style.fill    = "#6e6e6e";
                         tile.getElementById("text-subtitle").style.fill = "#6e6e6e";
                         tile.getElementById("text-L").style.fill        = "#6e6e6e";
                         tile.getElementById("text-R").style.fill        = "#6e6e6e";
                         tile.getElementById("color").style.fill         = "#000000";
                         tile.getElementById("color-G").style.fill       = "#272727";
-                        clickPad.onclick = undefined;
                     } else {
                         tile.getElementById("text-title").style.fill    = "white";
                         tile.getElementById("text-subtitle").style.fill = "white";
@@ -135,29 +134,38 @@ export function TimetableViewCtrl() {
                         tile.getElementById("text-R").style.fill        = "white";
                         tile.getElementById("color").style.fill         = info.color;
                         tile.getElementById("color-G").style.fill       = info.color;
-                        clickPad.onclick = (evt) => {
-                            if (TileSelected) {return;}
-                            TileSelected = true;
-                            let overlay = tile.getElementById("overlay");
-                            overlay.animate("enable");
-                            setTimeout(() => {TileSelected = false;}, 450);
-                            setTimeout(() => {
-                                let title = info.name;
-                                title = (title.length > 25) ? truncateString(title, 22) : title;
-                                let names = info.instructor1;
-                                names = (info.instructor2 !== undefined) ?
-                                        `${names} & ${info.instructor2}`: names;
-                                names = (names.length > 36) ? truncateString(names, 33) : names;
+                    }
+                    let clickPad = tile.getElementById("click-pad");
+                    clickPad.onclick = (evt) => {
+                        if (TileSelected) {return;}
+                        TileSelected = true;
+                        let overlay = tile.getElementById("overlay");
+                        overlay.style.fill = (isFinished) ? "fb-red" : "fb-aqua";
+                        overlay.animate("enable");
+                        setTimeout(() => {TileSelected = false;}, 450);
+                        setTimeout(() => {
+                            let title = info.name;
+                            title = (title.length > 25) ? truncateString(title, 22) : title;
+                            let names = info.instructor1;
+                            names = (info.instructor2 !== undefined) ?
+                                    `${names} & ${info.instructor2}`: names;
+                            names = (names.length > 36) ? truncateString(names, 33) : names;
 
-                                ClassDialog.Color.style.fill    = info.color;
-                                ClassDialog.Title.text          = title.toUpperCase();
-                                ClassDialog.Name.text           = names;
-                                ClassDialog.Label1.text         = startTime;
-                                ClassDialog.Label2.text         = info.location;
-                                ClassDialog.Label4.text         = info.duration;
-                                ClassDialog.show();
-                            }, 300);
-                        }
+                            let dlgTextColor = (isFinished) ? "#6e6e6e" : "white";
+                            ClassDialog.Label1.style.fill   = dlgTextColor;
+                            ClassDialog.Label2.style.fill   = dlgTextColor;
+                            ClassDialog.Label3.style.fill   = dlgTextColor;
+
+                            ClassDialog.Color.style.fill    = info.color;
+                            ClassDialog.Title.text          = title.toUpperCase();
+                            ClassDialog.Name.text           = names;
+                            ClassDialog.Label1.text         = startTime;
+                            ClassDialog.Label2.text         = info.location;
+                            ClassDialog.Label4.text         = info.duration;
+
+                            ClassDialog.displayDuration(!isFinished);
+                            ClassDialog.show();
+                        }, 300);
                     }
                 }
             }
@@ -249,10 +257,10 @@ export function TimetableViewCtrl() {
 
         // Update current date.
         let dateStr = options.currentDate;
-        let currentDate = (dateStr == undefined) ? date : new Date(dateStr);
+        let currentDate = (dateStr === undefined) ? date : new Date(dateStr);
         StatusBar.setDate(currentDate);
 
-        // // Display the loader non animated.
+        // Display the loader non animated.
         LoadingScreen.Label.text = "Loading...";
         LoadingScreen.SubLabel.text = clubName.toUpperCase();
         show(LoadingScreen.Element);
@@ -432,7 +440,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
     if (existsSync(`/private/data/${fileName}`)) {
         LM_TIMETABLE = readFileSync(fileName, "cbor");
         // add a blank item for the last tile.
-        LM_TIMETABLE.push({});
+        if (LM_TIMETABLE.length !== 0) {LM_TIMETABLE.push({});}
     }
 
     TimetableList.length = LM_TIMETABLE.length;

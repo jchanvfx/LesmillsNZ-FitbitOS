@@ -100,6 +100,18 @@
                 </use>
             </use>
 
+            <!-- Logo -->
+            <use href="#scrollview-item" height="20">
+                <rect x="50%-100" y="$+10" width="200" height="1" fill="fb-dark-gray" />
+            </use>
+            <use href="#scrollview-item" height="54">
+                <image
+                    href="./resources/images/lm-header.png"
+                    x="50%-100" y="8" width="200" height="40"
+                    fill="#696969"
+                />
+            </use>
+
             <!-- Footer -->
             <use href="#scrollview-item" height="20">
                 <rect x="50%-100" y="$+10" width="200" height="1" fill="fb-dark-gray" />
