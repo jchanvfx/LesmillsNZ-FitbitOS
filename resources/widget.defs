@@ -33,9 +33,20 @@
     <!-- Loader Screen -->
     <symbol id="loading-screen" focusable="false">
         <gradientRect/>
-        <arc id="arc3" />
-        <arc id="arc2" />
-        <g id="animation" transform="translate(50%, 50%)">
+        <g id="animArc4" transform="translate(50%, 50%)">
+            <animateTransform
+                attributeType="rotate"
+                begin="enable"
+                end="disable"
+                dur="2"
+                from="360"
+                to="0"
+                repeatCount="indefinite"
+                final="freeze"/>
+            <arc id="arcKey2" />
+        </g>
+
+        <g id="animArc1" transform="translate(50%, 50%)">
             <animateTransform
                 attributeType="rotate"
                 begin="enable"
@@ -45,8 +56,10 @@
                 to="360"
                 repeatCount="indefinite"
                 final="freeze"/>
-            <arc id="arc1" />
+            <arc id="arcKey1" />
         </g>
+        <arc id="arc2" />
+        <arc id="arc1" />
         <image id="icon" href="./resources/images/lm-logo.png"/>
         <text id="text" >loading...</text>
         <text id="sub-text" />

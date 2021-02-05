@@ -145,6 +145,15 @@ export function classDialogController(element) {
         Label3      : element.getElementById("label3"),
         Label4      : element.getElementById("label4"),
         CloseButton : new CloseButton(element.getElementById("btn-close")),
+        displayDuration(visible=true) {
+            let elms = ["label4", "icon-timer", "label-timer"];
+            for (let i = 0; i < elms.length; i++) {
+                element.getElementById(elms[i]).style.display = (visible) ?
+                "inline" : "none";
+            }
+            let endIcon = element.getElementById("icon-end");
+            (visible) ? hide(endIcon) : show(endIcon);
+        },
         isVisible() {return isVisible(element);},
         show() {
             element.animate("enable");

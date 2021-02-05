@@ -41,6 +41,7 @@
     <text class="label-text" id="label4" />
     <image id="icon-timer" />
     <text class="label-text" id="label-timer">minutes</text>
+    <image id="icon-end" />
 
     <rect id="btn-close-bg" y="100%-65" width="100%" height="65" fill="tomato" />
     <text x="50%" y="$-28" fill="black" font-size="28" text-anchor="middle">Close</text>
