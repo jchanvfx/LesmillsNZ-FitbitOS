@@ -8,7 +8,7 @@ Link to app: https://gallery.fitbit.com/details/8f60152d-38d3-4fea-9a76-f0db013e
 
 **Disclaimer:**
 
-This app is NOT officially part of Les Mills I made this app so I can conveniently display class times without the need of taking out my phone.
+This app is NOT officially part of Les Mills I made this app so I can conveniently display class times without the need of taking out my phone and for the love of group fitness.
 
 **Fitbit SDK:**
 
