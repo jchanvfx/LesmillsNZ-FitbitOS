@@ -22,7 +22,6 @@ const defaultColors = {
 
 
 function sanitizeName(name) {
-    console.log(name);
     let sanitizedName = String(name).replace(/^[\s\+&]+|[\s\+&]+$/g, '');
     return sanitizedName;
 }
