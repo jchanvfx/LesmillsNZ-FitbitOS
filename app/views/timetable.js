@@ -493,7 +493,7 @@ function loadTimetableFile(fileName, jumpToIndex=true) {
         LoadingScreen.SubLabel.text = "www.lesmills.co.nz";
     } else {
         LoadingScreen.Label.text = "No Classes Found!";
-        LoadingScreen.SubLabel.text = `Reconnecting: ${ConectionRetryCount} of 3`;
+        LoadingScreen.SubLabel.text = `Reconnecting...`;
     }
 
     cleanUpFiles();
