@@ -1,42 +1,44 @@
-import {
-    date, date1, date2, date3, date4, date5, date6
-} from "../common/datelib"
+import { debugLog } from "../app/utils";
+import {date, date1, date2, date3, date4, date5, date6} from "../common/datelib"
 
 // Timetable web API
-const urlAPI = "https://www.lesmills.co.nz/api/timetable/get-timetable-epi";
+const urlAPI_start = "https://www.lesmills.co.nz/API/TimetablePage/GetTimetableCards?searchClubCodes="
+const urlAPI_end   = "&searchClassCodes=&searchTrainerNames=";
 
 // Default class colors.
 const defaultColors = {
-    BODYATTACK  : "#FFB81C",
-    BODYBALANCE : "#C5E86C",
-    BODYCOMBAT  : "#787121",
-    BODYJAM     : "#FEDD00",
-    BODYPUMP    : "#E4002B",
-    BODYSTEP    : "#008C95",
-    CXWORX      : "#E35205",
-    RPM         : "#00A9E0",
-    "SH'BAM"    : "#D0006F",
-    SPRINT      : "#FEDD00",
-    TONE        : "#8246AF"
+    BODYATTACK       : "#FFB81C",
+    BODYBALANCE      : "#C5E86C",
+    BODYCOMBAT       : "#787121",
+    BODYJAM          : "#FEDD00",
+    BODYPUMP         : "#E4002B",
+    BODYSTEP         : "#008C95",
+    "LES MILLS CORE" : "#E35205",
+    RPM              : "#00A9E0",
+    "SH'BAM"         : "#D0006F",
+    SPRINT           : "#FEDD00",
+    TONE             : "#8246AF"
 };
+
+
+function sanitizeName(name) {
+    let sanitizedName = String(name).replace(/^[\s\+&]+|[\s\+&]+$/g, '');
+    return sanitizedName;
+}
 
 // Fetch timetable from database.
 export function fetchTimetableData(clubID, callbackFunc) {
-    let fetchData = {
-        method: "POST",
-        headers: new Headers({
-            "Content-type": "application/json; charset=UTF-8"
-        }),
-        body: JSON.stringify({Club: clubID}),
-    };
-    return fetch(urlAPI, fetchData)
+    let urlAPI = urlAPI_start + clubID + urlAPI_end;
+    return fetch(urlAPI)
         .then(response => response.json())
         .then(data => {
+            let fitnessClasses = data.responseData.cards;
+
             // retrive up to 7 days of data.
             let dates = [date, date1, date2, date3, date4, date5, date6];
             let fltrs = [];
             let timetable = {};
-            timetable['fetched'] = date.toJSON();
+
             // build the date keys.
             for (let i = 0; i < dates.length; i++) {
                 let dkey = `${dates[i].getDay()}` +
@@ -48,21 +50,21 @@ export function fetchTimetableData(clubID, callbackFunc) {
 
             // extract and sort data from the json blob.
             let emojiRegex = /([\uE000-\uF8FF]|\uD83C[\uDF00-\uDFFF]|\uD83D[\uDC00-\uDDFF])/g;
-            let exclColors = ["#000", "#000000", "black", null];
+            let exclColors = ["#", "#000", "#000000", "black", null];
 
-            for (let i = 0; i < data.Classes.length; i++) {
-                let clsInfo = data.Classes[i];
-                let clsDate = new Date(clsInfo.StartDateTime);
+            for (let i = 0; i < fitnessClasses.length; i++) {
+                let clsInfo = fitnessClasses[i];
+                let clsDate = new Date(`${clsInfo.startDate} ${clsInfo.startTime}`);
                 let clsKey = `${clsDate.getDay()}${clsDate.getDate()}${clsDate.getMonth()}`;
 
                 // sanitize emoji characters from class name as Fitbit OS fonts don't support it.
-                let clsName = clsInfo.ClassName;
+                let clsName = clsInfo.className;
                 clsName = clsName.replace(emojiRegex, "");
                 clsName = clsName.replace(/\s{2,}/g, " ");
 
                 // set the class default color and filter out the color "black" or "null"
                 // because by default the background is black.
-                let color = clsInfo.Colour;
+                let color = `#${clsInfo.colorHexCode}`;
                 let title = clsName.toUpperCase();
                 for (let key in defaultColors) {
                     if (title.indexOf(key) !== -1) {
@@ -73,17 +75,16 @@ export function fetchTimetableData(clubID, callbackFunc) {
                 color = (exclColors.includes(color)) ? "#848484" : color;
 
                 if (fltrs.includes(clsKey)) {
-                    let grpCls = {
+                    timetable[`${clsKey}`].push({
                         name: clsName,
-                        date: clsInfo.StartDateTime,
-                        instructor1: clsInfo.MainInstructor.Name,
-                        instructor2: (clsInfo.SecondaryInstructor !== null) ?
-                                      clsInfo.SecondaryInstructor.Name : undefined,
+                        date: clsDate.toISOString(),
+                        instructor1: sanitizeName(clsInfo.mainInstructorName),
+                        instructor2: (clsInfo.secondaryInstructorName !== "") ?
+                            sanitizeName(clsInfo.secondaryInstructorName) : undefined,
                         color: color,
-                        duration: clsInfo.Duration,
-                        location: clsInfo.Site.SiteName,
-                    };
-                    timetable[clsKey.toString()].push(grpCls);
+                        duration: clsInfo.durationMins,
+                        location: clsInfo.siteName,
+                    });
                 }
             }
             // sort data by class times.
