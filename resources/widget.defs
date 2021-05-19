@@ -77,7 +77,7 @@
         <circle id="no-phone-bg" />
         <image id="no-phone-icon" />
 
-        <circle id="click-l-bg" r="50" cx="30" cy="8" fill="#5b677a" />
+        <circle id="click-l-bg" r="50" cx="30" cy="8" fill="#aa8161" />
         <circle id="click-l-anim" r="50" cx="30" cy="8"
                 fill="#6bb9c4" opacity="0">
             <animate attributeName="opacity" begin="click;enable"
@@ -87,7 +87,7 @@
         </circle>
         <image id="menu-btn" />
 
-        <circle id="click-r-bg" r="50" cx="100%-30" cy="8" fill="#5b677a" />
+        <circle id="click-r-bg" r="50" cx="100%-30" cy="8" fill="#aa8161" />
         <circle id="click-r-anim" r="50" cx="100%-30" cy="8"
                 fill="#6bb9c4" opacity="0">
             <animate attributeName="opacity" begin="click;enable"

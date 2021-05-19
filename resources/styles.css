@@ -80,7 +80,7 @@ text {
 #loading-screen arc#arcKey1 {
     x: -70;
     y: -70;
-    fill: "fb-aqua";
+    fill: #c58a50;
     arc-width: 6;
     start-angle: 360;
     sweep-angle: 180;
@@ -90,7 +90,7 @@ text {
     y: -60;
     width: 120;
     height: 120;
-    fill: "fb-aqua";
+    fill: #c58a50;
     arc-width: 3;
     start-angle: 0;
     sweep-angle: 180;
