@@ -60,7 +60,7 @@ text {
     y: 20;
     width: 22;
     height: 25;
-    fill: "black";
+    fill: "white";
     href: "./resources/images/menu_btn.png";
 }
 #status-bar image#refresh-btn {
@@ -68,7 +68,7 @@ text {
     y: 22;
     width: 22;
     height: 20;
-    fill: "black";
+    fill: "white";
     href: "./resources/images/update.png";
 }
 
@@ -80,7 +80,7 @@ text {
 #loading-screen arc#arcKey1 {
     x: -70;
     y: -70;
-    fill: #c58a50;
+    fill: #74512e;
     arc-width: 6;
     start-angle: 360;
     sweep-angle: 180;
@@ -108,7 +108,7 @@ text {
 #loading-screen arc#arc2 {
     x: 50%-70;
     y: 50%-70;
-    fill: #11435d;
+    fill: #2f3639;
     arc-width: 3;
     start-angle: 0;
     sweep-angle: 360;
@@ -163,20 +163,21 @@ text {
 .side-menu-header text#timetable-label {
     x: "$+8";
     y: "$-5";
+    fill: #d09256;
     text-length: 26;
 }
 .side-menu-header image#timetable-icon {
-    x: 35;
+    x: 20%;
     y: 0;
     width: 25;
     height: 25;
-    fill: #fae13c;
+    fill: #c58a50;
     href: "./resources/images/location.png";
 }
 .side-menu-gradient {
     width: 100%;
     height: 25;
-    fill: "fb-aqua";
+    fill: #c58a50;
 }
 
 /* Tile Item */
