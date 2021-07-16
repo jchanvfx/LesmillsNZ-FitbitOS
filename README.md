@@ -1,4 +1,4 @@
-# Lesmills NZ app for Fitbit
+# Lesmills NZ Timetable app for Fitbit
 
 **Fitbit** app that conveniently displays the <a href="https://www.lesmills.co.nz/timetable">Lesmills</a> timetable.
 
